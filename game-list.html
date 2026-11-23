@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>AI 제작 웹게임 모음 | @d_ong93</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-top: #e8f7ee;
+      --bg-bottom: #d6efe2;
+      --card-bg: rgba(255, 255, 255, 0.97);
+      --card-border: rgba(16, 185, 129, 0.25);
+      --text-main: #07291e;
+      --text-sub: #426357;
+      --accent-green: #059669;
+      --shadow-soft: 0 4px 12px rgba(6, 78, 59, 0.06);
+      --shadow-card: 0 3px 10px rgba(6, 78, 59, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    }
+
+    .page-wrap {
+      max-width: 540px;
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 15px;
+      padding: 7px 12px;
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 2px;
+      line-height: 1.45;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      line-height: 1.48;
+    }
+
+    .hero-desc {
+      margin: 1px 0 0;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: var(--text-sub);
+      font-weight: 800;
+    }
+
+    .game-list {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .game-card {
+      flex: 1;
+      min-height: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 15px;
+      padding: 7px 10px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 7px;
+      transition: transform 0.1s ease, border-color 0.12s ease;
+    }
+
+    .game-card:active {
+      transform: scale(0.99);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 0;
+    }
+
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .icon-duel { background: #fef3c7; }
+    .icon-chiikawa { background: #e0f2fe; }
+    .icon-star { background: #ede9fe; }
+    .icon-gem { background: #d1fae5; }
+
+    .card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .game-title {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 900;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+
+    .genre-pill {
+      display: inline-block;
+      padding: 1.5px 7px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+
+    .genre-duel { background: #fef3c7; color: #92400e; }
+    .genre-chiikawa { background: #e0f2fe; color: #075985; }
+    .genre-star { background: #ede9fe; color: #5b21b6; }
+    .genre-gem { background: #d1fae5; color: #065f46; }
+
+    .game-intro {
+      margin: 1px 0 0;
+      font-size: 12px;
+      line-height: 1.54;
+      color: var(--text-sub);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: keep-all;
+    }
+
+    .play-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      padding: 7px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: #ffffff;
+      background: linear-gradient(180deg, #10b981 0%, var(--accent-green) 100%);
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.24);
+      flex-shrink: 0;
+      transition: transform 0.1s ease, filter 0.12s ease;
+    }
+
+    .play-btn:active {
+      transform: scale(0.98);
+    }
+
+    .soon-slot {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: var(--text-sub);
+    }
+  </style>
+</head>
+<body>
+  <main class="page-wrap">
+    <section class="hero-card">
+      <div class="hero-badge">🎮 WEB GAME HUB</div>
+      <h1 class="hero-title">AI 제작 웹게임 모음</h1>
+      <p class="hero-desc">@d_ong93</p>
+    </section>
+
+    <section class="game-list" aria-label="게임 목록">
+      <article class="game-card">
+        <div class="card-top">
+          <div class="icon-box icon-duel" aria-hidden="true">🎲</div>
+          <div class="card-body">
+            <div class="card-head">
+              <h2 class="game-title">먼작귀 듀얼</h2>
+              <span class="genre-pill genre-duel">1vs1 전략 대전 보드게임</span>
+            </div>
+            <p class="game-intro">상대와 수 싸움을 벌이며 승부를 가르는 1대1 전략 대전 보드게임입니다.</p>
+          </div>
+        </div>
+        <a class="play-btn" href="https://chiikawa-duel-game.j-oo97.chatgpt.site/" target="_blank" rel="noopener noreferrer">
+          <span>먼작귀 듀얼 바로가기</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <div class="card-top">
+          <div class="icon-box icon-chiikawa" aria-hidden="true">🃏</div>
+          <div class="card-body">
+            <div class="card-head">
+              <h2 class="game-title">치이카와 : 잿빗 세상의 패러렐!</h2>
+              <span class="genre-pill genre-chiikawa">스와이프 루프 서바이벌</span>
+            </div>
+            <p class="game-intro">카드를 스와이프해 선택을 이어가며 반복되는 루프 속에서 살아남는 서바이벌 게임입니다.</p>
+          </div>
+        </div>
+        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/chiikawa-p" target="_blank" rel="noopener noreferrer">
+          <span>치이카와 : 잿빗 세상의 패러렐! 바로가기</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <div class="card-top">
+          <div class="icon-box icon-star" aria-hidden="true">🎰</div>
+          <div class="card-body">
+            <div class="card-head">
+              <h2 class="game-title">스타크래프트 : 랜덤 도박 디펜스</h2>
+              <span class="genre-pill genre-star">랜덤 도박 디펜스</span>
+            </div>
+            <p class="game-intro">무작위 뽑기와 조합의 운빨, 그리고 몰려오는 웨이브를 막아내는 디펜스 게임입니다.</p>
+          </div>
+        </div>
+        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/star-lucky" target="_blank" rel="noopener noreferrer">
+          <span>스타크래프트 : 랜덤 도박 디펜스 바로가기</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <div class="card-top">
+          <div class="icon-box icon-gem" aria-hidden="true">💎</div>
+          <div class="card-body">
+            <div class="card-head">
+              <h2 class="game-title">보석 타워 디펜스</h2>
+              <span class="genre-pill genre-gem">미로 &amp; 조합 타워 디펜스</span>
+            </div>
+            <p class="game-intro">보석을 배치해 길을 만들고, 등급 승급과 스페셜·슬레이트 조합으로 웨이브를 돌파하는 디펜스 게임입니다.</p>
+          </div>
+        </div>
+        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/gem-tower" target="_blank" rel="noopener noreferrer">
+          <span>보석 타워 디펜스 바로가기</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <div class="soon-slot">coming soon</div>
+    </section>
+  </main>
+</body>
+</html>
