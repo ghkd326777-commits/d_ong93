@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>치이카와 : 잿빛 세계의 패러렐</title>
+<style>
+  :root {
+    --stage-bg: #252932;
+    --hud-bg: #1b1f27;
+    --pill-bg: #1c2029;
+    --text-light: #f8fafc;
+    --text-sub: #cbd5e1;
+    --border-subtle: rgba(255, 255, 255, 0.1);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    touch-action: none;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    background-color: #15181e;
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Main Mobile-First Container */
+  .app-shell {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100dvh;
+    background-color: var(--stage-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding-bottom: 64px; /* Clearance for Powered by Netlify badge */
+    transition: background 0.9s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.55);
+  }
+
+  /* True Ending Blue Sky Transition */
+  body.sky-theme .app-shell {
+    background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 52%, #bae6fd 100%);
+  }
+  body.sky-theme .top-hud {
+    background: rgba(255, 255, 255, 0.62);
+    border-bottom-color: rgba(14, 116, 144, 0.18);
+  }
+  body.sky-theme .game-title {
+    color: #0c4a6e;
+  }
+  body.sky-theme .title-dot {
+    background-color: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+  }
+  body.sky-theme .stat-label {
+    color: #0f172a;
+  }
+  body.sky-theme .swipe-guide {
+    color: #0c4a6e;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  }
+  body.sky-theme .footer-bar {
+    background: rgba(255, 255, 255, 0.68);
+    border-top-color: rgba(14, 116, 144, 0.18);
+  }
+  body.sky-theme .foot-btn {
+    background: rgba(255, 255, 255, 0.86);
+    color: #0f172a;
+    border-color: rgba(15, 23, 42, 0.14);
+  }
+
+  /* 1. Top HUD Panel */
+  .top-hud {
+    background-color: var(--hud-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 14px 8px;
+    z-index: 20;
+    flex-shrink: 0;
+    transition: background 0.7s ease;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .title-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background-color: #6d4c9c;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.55);
+    flex-shrink: 0;
+  }
+
+  .game-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #f8fafc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .loop-pill {
+    background: rgba(109, 76, 156, 0.45);
+    border: 1px solid rgba(192, 132, 252, 0.35);
+    color: #e9d5ff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: -0.01em;
+  }
+
+  .sound-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: #2c313d;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+  .sound-btn:active { transform: scale(0.92); }
+
+  /* 4 Rounded-Square Liquid-Fill Icon Gauges */
+  .gauges-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .gauge-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .gauge-square {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background-color: #353a46;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  .gauge-liquid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    transition: height 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
+  }
+
+  .liquid-hunger { background-color: #f59e0b; }
+  .liquid-money { background-color: #eab308; }
+  .liquid-courage { background-color: #0ea5e9; }
+  .liquid-bonding { background-color: #ec4899; }
+  .gauge-liquid.danger { background-color: #ef4444 !important; }
+
+  .gauge-icon {
+    position: relative;
+    z-index: 2;
+    font-size: 23px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  }
+
+  .stat-label {
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    letter-spacing: -0.02em;
+  }
+
+  .val-hunger { color: #fbbf24; font-weight: 800; }
+  .val-money { color: #fde047; font-weight: 800; }
+  .val-courage { color: #38bdf8; font-weight: 800; }
+  .val-bonding { color: #f472b6; font-weight: 800; }
+
+  .preview-dot-slot {
+    height: 14px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-dot {
+    border-radius: 999px;
+    opacity: 0;
+    transform: scale(0.2);
+    transition: opacity 0.14s ease, transform 0.14s ease, width 0.14s ease, height 0.14s ease;
+  }
+
+  .preview-dot.show {
+    opacity: 1;
+    transform: scale(1);
+    animation: dotPulse 0.7s infinite ease-in-out;
+  }
+  .preview-dot.pos {
+    background-color: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.85);
+  }
+  .preview-dot.neg {
+    background-color: #f87171;
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.85);
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.26); }
+  }
+
+  /* 2. Sub-HUD Row */
+  .sub-hud {
+    padding: 8px 14px 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-shrink: 0;
+    z-index: 15;
+  }
+
+  .sub-pills-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .sub-pill {
+    background-color: var(--pill-bg);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #f1f5f9;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+
+  .chips-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chips-row:empty { display: none; }
+
+  .chip {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(30, 41, 59, 0.85);
+    color: #e2e8f0;
+  }
+  .chip.companion {
+    background: rgba(236, 72, 153, 0.22);
+    border-color: rgba(244, 114, 182, 0.55);
+    color: #fbcfe8;
+  }
+  .chip.seed {
+    background: linear-gradient(90deg, rgba(244, 114, 182, 0.28), rgba(56, 189, 248, 0.28));
+    border-color: rgba(253, 224, 71, 0.65);
+    color: #fef08a;
+  }
+  .chip.relic {
+    background: rgba(245, 158, 11, 0.22);
+    border-color: rgba(251, 191, 36, 0.55);
+    color: #fde68a;
+  }
+  .chip.status {
+    background: rgba(239, 68, 68, 0.26);
+    border-color: rgba(248, 113, 113, 0.65);
+    color: #fecaca;
+  }
+
+  .swipe-guide {
+    text-align: center;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #e2e8f0;
+    padding: 2px 14px 4px;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  /* 3. Centered 1:1 Card Stage */
+  .stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 16px 8px;
+    position: relative;
+  }
+
+  .card-stack-wrap {
+    position: relative;
+    width: min(89vw, 376px, calc(100dvh - 350px));
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .card-back-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: rgba(226, 232, 240, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    transform: translateY(7px) scale(0.95);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .active-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    touch-action: none;
+    cursor: grab;
+    will-change: transform, opacity;
+  }
+  .active-card:active { cursor: grabbing; }
+
+  .active-card.spring-back {
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .active-card.fly-out {
+    transition: transform 0.2s cubic-bezier(0.32, 0, 0.67, 0), opacity 0.18s ease;
+  }
+
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    box-shadow: 0 20px 38px -10px rgba(0, 0, 0, 0.58), 0 8px 16px -6px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  @keyframes cardWobble {
+    0%, 100% { transform: rotate(0deg) translateX(0); }
+    25% { transform: rotate(-1.0deg) translateX(-1.5px); }
+    50% { transform: rotate(0.9deg) translateX(1.5px); }
+    75% { transform: rotate(-0.7deg) translateX(-1px); }
+  }
+  .card-inner.wobble {
+    animation: cardWobble 0.45s ease-in-out infinite;
+  }
+
+  /* Swipe Stamp Overlay */
+  .swipe-stamp {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 31%;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.08s linear;
+  }
+  .swipe-stamp.left {
+    background: rgba(12, 74, 110, 0.9);
+  }
+  .swipe-stamp.right {
+    background: rgba(120, 53, 15, 0.9);
+  }
+  .stamp-box {
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 2px solid #38bdf8;
+    color: #ffffff;
+  }
+  .swipe-stamp.right .stamp-box {
+    border-color: #fbbf24;
+  }
+  .stamp-dir {
+    font-size: 11px;
+    font-weight: 800;
+    color: #7dd3fc;
+    margin-bottom: 2px;
+  }
+  .swipe-stamp.right .stamp-dir {
+    color: #fde68a;
+  }
+  .stamp-text {
+    font-size: 14.5px;
+    font-weight: 800;
+    line-height: 1.3;
+    word-break: keep-all;
+  }
+
+  /* Card Top Art (~30%) */
+  .card-art {
+    height: 30%;
+    min-height: 82px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px 12px 6px;
+    flex-shrink: 0;
+  }
+
+  .card-top-badges {
+    position: absolute;
+    top: 10px;
+    left: 11px;
+    right: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .char-pill {
+    background-color: #1e2433;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 3px 11px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.01em;
+  }
+
+  .tag-pill {
+    background-color: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(15, 23, 42, 0.13);
+    color: #334155;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Condition-fulfillment main story RED tag */
+  .tag-pill.main-story-tag {
+    color: #dc2626 !important;
+    border-color: rgba(220, 38, 38, 0.35);
+    background-color: rgba(255, 255, 255, 0.94);
+    font-weight: 800;
+  }
+
+  .art-svg-wrap {
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .art-svg-wrap svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Card Middle Narrative (~40%) */
+  .card-body {
+    flex: 1;
+    min-height: 0;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-y: auto;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  .card-text {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.55;
+    word-break: keep-all;
+    white-space: pre-line;
+    margin: 0;
+  }
+
+  /* Card Bottom Split Choices (~30%) */
+  .card-choices {
+    height: 30%;
+    min-height: 88px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex-shrink: 0;
+  }
+
+  .choice-btn {
+    border: none;
+    background: transparent;
+    padding: 10px 11px 11px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.14s ease, opacity 0.14s ease;
+  }
+
+  .choice-btn.left-btn {
+    border-right: 1px solid rgba(15, 23, 42, 0.12);
+    align-items: flex-start;
+    text-align: left;
+  }
+  .choice-btn.right-btn {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .choice-btn.left-btn:hover,
+  .choice-btn.left-btn.active-hl {
+    background-color: rgba(224, 242, 254, 0.72);
+  }
+  .choice-btn.right-btn:hover,
+  .choice-btn.right-btn.active-hl {
+    background-color: rgba(254, 243, 199, 0.72);
+  }
+  .choice-btn.dimmed {
+    opacity: 0.45;
+  }
+
+  .dir-pill {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 8px;
+    line-height: 1.3;
+  }
+  .dir-pill.left-pill {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+  .dir-pill.right-pill {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  .choice-label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.35;
+    color: #0f172a;
+    word-break: keep-all;
+    width: 100%;
+  }
+
+  /* =========================================================
+     LOW-SATURATION PASTEL CARD THEMES + CONTRAST-MATCHED TEXT
+     ========================================================= */
+  .card-inner[data-theme="prologue"] { border-color: #d6cde8; }
+  .card-inner[data-theme="prologue"] .card-art { background-color: #f3f0fa; }
+  .card-inner[data-theme="prologue"] .card-body { background-color: #faf9fd; }
+  .card-inner[data-theme="prologue"] .card-choices { background-color: #ece8f6; }
+  .card-inner[data-theme="prologue"] .card-text { color: #271d3d; }
+
+  .card-inner[data-theme="story_main"] { border-color: #d8ccb8; }
+  .card-inner[data-theme="story_main"] .card-art { background-color: #f8f4ea; }
+  .card-inner[data-theme="story_main"] .card-body { background-color: #fdfbf5; }
+  .card-inner[data-theme="story_main"] .card-choices { background-color: #f2ecde; }
+  .card-inner[data-theme="story_main"] .card-text { color: #231f1a; }
+
+  .card-inner[data-theme="plaza"] { border-color: #cfd8e3; }
+  .card-inner[data-theme="plaza"] .card-art { background-color: #eef2f6; }
+  .card-inner[data-theme="plaza"] .card-body { background-color: #f8fafc; }
+  .card-inner[data-theme="plaza"] .card-choices { background-color: #e6ecf2; }
+  .card-inner[data-theme="plaza"] .card-text { color: #16202c; }
+
+  .card-inner[data-theme="forest"] { border-color: #c5d9cb; }
+  .card-inner[data-theme="forest"] .card-art { background-color: #ecf4ee; }
+  .card-inner[data-theme="forest"] .card-body { background-color: #f7fbf8; }
+  .card-inner[data-theme="forest"] .card-choices { background-color: #e2eee5; }
+  .card-inner[data-theme="forest"] .card-text { color: #142b1d; }
+
+  .card-inner[data-theme="cave"] { border-color: #c8cfe2; }
+  .card-inner[data-theme="cave"] .card-art { background-color: #eceff7; }
+  .card-inner[data-theme="cave"] .card-body { background-color: #f6f8fc; }
+  .card-inner[data-theme="cave"] .card-choices { background-color: #e3e7f3; }
+  .card-inner[data-theme="cave"] .card-text { color: #161d33; }
+
+  .card-inner[data-theme="tower"] { border-color: #d6c8b4; }
+  .card-inner[data-theme="tower"] .card-art { background-color: #f5efe6; }
+  .card-inner[data-theme="tower"] .card-body { background-color: #fbf8f3; }
+  .card-inner[data-theme="tower"] .card-choices { background-color: #eee5d8; }
+  .card-inner[data-theme="tower"] .card-text { color: #2c2114; }
+
+  .card-inner[data-theme="companion"] { border-color: #e0cfa9; }
+  .card-inner[data-theme="companion"] .card-art { background-color: #fbf3e4; }
+  .card-inner[data-theme="companion"] .card-body { background-color: #fffdf7; }
+  .card-inner[data-theme="companion"] .card-choices { background-color: #f6ebd6; }
+  .card-inner[data-theme="companion"] .card-text { color: #38250b; }
+
+  .card-inner[data-theme="sub"] { border-color: #dec8cf; }
+  .card-inner[data-theme="sub"] .card-art { background-color: #f7eef0; }
+  .card-inner[data-theme="sub"] .card-body { background-color: #fcf8f9; }
+  .card-inner[data-theme="sub"] .card-choices { background-color: #f1e4e8; }
+  .card-inner[data-theme="sub"] .card-text { color: #331821; }
+
+  .card-inner[data-theme="relic"] { border-color: #c2d8d8; }
+  .card-inner[data-theme="relic"] .card-art { background-color: #e9f3f3; }
+  .card-inner[data-theme="relic"] .card-body { background-color: #f6fbfb; }
+  .card-inner[data-theme="relic"] .card-choices { background-color: #dfeded; }
+  .card-inner[data-theme="relic"] .card-text { color: #112a2a; }
+
+  .card-inner[data-theme="status_bad"] { border-color: #debebe; }
+  .card-inner[data-theme="status_bad"] .card-art { background-color: #f8ebeb; }
+  .card-inner[data-theme="status_bad"] .card-body { background-color: #fdf7f7; }
+  .card-inner[data-theme="status_bad"] .card-choices { background-color: #f3e2e2; }
+  .card-inner[data-theme="status_bad"] .card-text { color: #3d1313; }
+
+  .card-inner[data-theme="relief"] { border-color: #c2dccd; }
+  .card-inner[data-theme="relief"] .card-art { background-color: #eaf5ef; }
+  .card-inner[data-theme="relief"] .card-body { background-color: #f7fcf9; }
+  .card-inner[data-theme="relief"] .card-choices { background-color: #e0efe7; }
+  .card-inner[data-theme="relief"] .card-text { color: #102c1e; }
+
+  .card-inner[data-theme="special"] { border-color: #c3d3e6; }
+  .card-inner[data-theme="special"] .card-art { background-color: #ecf2f9; }
+  .card-inner[data-theme="special"] .card-body { background-color: #f7fafe; }
+  .card-inner[data-theme="special"] .card-choices { background-color: #e2ebf6; }
+  .card-inner[data-theme="special"] .card-text { color: #142438; }
+
+  .card-inner[data-theme="ending"] { border-color: #7dd3fc; }
+  .card-inner[data-theme="ending"] .card-art { background-color: #e4f3fc; }
+  .card-inner[data-theme="ending"] .card-body { background-color: #f5faff; }
+  .card-inner[data-theme="ending"] .card-choices { background-color: #d9eefb; }
+  .card-inner[data-theme="ending"] .card-text { color: #0b2b45; }
+
+  /* 4. Bottom Footer Bar */
+  .footer-bar {
+    background-color: var(--hud-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 9px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 20;
+    transition: background 0.7s ease;
+  }
+
+  .foot-btn {
+    background-color: #2c313d;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border-radius: 12px;
+    padding: 9px 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.1s ease, background-color 0.15s ease;
+  }
+  .foot-btn:hover { background-color: #363c4b; }
+  .foot-btn:active { transform: scale(0.96); }
+
+  .codex-count-pill {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 999px;
+  }
+
+  /* Toast Banner */
+  .toast {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(15, 23, 42, 0.94);
+    color: #fef08a;
+    border: 1.5px solid rgba(251, 191, 36, 0.75);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 80;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Modals */
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 12, 18, 0.84);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 90;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .modal-panel {
+    width: 100%;
+    max-height: 82dvh;
+    background: #1e222b;
+    color: #f1f5f9;
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+  }
+
+  .modal-head {
+    padding: 14px 16px;
+    background: #161920;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f8fafc;
+  }
+  .modal-close {
+    background: #2c313d;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .modal-body {
+    padding: 14px 16px;
+    overflow-y: auto;
+    touch-action: pan-y;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .guide-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 12px 13px;
+    margin-bottom: 10px;
+  }
+  .guide-card h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: #fde68a;
+  }
+  .guide-card p {
+    margin: 0;
+    color: #cbd5e1;
+  }
+
+  .codex-item {
+    border-radius: 14px;
+    padding: 11px 13px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    opacity: 0.65;
+  }
+  .codex-item.unlocked {
+    opacity: 1;
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(251, 191, 36, 0.45);
+  }
+  .codex-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-weight: 800;
+    font-size: 13.5px;
+  }
+  .codex-item.unlocked .codex-top span:first-child { color: #fde68a; }
+  .codex-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    flex-shrink: 0;
+  }
+  .codex-desc {
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+
+  /* Ending Result Modal */
+  .ending-card-modal {
+    width: 100%;
+    max-width: 340px;
+    background: #fdfbf7;
+    color: #0f172a;
+    border-radius: 26px;
+    border: 3px solid #cbd5e1;
+    padding: 22px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65);
+  }
+  .ending-card-modal.true-ending-box {
+    background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-color: #38bdf8;
+  }
+  .ending-type-pill {
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 11px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #334155;
+    margin-bottom: 10px;
+  }
+  .ending-card-modal.true-ending-box .ending-type-pill {
+    background: #0284c7;
+    color: #ffffff;
+  }
+  .ending-svg-box {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 8px;
+  }
+  .ending-title {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    color: #0f172a;
+    word-break: keep-all;
+  }
+  .ending-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #475569;
+    margin: 0 0 14px;
+    word-break: keep-all;
+  }
+  .ending-meta {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background: rgba(15, 23, 42, 0.06);
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 16px;
+  }
+  .ending-cta {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(90deg, #6366f1 0%, #ec4899 100%);
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 8px 18px rgba(99, 102, 241, 0.35);
+  }
+  .ending-cta:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+<div class="app-shell" id="app-shell">
+  <div class="toast" id="toast">알림</div>
+
+  <!-- 1. Top HUD -->
+  <header class="top-hud">
+    <div class="header-row">
+      <div class="title-wrap">
+        <span class="title-dot"></span>
+        <span class="game-title">치이카와 : 잿빛 세계의 패러렐</span>
+      </div>
+      <div class="header-actions">
+        <span class="loop-pill" id="loop-pill">루프 #1</span>
+        <button type="button" class="sound-btn" id="btn-sound" title="효과음 켜기/끄기">🔊</button>
+      </div>
+    </div>
+
+    <div class="gauges-grid" aria-label="생존 지표">
+      <div class="gauge-col">
+        <div class="gauge-square">
+          <div class="gauge-liquid liquid-hunger" id="liquid-hunger"></div>
+          <span class="gauge-icon">🍙</span>
+        </div>
+        <div class="stat-label">배부름 <span class="val-hunger" id="val-hunger">50</span></div>
+        <div class="preview-dot-slot"><span class="preview-dot" id="dot-hunger"></span></div>
+      </div>
+
+      <div class="gauge-col">
+        <div class="gauge-square">
+          <div class="gauge-liquid liquid-money" id="liquid-money"></div>
+          <span class="gauge-icon">💰</span>
+        </div>
+        <div class="stat-label">보수 <span class="val-money" id="val-money">50</span></div>
+        <div class="preview-dot-slot"><span class="preview-dot" id="dot-money"></span></div>
+      </div>
+
+      <div class="gauge-col">
+        <div class="gauge-square">
+          <div class="gauge-liquid liquid-courage" id="liquid-courage"></div>
+          <span class="gauge-icon">⚔️</span>
+        </div>
+        <div class="stat-label">용기 <span class="val-courage" id="val-courage">50</span></div>
+        <div class="preview-dot-slot"><span class="preview-dot" id="dot-courage"></span></div>
+      </div>
+
+      <div class="gauge-col">
+        <div class="gauge-square">
+          <div class="gauge-liquid liquid-bonding" id="liquid-bonding"></div>
+          <span class="gauge-icon">🎀</span>
+        </div>
+        <div class="stat-label">유대 <span class="val-bonding" id="val-bonding">50</span></div>
+        <div class="preview-dot-slot"><span class="preview-dot" id="dot-bonding"></span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Sub-HUD -->
+  <section class="sub-hud">
+    <div class="sub-pills-row">
+      <div class="sub-pill" id="zone-pill">📍 시작의 풀밭</div>
+      <div class="sub-pill" id="turn-pill">⏳ 프롤로그</div>
+    </div>
+    <div class="chips-row" id="chips-row"></div>
+  </section>
+
+  <div class="swipe-guide">원하는 방향으로 스와이프 하세요!</div>
+
+  <!-- 3. Centered 1:1 Card Stage -->
+  <main class="stage">
+    <div class="card-stack-wrap">
+      <div class="card-back-layer"></div>
+      <div class="active-card" id="active-card">
+        <div class="card-inner" id="card-inner" data-theme="prologue">
+          <div class="swipe-stamp left" id="stamp-left">
+            <div class="stamp-box">
+              <div class="stamp-dir">◀ 왼쪽 선택</div>
+              <div class="stamp-text" id="stamp-left-text">왼쪽</div>
+            </div>
+          </div>
+          <div class="swipe-stamp right" id="stamp-right">
+            <div class="stamp-box">
+              <div class="stamp-dir">오른쪽 선택 ▶</div>
+              <div class="stamp-text" id="stamp-right-text">오른쪽</div>
+            </div>
+          </div>
+
+          <div class="card-art">
+            <div class="card-top-badges">
+              <span class="char-pill" id="char-pill">우사기</span>
+              <span class="tag-pill" id="tag-pill">#프롤로그 1</span>
+            </div>
+            <div class="art-svg-wrap" id="art-svg-wrap"></div>
+          </div>
+
+          <div class="card-body">
+            <p class="card-text" id="card-text">우사기 "푸르르르 우라!"</p>
+          </div>
+
+          <div class="card-choices">
+            <button type="button" class="choice-btn left-btn" id="btn-left">
+              <span class="dir-pill left-pill">◀ 왼쪽</span>
+              <span class="choice-label" id="label-left">발견했다고.. 무언가를?</span>
+            </button>
+            <button type="button" class="choice-btn right-btn" id="btn-right">
+              <span class="dir-pill right-pill">오른쪽 ▶</span>
+              <span class="choice-label" id="label-right">무슨 일이.. 생긴 걸까?</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 4. Bottom Footer -->
+  <footer class="footer-bar">
+    <button type="button" class="foot-btn" id="btn-guide">📘 게임 설명</button>
+    <button type="button" class="foot-btn" id="btn-codex">🏆 엔딩 도감 <span class="codex-count-pill" id="codex-count-pill">0/16</span></button>
+    <button type="button" class="foot-btn" id="btn-restart">🔄 다시 시작</button>
+  </footer>
+
+  <!-- Modal: Guide -->
+  <div class="modal-backdrop" id="modal-guide">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <span class="modal-title">📘 게임 설명</span>
+        <button type="button" class="modal-close" data-close="modal-guide">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-card">
+          <h4>🎯 생존 목표 & 0 / 100 규칙</h4>
+          <p>상단의 4가지 지표(<b>배부름·보수·용기·유대</b>) 중 하나라도 <b>0</b> 또는 <b>100</b>에 도달하면 즉시 게임 오버가 됩니다. 균형을 유지하며 <b>100턴</b>까지 생존해 마법사와 마주하세요!</p>
+        </div>
+        <div class="guide-card">
+          <h4>🔴 빨간 태그 메인 스토리 & 진엔딩 조건</h4>
+          <p>우측 상단 <b>#태그가 빨간색</b>인 카드는 핵심 스토리입니다. <b>치이카와 합류(1-1~1-14)</b>, <b>우사기 합류(2-1~2-4)</b>, <b>무지개 씨앗 획득(3-1~3-3)</b>을 모두 달성한 뒤 100턴에 마법사를 만나면 <b>진엔딩(1~5)</b>이 열립니다.</p>
+        </div>
+        <div class="guide-card">
+          <h4>👆 스와이프 미리보기 & 상태이상</h4>
+          <p>카드를 살짝 기울이거나 선택지에 마우스를 올리면 게이지 아래에 <b>초록 원(+)</b> / <b>붉은 원(-)</b>이 표시됩니다. 상태이상에 걸리면 카드가 흔들리며(🍄환각: 미리보기 숨김, 🪓봉 손상: 토벌봉 사용 시 용기 -3, 👻가위눌림: 선택지 ???, 🤧모래감기: 배부름 회복 -2), 일정 턴 후 해제 카드로 회복할 수 있습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Ending Codex -->
+  <div class="modal-backdrop" id="modal-codex">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <span class="modal-title" id="codex-modal-title">🏆 엔딩 도감 (0 / 16)</span>
+        <button type="button" class="modal-close" data-close="modal-codex">✕</button>
+      </div>
+      <div class="modal-body" id="codex-list"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Ending Result -->
+  <div class="modal-backdrop" id="modal-ending">
+    <div class="ending-card-modal" id="ending-card-modal">
+      <span class="ending-type-pill" id="ending-type-pill">ENDING</span>
+      <div class="ending-svg-box" id="ending-svg-box"></div>
+      <h2 class="ending-title" id="ending-title">엔딩 제목</h2>
+      <p class="ending-desc" id="ending-desc">엔딩 설명</p>
+      <div class="ending-meta">
+        <span>생존 턴: <b id="ending-turns">0턴</b></span>
+        <span>누적 루프: <b id="ending-loops">루프 #1</b></span>
+      </div>
+      <button type="button" class="ending-cta" id="btn-ending-restart">다시 눈을 뜬다 (새 루프)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const STORAGE_KEY = 'chiikawa_gray_parallel_meta_v2';
+
+  // =========================================================================
+  // 1. Web Audio Synthesizer (Soft tactile chimes, no external URLs)
+  // =========================================================================
+  const SFX = {
+    ctx: null,
+    muted: false,
+    ensure() {
+      if (!this.ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) this.ctx = new AC();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+    },
+    tone(freq, type, dur, vol = 0.06, delay = 0) {
+      if (this.muted) return;
+      this.ensure();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime + delay;
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      g.gain.setValueAtTime(0.001, now);
+      g.gain.exponentialRampToValueAtTime(vol, now + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.connect(g);
+      g.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + dur + 0.02);
+    },
+    swipe(dir) { this.tone(dir === 'left' ? 370 : 440, 'triangle', 0.1, 0.055); },
+    good() {
+      this.tone(523.25, 'sine', 0.13, 0.07, 0);
+      this.tone(659.25, 'sine', 0.13, 0.07, 0.07);
+      this.tone(783.99, 'sine', 0.2, 0.08, 0.14);
+    },
+    bad() {
+      this.tone(215, 'sawtooth', 0.16, 0.05, 0);
+      this.tone(168, 'sawtooth', 0.22, 0.05, 0.11);
+    },
+    clear() {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        this.tone(f, 'triangle', 0.22, 0.08, i * 0.085);
+      });
+    }
+  };
+
+  // =========================================================================
+  // 2. Kawaii Thick-Outlined Inline SVG Art
+  // =========================================================================
+  function getSVG(kind) {
+    const k = kind || 'hachiware';
+    const svgs = {
+      usagi: `<svg viewBox="0 0 100 100">
+        <ellipse cx="40" cy="24" rx="6.5" ry="20" fill="#fef3c7" stroke="#1e293b" stroke-width="2.6"/>
+        <ellipse cx="60" cy="24" rx="6.5" ry="20" fill="#fef3c7" stroke="#1e293b" stroke-width="2.6"/>
+        <ellipse cx="40" cy="25" rx="2.8" ry="12" fill="#fbcfe8"/>
+        <ellipse cx="60" cy="25" rx="2.8" ry="12" fill="#fbcfe8"/>
+        <circle cx="50" cy="60" r="27" fill="#fef3c7" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="40" cy="57" r="2.8" fill="#1e293b"/>
+        <circle cx="60" cy="57" r="2.8" fill="#1e293b"/>
+        <ellipse cx="33" cy="63" rx="4.5" ry="2.6" fill="#fda4af"/>
+        <ellipse cx="67" cy="63" rx="4.5" ry="2.6" fill="#fda4af"/>
+        <path d="M45 64 Q50 69 55 64" fill="none" stroke="#1e293b" stroke-width="2.3" stroke-linecap="round"/>
+      </svg>`,
+      hachiware: `<svg viewBox="0 0 100 100">
+        <polygon points="24,44 32,18 46,36" fill="#60a5fa" stroke="#1e293b" stroke-width="2.6" stroke-linejoin="round"/>
+        <polygon points="76,44 68,18 54,36" fill="#60a5fa" stroke="#1e293b" stroke-width="2.6" stroke-linejoin="round"/>
+        <circle cx="50" cy="59" r="28" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M24 48 Q38 38 50 48 Q62 38 76 48 Q71 31 50 31 Q29 31 24 48 Z" fill="#60a5fa" stroke="#1e293b" stroke-width="2.2"/>
+        <circle cx="40" cy="57" r="2.9" fill="#1e293b"/>
+        <circle cx="60" cy="57" r="2.9" fill="#1e293b"/>
+        <ellipse cx="33" cy="63" rx="4.5" ry="2.6" fill="#fda4af"/>
+        <ellipse cx="67" cy="63" rx="4.5" ry="2.6" fill="#fda4af"/>
+        <path d="M45 64 Q50 69 55 64" fill="none" stroke="#1e293b" stroke-width="2.3" stroke-linecap="round"/>
+      </svg>`,
+      chiikawa: `<svg viewBox="0 0 100 100">
+        <circle cx="31" cy="34" r="9.5" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="69" cy="34" r="9.5" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="50" cy="58" r="28" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="40" cy="56" r="2.9" fill="#1e293b"/>
+        <circle cx="60" cy="56" r="2.9" fill="#1e293b"/>
+        <ellipse cx="33" cy="62" rx="4.8" ry="2.8" fill="#fda4af"/>
+        <ellipse cx="67" cy="62" rx="4.8" ry="2.8" fill="#fda4af"/>
+        <path d="M46 63 Q50 67 54 63" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+      wizard: `<svg viewBox="0 0 100 100">
+        <polygon points="48,10 22,42 74,42" fill="#5b21b6" stroke="#1e293b" stroke-width="2.6" stroke-linejoin="round"/>
+        <ellipse cx="48" cy="42" rx="31" ry="6" fill="#6d28d9" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="48" cy="61" r="20" fill="#f8fafc" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="41" cy="58" r="2.4" fill="#1e293b"/>
+        <circle cx="55" cy="58" r="2.4" fill="#1e293b"/>
+        <path d="M35 67 Q48 77 61 67" fill="none" stroke="#94a3b8" stroke-width="3.2" stroke-linecap="round"/>
+        <line x1="83" y1="24" x2="80" y2="86" stroke="#92400e" stroke-width="3.6" stroke-linecap="round"/>
+        <circle cx="83" cy="21" r="6" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+      </svg>`,
+      trio: `<svg viewBox="0 0 120 100">
+        <circle cx="30" cy="58" r="18" fill="#ffffff" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="19" cy="43" r="6" fill="#ffffff" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="41" cy="43" r="6" fill="#ffffff" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="25" cy="57" r="2.1" fill="#1e293b"/><circle cx="35" cy="57" r="2.1" fill="#1e293b"/>
+        <ellipse cx="21" cy="61" rx="3" ry="1.8" fill="#fda4af"/><ellipse cx="39" cy="61" rx="3" ry="1.8" fill="#fda4af"/>
+        <circle cx="90" cy="58" r="18" fill="#fef3c7" stroke="#1e293b" stroke-width="2.4"/>
+        <ellipse cx="83" cy="31" rx="4.5" ry="15" fill="#fef3c7" stroke="#1e293b" stroke-width="2.4"/>
+        <ellipse cx="97" cy="31" rx="4.5" ry="15" fill="#fef3c7" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="85" cy="57" r="2.1" fill="#1e293b"/><circle cx="95" cy="57" r="2.1" fill="#1e293b"/>
+        <circle cx="60" cy="63" r="20" fill="#ffffff" stroke="#1e293b" stroke-width="2.4"/>
+        <polygon points="43,50 48,33 56,46" fill="#60a5fa" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>
+        <polygon points="77,50 72,33 64,46" fill="#60a5fa" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>
+        <circle cx="54" cy="61" r="2.2" fill="#1e293b"/><circle cx="66" cy="61" r="2.2" fill="#1e293b"/>
+        <path d="M56 67 Q60 70 64 67" fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+      </svg>`,
+      armor: `<svg viewBox="0 0 100 100">
+        <rect x="24" y="22" width="52" height="58" rx="20" fill="#cbd5e1" stroke="#1e293b" stroke-width="2.6"/>
+        <rect x="33" y="45" width="34" height="12" rx="5" fill="#1e293b"/>
+        <circle cx="42" cy="51" r="2.5" fill="#fde047"/>
+        <circle cx="58" cy="51" r="2.5" fill="#fde047"/>
+      </svg>`,
+      kuri: `<svg viewBox="0 0 100 100">
+        <circle cx="31" cy="35" r="8" fill="#d97706" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="69" cy="35" r="8" fill="#d97706" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="50" cy="57" r="27" fill="#fef3c7" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M24 50 Q50 28 76 50 Q72 30 50 30 Q28 30 24 50 Z" fill="#b45309" stroke="#1e293b" stroke-width="2.2"/>
+        <circle cx="41" cy="56" r="2.6" fill="#1e293b"/><circle cx="59" cy="56" r="2.6" fill="#1e293b"/>
+        <ellipse cx="34" cy="62" rx="4.5" ry="2.5" fill="#fb7185"/><ellipse cx="66" cy="62" rx="4.5" ry="2.5" fill="#fb7185"/>
+        <path d="M46 64 Q50 67 54 64" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+      rakko: `<svg viewBox="0 0 100 100">
+        <path d="M20 74 Q50 96 80 74 L74 56 L26 56 Z" fill="#dc2626" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="31" cy="34" r="8.5" fill="#e7d3b5" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="69" cy="34" r="8.5" fill="#e7d3b5" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="50" cy="55" r="26" fill="#f5e6d3" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M36 47 L44 50 M64 47 L56 50" stroke="#1e293b" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="41" cy="54" r="2.6" fill="#1e293b"/><circle cx="59" cy="54" r="2.6" fill="#1e293b"/>
+        <line x1="57" y1="59" x2="64" y2="66" stroke="#b91c1c" stroke-width="2.3" stroke-linecap="round"/>
+        <ellipse cx="50" cy="61" rx="4" ry="2.8" fill="#5c4033"/>
+      </svg>`,
+      momonga: `<svg viewBox="0 0 100 100">
+        <ellipse cx="33" cy="31" rx="9" ry="11" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <ellipse cx="67" cy="31" rx="9" ry="11" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="50" cy="57" r="27" fill="#ffffff" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M30 40 Q50 49 70 40" fill="none" stroke="#93c5fd" stroke-width="3.6" stroke-linecap="round"/>
+        <circle cx="40" cy="55" r="3.8" fill="#1e293b"/><circle cx="41" cy="53.5" r="1.2" fill="#fff"/>
+        <circle cx="60" cy="55" r="3.8" fill="#1e293b"/><circle cx="61" cy="53.5" r="1.2" fill="#fff"/>
+        <ellipse cx="33" cy="62" rx="4.5" ry="2.6" fill="#fda4af"/><ellipse cx="67" cy="62" rx="4.5" ry="2.6" fill="#fda4af"/>
+      </svg>`,
+      shisa: `<svg viewBox="0 0 100 100">
+        <circle cx="30" cy="35" r="10" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="70" cy="35" r="10" fill="#fde68a" stroke="#1e293b" stroke-width="2.5"/>
+        <circle cx="50" cy="57" r="27" fill="#fef3c7" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M34 46 Q41 42 46 46 M54 46 Q59 42 66 46" fill="none" stroke="#92400e" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="40" cy="55" r="2.7" fill="#1e293b"/><circle cx="60" cy="55" r="2.7" fill="#1e293b"/>
+        <path d="M43 63 Q50 70 57 63 Z" fill="#fb7185" stroke="#1e293b" stroke-width="2"/>
+      </svg>`,
+      anoko: `<svg viewBox="0 0 100 100">
+        <path d="M21 72 Q19 32 50 28 Q81 32 79 72 Q73 86 50 84 Q27 86 21 72 Z" fill="#fde68a" stroke="#78350f" stroke-width="2.6"/>
+        <ellipse cx="32" cy="30" rx="7" ry="12" transform="rotate(-16 32 30)" fill="#fcd34d" stroke="#78350f" stroke-width="2.4"/>
+        <ellipse cx="68" cy="30" rx="7" ry="12" transform="rotate(16 68 30)" fill="#fcd34d" stroke="#78350f" stroke-width="2.4"/>
+        <circle cx="39" cy="54" r="3.6" fill="#451a03"/><circle cx="61" cy="54" r="3.6" fill="#451a03"/>
+        <ellipse cx="31" cy="61" rx="4.5" ry="2.6" fill="#fda4af"/><ellipse cx="69" cy="61" rx="4.5" ry="2.6" fill="#fda4af"/>
+        <path d="M44 64 Q50 70 56 64" fill="none" stroke="#78350f" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>`,
+      dekasuyo: `<svg viewBox="0 0 100 100">
+        <path d="M20 74 Q18 28 50 24 Q82 28 80 74 Q74 88 50 86 Q26 88 20 74 Z" fill="#64748b" stroke="#1e293b" stroke-width="2.6"/>
+        <polygon points="30,32 20,14 40,26" fill="#475569" stroke="#1e293b" stroke-width="2.4"/>
+        <polygon points="70,32 80,14 60,26" fill="#475569" stroke="#1e293b" stroke-width="2.4"/>
+        <circle cx="39" cy="54" r="3.4" fill="#fef08a"/><circle cx="61" cy="54" r="3.4" fill="#fef08a"/>
+        <path d="M36 68 Q50 58 64 68 Q50 76 36 68 Z" fill="#991b1b" stroke="#1e293b" stroke-width="2.2"/>
+      </svg>`,
+      seed: `<svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="rbSeed" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f472b6"/>
+            <stop offset="35%" stop-color="#facc15"/>
+            <stop offset="70%" stop-color="#34d399"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 14 C68 34 74 56 66 72 C58 84 42 84 34 72 C26 56 32 34 50 14 Z" fill="url(#rbSeed)" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="43" cy="52" r="2.6" fill="#1e293b"/><circle cx="57" cy="52" r="2.6" fill="#1e293b"/>
+        <path d="M46 60 Q50 64 54 60" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+      star: `<svg viewBox="0 0 100 100">
+        <polygon points="50,12 61,36 87,39 67,57 73,83 50,70 27,83 33,57 13,39 39,36" fill="#fde047" stroke="#ca8a04" stroke-width="2.6" stroke-linejoin="round"/>
+        <circle cx="42" cy="50" r="2.6" fill="#1e293b"/><circle cx="58" cy="50" r="2.6" fill="#1e293b"/>
+        <path d="M46 57 Q50 61 54 57" fill="none" stroke="#1e293b" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+      blackstar: `<svg viewBox="0 0 100 100">
+        <polygon points="50,12 61,36 87,39 67,57 73,83 50,70 27,83 33,57 13,39 39,36" fill="#334155" stroke="#0f172a" stroke-width="2.6" stroke-linejoin="round"/>
+        <circle cx="42" cy="50" r="2.8" fill="#f87171"/><circle cx="58" cy="50" r="2.8" fill="#f87171"/>
+        <path d="M44 60 Q50 55 56 60" fill="none" stroke="#f87171" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+      sky: `<svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="35" fill="#7dd3fc" stroke="#0284c7" stroke-width="2.6"/>
+        <circle cx="70" cy="28" r="9.5" fill="#fde047" stroke="#eab308" stroke-width="2"/>
+        <path d="M24 64 Q35 51 48 59 Q60 49 76 64 Z" fill="#ffffff" stroke="#bae6fd" stroke-width="1.5"/>
+      </svg>`,
+      door: `<svg viewBox="0 0 100 100">
+        <path d="M26 84 L26 36 Q26 16 50 16 Q74 16 74 36 L74 84 Z" fill="#cbd5e1" stroke="#1e293b" stroke-width="2.6"/>
+        <path d="M34 84 L34 38 Q34 24 50 24 Q66 24 66 38 L66 84 Z" fill="#475569" stroke="#1e293b" stroke-width="2.2"/>
+        <circle cx="58" cy="56" r="3.2" fill="#fbbf24"/>
+      </svg>`,
+      monster: `<svg viewBox="0 0 100 100">
+        <path d="M22 72 Q19 32 50 28 Q81 32 78 72 Q70 86 50 84 Q30 86 22 72 Z" fill="#4c1d95" stroke="#1e293b" stroke-width="2.6"/>
+        <circle cx="40" cy="52" r="3.6" fill="#f43f5e"/><circle cx="60" cy="52" r="3.6" fill="#f43f5e"/>
+        <path d="M36 66 L43 61 L50 66 L57 61 L64 66" fill="none" stroke="#fda4af" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>`
+    };
+    return svgs[k] || svgs.hachiware;
+  }
+
+  // =========================================================================
+  // 3. Definitions (Zones, Statuses, Relics, 16 Endings)
+  // =========================================================================
+  const ZONES = {
+    meadow: '시작의 풀밭',
+    plaza: '잿빛 광장',
+    forest: '안개 자욱한 숲',
+    cave: '어둠의 동굴',
+    tower: '멈춘 시계탑',
+    sky: '파란 하늘의 세계'
+  };
+
+  const STATUS_DEFS = {
+    mushroom_curse: { name: '🍄 독버섯 환각', short: '🍄 환각', clearId: 'st_mush_clear' },
+    broken_weapon: { name: '🪓 토벌봉 손상', short: '🪓 봉 손상', clearId: 'st_wep_clear' },
+    shadow_curse: { name: '👻 저주받은 가위눌림', short: '👻 가위눌림', clearId: 'st_shd_clear' },
+    sand_cold: { name: '🤧 잿빛 모래감기', short: '🤧 모래감기', clearId: 'st_cld_clear' }
+  };
+
+  const RELIC_DEFS = {
+    camera: '📷 카메라',
+    permit: '📜 합격증',
+    candy: '🍬 별사탕',
+    mask: '🎭 나무가면',
+    charm: '🧸 곰돌이부적'
+  };
+
+  const ENDINGS_CATALOG = [
+    { id: 'end_hunger_0', type: '지표 0', title: '엔딩 01. 기력 고갈', desc: '잿빛 벌판에서 배고픔을 이기지 못하고 쓰러졌다. 따뜻한 한 끼가 그리워지는 밤이다.' },
+    { id: 'end_hunger_100', type: '지표 100', title: '엔딩 02. 과식의 늪', desc: '눈앞에 보이는 음식을 멈추지 않고 먹어치우다 무거운 몸으로 발걸음이 멈추고 말았다.' },
+    { id: 'end_money_0', type: '지표 0', title: '엔딩 03. 무일푼의 방랑자', desc: '보수가 바닥나 제초 일감조차 구하기 어려워졌다. 잿빛 바람만이 곁을 스친다.' },
+    { id: 'end_money_100', type: '지표 100', title: '엔딩 04. 욕심의 굴레', desc: '반짝이는 보수에 취해 잿빛 동전을 끌어안은 채, 돌아갈 길마저 잊어버렸다.' },
+    { id: 'end_courage_0', type: '지표 0', title: '엔딩 05. 겁쟁이의 후퇴', desc: '작은 그림자 앞에서도 토벌봉을 놓아버린 채 깊은 안개 속으로 숨어들고 말았다.' },
+    { id: 'end_courage_100', type: '지표 100', title: '엔딩 06. 무모한 돌진', desc: '두려움을 모른 채 거대한 괴물에게 홀로 뛰어들었다가 잿빛 안개 너머로 사라졌다.' },
+    { id: 'end_bonding_0', type: '지표 0', title: '엔딩 07. 고독한 그림자', desc: '마음을 닫은 채 홀로 걷다 보니, 잿빛 세계의 고요 속에 완전히 녹아들었다.' },
+    { id: 'end_bonding_100', type: '지표 100', title: '엔딩 08. 안주해 버린 낙원', desc: '이곳의 온기에 취해 원래 세계로 돌아갈 마음마저 내려놓고 잿빛 일상에 머물렀다.' },
+    { id: 'end_thorn', type: '함정 엔딩', title: '엔딩 09. 가시의 문', desc: '화염의 문 너머 가시의 문에서 날카로운 가시에 찔려 정신을 잃고 말았다.' },
+    { id: 'end_water', type: '함정 엔딩', title: '엔딩 10. 물의 문', desc: '바람의 문 너머 물의 문에서 거센 물살에 휩쓸려 숨을 쉬지 못하게 되었다.' },
+    { id: 'end_cookie', type: '함정 엔딩', title: '엔딩 11. 잠드는 쿠키', desc: '달콤한 냄새에 이끌려 먹은 쿠키 때문에 스르르 눈이 감기며 깊은 잠에 빠졌다.' },
+    { id: 'end_seed_trap', type: '함정 엔딩', title: '엔딩 12. 무지개 빛의 함정', desc: '주변을 살피지 않고 강한 빛을 향해 달려가다 잿빛 함정에 빠지고 말았다.' },
+    { id: 'end_wizard_alone', type: '마법사 심판', title: '엔딩 13. 홀로 선 패러렐', desc: '"너 혼자선 안 된단다. 다시 오거라. 패러렐~" — 친구들 없이 마법사를 만나 다시 루프한다.' },
+    { id: 'end_wizard_one', type: '마법사 심판', title: '엔딩 14. 남겨진 친구', desc: '"친구를 두고 와선 의미가 없단다. 패러렐~" — 한 친구를 찾지 못한 채 유대가 깎이며 루프한다.' },
+    { id: 'end_wizard_noseed', type: '마법사 심판', title: '엔딩 15. 열쇠 없는 재회', desc: '"아직 아니야. 이대론 안 된단다.. 패러렐~" — 친구들은 모였지만 무지개 씨앗이 없어 다시 루프한다.' },
+    { id: 'end_true_5', type: '진엔딩 ★', title: '진엔딩. 파란 하늘 아래의 재회', desc: '치이카와·우사기·무지개 씨앗을 모두 모아 원래 세계로 돌아왔다! 오늘은 좋은 일만 일어날 것 같다!' }
+  ];
+
+  // =========================================================================
+  // 4. Complete Card Deck (Prologue 10 + Exact Story Chains + Balanced Deck)
+  // =========================================================================
+  function createCard(c) {
+    return {
+      id: c.id,
+      char: c.char || '하치와레',
+      art: c.art || 'hachiware',
+      tag: c.tag || '#잿빛 세계',
+      theme: c.theme || 'plaza',
+      pack: c.pack || 'zone',
+      zone: c.zone || null,
+      isMainStory: Boolean(c.isMainStory),
+      req: c.req || null,
+      text: c.text,
+      left: {
+        label: c.left.label,
+        d: { hunger: 0, money: 0, courage: 0, bonding: 0, ...(c.left.d || {}) },
+        nextId: c.left.nextId || null,
+        deferChain: c.left.deferChain || null,
+        recruit: c.left.recruit || null,
+        grantSeed: Boolean(c.left.grantSeed),
+        setStatus: c.left.setStatus || null,
+        clearStatus: c.left.clearStatus || null,
+        addRelic: c.left.addRelic || null,
+        removeRelic: c.left.removeRelic || null,
+        endingId: c.left.endingId || null,
+        penaltyBondOnRestart: c.left.penaltyBondOnRestart || 0,
+        enterSky: Boolean(c.left.enterSky),
+        toast: c.left.toast || null
+      },
+      right: {
+        label: c.right.label,
+        d: { hunger: 0, money: 0, courage: 0, bonding: 0, ...(c.right.d || {}) },
+        nextId: c.right.nextId || null,
+        deferChain: c.right.deferChain || null,
+        recruit: c.right.recruit || null,
+        grantSeed: Boolean(c.right.grantSeed),
+        setStatus: c.right.setStatus || null,
+        clearStatus: c.right.clearStatus || null,
+        addRelic: c.right.addRelic || null,
+        removeRelic: c.right.removeRelic || null,
+        endingId: c.right.endingId || null,
+        penaltyBondOnRestart: c.right.penaltyBondOnRestart || 0,
+        enterSky: Boolean(c.right.enterSky),
+        toast: c.right.toast || null
+      }
+    };
+  }
+
+  function buildAllCards() {
+    const list = [];
+    const add = (c) => list.push(createCard(c));
+
+    // --- A. EXACT 10-CARD PROLOGUE ---
+    const proData = [
+      { char: '우사기', art: 'usagi', text: '우사기 "푸르르르 우라!"', l: '발견했다고.. 무언가를?', r: '무슨 일이.. 생긴 걸까?' },
+      { char: '하치와레', art: 'hachiware', text: '하치와레 "풀이야! 그것도 무지갯빛의.."', l: '제초한다', r: '뽑아 버린다' },
+      { char: '마법사', art: 'wizard', text: '풀을 뽑자 무지갯빛 연기와 함께 지팡이를 든 마법사가 나타났다.', l: '호오.. 뽑은 건가? 이 풀을?', r: '드디어 나타난 건가?' },
+      { char: '마법사', art: 'wizard', text: '마법사 "자, 그럼 떠나거라. 패러렐~"', l: '우웅~', r: '시러~' },
+      { char: '하치와레', art: 'hachiware', text: '반짝이는 빛과 함께 졸음이 쏟아진다.\n정신을 차리니 낯선 곳이다.', l: '눈을 비비며 주변을 둘러본다', r: '천천히 몸을 일으킨다' },
+      { char: '하치와레', art: 'hachiware', text: '여긴.. 어디지..?', l: '하늘과 풀밭을 바라본다', r: '발밑의 흙을 내려다본다' },
+      { char: '하치와레', art: 'hachiware', text: '그러고 보니.. 그 할아버지..', l: '방금 전 일을 떠올린다', r: '지팡이를 든 모습을 떠올린다' },
+      { char: '하치와레', art: 'hachiware', text: "'패러렐'이라고 했어..\n와버린 건가.. 패러렐 월드?", l: '주변의 잿빛 풍경을 살핀다', r: '다시 한 번 주변을 둘러본다' },
+      { char: '하치와레', art: 'hachiware', text: '그렇지만.. 뭔가 달라..\n전에 내가 왔던 곳이랑..', l: '온통 잿빛으로 변한 세상을 본다', r: '손에 쥔 토벌봉을 확인한다' },
+      { char: '하치와레', art: 'hachiware', text: '흩어져 버렸어.. 친구들이랑도..', l: '주위를 탐색한다', ld: { courage: 5 }, r: '친구들을 찾아본다', rd: { bonding: 5 } }
+    ];
+    proData.forEach((p, idx) => {
+      add({
+        id: `pro_${idx + 1}`,
+        char: p.char,
+        art: p.art,
+        tag: `#프롤로그 ${idx + 1}`,
+        theme: 'prologue',
+        pack: 'prologue',
+        text: p.text,
+        left: { label: p.l, d: p.ld || {} },
+        right: { label: p.r, d: p.rd || {} }
+      });
+    });
+
+    // --- B. EXACT MAIN STORY CHAIN 1: 치이카와 (1-1 ~ 1-14) [RED TAG] ---
+    add({
+      id: 'st_1_1', char: '하치와레', art: 'chiikawa', tag: '#스토리 1-1', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '잿빛 땅에 분홍색 곰돌이 포셰트가 떨어져 있다\n"이 포셰트.."',
+      left: { label: '포셰트 앞의 구조물의 입구로 들어간다', nextId: 'st_1_2' },
+      right: { label: '함정일지 모르니 지나친다', deferChain: 'chiikawa', toast: '포셰트를 뒤로하고 지나쳤다.' }
+    });
+    add({
+      id: 'st_1_2', char: '하치와레', art: 'door', tag: '#스토리 1-2', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '어두운 건물로 들어왔다\n눈 앞의 바위에 무언가가 쓰여있다\n"미지와의 조우에선 눈을 뜨고 앞으로 나아갈 것. 가장 아래에서부터 시작된다."',
+      left: { label: '모르겠어.. 무슨 말인지..', nextId: 'st_1_3' },
+      right: { label: '일단.. 가볼까?', nextId: 'st_1_3' }
+    });
+    add({
+      id: 'st_1_3', char: '하치와레', art: 'door', tag: '#스토리 1-3', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '갈림길이 있다',
+      left: { label: '화염의 문', nextId: 'st_1_4' },
+      right: { label: '바람의 문', nextId: 'st_1_7' }
+    });
+    add({
+      id: 'st_1_4', char: '하치와레', art: 'door', tag: '#스토리 1-4', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '갈림길이 있다',
+      left: { label: '가시의 문', nextId: 'st_1_5' },
+      right: { label: '지옥의 문', nextId: 'st_1_6' }
+    });
+    add({
+      id: 'st_1_5', char: '하치와레', art: 'monster', tag: '#스토리 1-5', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '아파.. 찔려 버렸어! 가시에..',
+      left: { label: '정신을 잃는다 (루프 +1)', endingId: 'end_thorn' },
+      right: { label: '정신을 잃는다 (루프 +1)', endingId: 'end_thorn' }
+    });
+    add({
+      id: 'st_1_6', char: '하치와레', art: 'hachiware', tag: '#스토리 1-6', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '무언가 맛있는 냄새야\n배가.. 고파졌어..',
+      left: { label: '냄새가 나는 방향으로 간다', nextId: 'st_1_8' },
+      right: { label: '함정일지 몰라', nextId: 'st_1_9' }
+    });
+    add({
+      id: 'st_1_7', char: '하치와레', art: 'door', tag: '#스토리 1-7', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '갈림길이 있다',
+      left: { label: '물의 문', nextId: 'st_1_11' },
+      right: { label: '번개의 문', nextId: 'st_1_12' }
+    });
+    add({
+      id: 'st_1_8', char: '하치와레', art: 'hachiware', tag: '#스토리 1-8', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '"이건.. 쿠키잖아?"',
+      left: { label: '쿠키를 먹는다', nextId: 'st_1_13' },
+      right: { label: '함정일지도 모르니 빠져 나온다', nextId: 'st_1_14' }
+    });
+    add({
+      id: 'st_1_9', char: '치이카와', art: 'chiikawa', tag: '#스토리 1-9', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '"우웅.. 시러~"\n"이 소리는..!"',
+      left: { label: '돌격한다', d: { courage: -5, bonding: 5 }, nextId: 'st_1_10' },
+      right: { label: '시선을 끈 뒤 구출한다', d: { hunger: -5, bonding: 5 }, nextId: 'st_1_10' }
+    });
+    add({
+      id: 'st_1_10', char: '치이카와', art: 'chiikawa', tag: '#스토리 1-10', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '"다행이야! 무사해서!"',
+      left: { label: '모험을 계속한다', recruit: 'chiikawa', toast: '🐱 치이카와가 합류했습니다!' },
+      right: { label: '이 곳을 떠난다', recruit: 'chiikawa', toast: '🐱 치이카와가 합류했습니다!' }
+    });
+    add({
+      id: 'st_1_11', char: '하치와레', art: 'monster', tag: '#스토리 1-11', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '꼬르륵.. 쉴 수 없어.. 숨을..',
+      left: { label: '물속으로 가라앉는다 (루프 +1)', endingId: 'end_water' },
+      right: { label: '물속으로 가라앉는다 (루프 +1)', endingId: 'end_water' }
+    });
+    add({
+      id: 'st_1_12', char: '하치와레', art: 'door', tag: '#스토리 1-12', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '갈림길이 있다',
+      left: { label: '달의 문', nextId: 'st_1_3' },
+      right: { label: '꽃의 문', nextId: 'st_1_6' }
+    });
+    add({
+      id: 'st_1_13', char: '하치와레', art: 'monster', tag: '#스토리 1-13', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '눈이 감겨.. 이 쿠키..',
+      left: { label: '깊은 잠에 빠진다 (루프 +1)', endingId: 'end_cookie' },
+      right: { label: '깊은 잠에 빠진다 (루프 +1)', endingId: 'end_cookie' }
+    });
+    add({
+      id: 'st_1_14', char: '하치와레', art: 'door', tag: '#스토리 1-14', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '갈림길이 있다',
+      left: { label: '새의 문', nextId: 'st_1_3' },
+      right: { label: '별의 문', nextId: 'st_1_3' }
+    });
+
+    // --- C. EXACT MAIN STORY CHAIN 2: 우사기 (2-1 ~ 2-4) [RED TAG] ---
+    add({
+      id: 'st_2_1', char: '우사기', art: 'usagi', tag: '#스토리 2-1', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '멀리서 익숙한 소리가 들린다\n"푸르르르르 우라!!"',
+      left: { label: '소리가 난 쪽으로 간다', nextId: 'st_2_2' },
+      right: { label: '비슷하지만.. 어딘가 다른 것 같아', deferChain: 'usagi', toast: '일단 발길을 돌렸다.' }
+    });
+    add({
+      id: 'st_2_2', char: '우사기', art: 'usagi', tag: '#스토리 2-2', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '음식으로 쌓인 산이 보인다\n"하아?"',
+      left: { label: '데려간다', nextId: 'st_2_3' },
+      right: { label: '같이 음식을 먹는다', d: { hunger: 5 }, nextId: 'st_2_4' }
+    });
+    add({
+      id: 'st_2_3', char: '우사기', art: 'usagi', tag: '#스토리 2-3', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '더 먹다.. 가겠다고?',
+      left: { label: '기다리고 있어.. 금방.. 다녀올게', deferChain: 'usagi', toast: '우사기를 두고 잠시 자리를 떴다.' },
+      right: { label: '그럼.. 같이 먹자! 이 음식!', d: { hunger: 5 }, nextId: 'st_2_4' }
+    });
+    add({
+      id: 'st_2_4', char: '우사기', art: 'usagi', tag: '#스토리 2-4', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '"우라"\n"더 먹겠다고?"',
+      left: { label: '억지로 데려간다', d: { bonding: -15 }, recruit: 'usagi', toast: '🐰 우사기가 합류했습니다!' },
+      right: { label: '조금이라면.. 괜찮을지도 몰라', d: { hunger: 5 }, recruit: 'usagi', toast: '🐰 우사기가 합류했습니다!' }
+    });
+
+    // --- D. EXACT MAIN STORY CHAIN 3: 무지개 씨앗 (3-1 ~ 3-3) [RED TAG] ---
+    add({
+      id: 'st_3_1', char: '무지개 씨앗', art: 'seed', tag: '#스토리 3-1', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '하늘에서 무지갯빛 별똥별이 떨어지더니\n언덕 너머로 강한 빛이 새어 나온다',
+      left: { label: '빛이 나는 곳으로 간다', nextId: 'st_3_2' },
+      right: { label: '위험해 보이니 주변을 먼저 살핀다', nextId: 'st_3_3' }
+    });
+    add({
+      id: 'st_3_2', char: '무지개 씨앗', art: 'monster', tag: '#스토리 3-2', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '함정에 빠졌다',
+      left: { label: '정신을 잃는다 (루프 +1)', endingId: 'end_seed_trap' },
+      right: { label: '정신을 잃는다 (루프 +1)', endingId: 'end_seed_trap' }
+    });
+    add({
+      id: 'st_3_3', char: '무지개 씨앗', art: 'seed', tag: '#스토리 3-3', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '무지갯빛 씨앗을 주변으로 함정이 둘러싸여 있다',
+      left: { label: '친구들과 힘을 합쳐 함정을 돌파한다', d: { bonding: 5, courage: -5 }, grantSeed: true, toast: '🌈 무지개 씨앗을 획득했습니다!' },
+      right: { label: '안전하게 가져올 장비를 사온다', d: { money: -5 }, grantSeed: true, toast: '🌈 무지개 씨앗을 획득했습니다!' }
+    });
+
+    // --- E. EXACT WIZARD ENCOUNTER (TURN 100) + TRUE ENDING 1~5 [RED TAG] ---
+    add({
+      id: 'wiz_alone', char: '마법사', art: 'wizard', tag: '#마법사 조우', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '너 혼자선 안 된단다\n다시 오거라\n패러렐~',
+      left: { label: '저항해 본다', endingId: 'end_wizard_alone' },
+      right: { label: '눈을 감는다', endingId: 'end_wizard_alone' }
+    });
+    add({
+      id: 'wiz_one', char: '마법사', art: 'wizard', tag: '#마법사 조우', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '친구를 두고 와선 의미가 없단다\n패러렐~',
+      left: { label: '저항해 본다', endingId: 'end_wizard_one', penaltyBondOnRestart: -10 },
+      right: { label: '눈을 감는다', endingId: 'end_wizard_one', penaltyBondOnRestart: -10 }
+    });
+    add({
+      id: 'wiz_noseed', char: '마법사', art: 'wizard', tag: '#마법사 조우', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '아직 아니야\n이대론 안 된단다..\n패러렐~',
+      left: { label: '저항해 본다', endingId: 'end_wizard_noseed' },
+      right: { label: '눈을 감는다', endingId: 'end_wizard_noseed' }
+    });
+    add({
+      id: 'true_1', char: '마법사', art: 'wizard', tag: '#진엔딩 1', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '오오..!! 열쇠까지 모두 갖췄구나..!!',
+      left: { label: '열쇠..?', nextId: 'true_2' },
+      right: { label: '모르겠어요.. 전부..', nextId: 'true_2' }
+    });
+    add({
+      id: 'true_2', char: '마법사', art: 'wizard', tag: '#진엔딩 2', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '세상의 위기가 닥칠 때마다 나타난다는 무지갯빛 잡초,\n그것을 제초한 자에겐 세상을 구원할 기회가 주어진단다',
+      left: { label: '구원한다고요.. 세상을?', nextId: 'true_3' },
+      right: { label: '그냥.. 모험을 했을.. 뿐인걸요?', nextId: 'true_3' }
+    });
+    add({
+      id: 'true_3', char: '마법사', art: 'wizard', tag: '#진엔딩 3', theme: 'story_main', pack: 'story', isMainStory: true,
+      text: '친구들과의 유대로 열쇠인\n무지갯빛 씨앗을 찾았잖느냐 허허',
+      left: { label: '친구들과의.. 유대..', nextId: 'true_4', enterSky: true },
+      right: { label: '씨앗.. 무지갯빛의..열쇠?', nextId: 'true_4', enterSky: true }
+    });
+    add({
+      id: 'true_4', char: '마법사', art: 'sky', tag: '#진엔딩 4', theme: 'ending', pack: 'story', isMainStory: true,
+      text: '이제 내 마법으로 너희를 원래 세계로 보내주마!\n열쇠가 너희 세상의 위기를 말끔히 지워줄 게다!',
+      left: { label: '돌아가는 거구나.. 집으로!', nextId: 'true_5' },
+      right: { label: '조금은.. 힘든 모험이었지만.. 고마웠습니다!', nextId: 'true_5' }
+    });
+    add({
+      id: 'true_5', char: '하치와레', art: 'trio', tag: '#진엔딩 5', theme: 'ending', pack: 'story', isMainStory: true,
+      text: '있잖아~ 꿈을 꾼 것 같아! 뭔가 기분 좋은!\n좋은 일만.. 일어날 것만 같아! 오늘은 말이야!\n(끝)',
+      left: { label: '(끝) — 진엔딩 기록하기', endingId: 'end_true_5' },
+      right: { label: '(끝) — 진엔딩 기록하기', endingId: 'end_true_5' }
+    });
+
+    // --- F. BALANCED 4-ZONE SURVIVAL CARDS ---
+    const plazaCards = [
+      { char: '낯선 갑옷씨', art: 'armor', text: '색이 바랜 잿빛 잡초가 끝없이 자라나고 있다. 갑옷씨가 말없이 제초 바구니를 건넨다.', l: '열심히 잡초를 뽑는다', ld: { hunger: -5, money: 6, bonding: -3 }, r: '요령껏 대충 뽑는다', rd: { hunger: 4, money: -5, bonding: 3 } },
+      { char: '하치와레', art: 'hachiware', text: '광장 게시판에 색이 바랜 제초검정 5급 기출문제가 붙어 있다.', l: '문제를 풀어본다', ld: { hunger: -4, courage: 6, bonding: -2 }, r: '지금은 일할 때야!', rd: { money: 5, courage: -4 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '일당 정산 시간이다. 주먹밥과 잿빛 동전 중 하나를 고르라고 한다.', l: '주먹밥을 받는다', ld: { hunger: 8, money: -5 }, r: '동전을 받는다', rd: { hunger: -5, money: 7, bonding: -3 } },
+      { char: '하치와레', art: 'hachiware', text: '잡초를 뽑던 중 땅속에서 낡은 동전 지갑을 발견했다.', l: '관리소에 가져다준다', ld: { money: -6, courage: 4, bonding: 5 }, r: '주인이 없으니 챙긴다', rd: { money: 7, bonding: -7 } },
+      { char: '하치와레', art: 'hachiware', text: '갑자기 매서운 잿빛 모래폭풍이 광장을 덮쳤다!', l: '바구니를 방패 삼아 버틴다', ld: { hunger: -6, courage: 7 }, lStat: 'sand_cold', r: '구석 틈새로 몸을 숨긴다', rd: { hunger: 4, courage: -5 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '광장 한쪽에 낡고 녹슨 음료 자판기가 윙윙거리고 있다.', l: '동전을 넣고 뽑아 마신다', ld: { hunger: 8, money: -6 }, r: '고장 났을지 모르니 지나친다', rd: { hunger: -4, money: 4 } },
+      { char: '하치와레', art: 'hachiware', text: '광장 중앙의 멈춘 분수대에 맑은 물이 조금 고여 있다.', l: '세수하며 정신을 차린다', ld: { hunger: -3, courage: 5 }, r: '목을 축인다', rd: { hunger: 6, courage: -5 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '광장 한켠에 임시 천막이 세워져 있다. 천막 보수를 도와줄 일손을 찾는다.', l: '밧줄을 당기며 돕는다', ld: { hunger: -5, money: 6, bonding: 4 }, r: '내 제초 할당량부터 채운다', rd: { hunger: -4, money: 6, bonding: -5 } },
+      { char: '하치와레', art: 'hachiware', text: '잡초를 뽑으려던 순간, 땅속에서 거대한 뿌리 괴물이 튀어나왔다!', l: '토벌봉으로 뿌리를 끊는다', ld: { hunger: -6, money: 6, courage: 7 }, r: '비명을 지르며 도망친다', rd: { hunger: 5, courage: -8, bonding: -3 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '휴식 시간에 색이 바랜 수상한 주먹밥이 배급되었다.', l: '배고프니 먹는다', ld: { hunger: 8, courage: -6 }, r: '수상하니 거절한다', rd: { hunger: -4, courage: 4 } }
+    ];
+    plazaCards.forEach((c, i) => add({
+      id: `plaza_${i + 1}`, char: c.char, art: c.art, tag: '#잿빛 광장', theme: 'plaza', pack: 'zone', zone: 'plaza',
+      text: c.text,
+      left: { label: c.l, d: c.ld, setStatus: c.lStat || null },
+      right: { label: c.r, d: c.rd }
+    }));
+
+    const forestCards = [
+      { char: '그림자 괴물', art: 'monster', text: '안개 낀 숲속에서 붉은 눈을 번뜩이는 거대 키메라와 마주쳤다!', l: '토벌봉을 들고 맞선다', ld: { hunger: -6, money: 6, courage: 7 }, lStat: 'broken_weapon', r: '수풀 뒤에 숨을 죽인다', rd: { hunger: 4, courage: -6, bonding: -3 } },
+      { char: '하치와레', art: 'hachiware', text: '나무 밑동에서 보랏빛으로 빛나는 수상한 버섯을 발견했다. 배가 고프다...', l: '한입 먹어본다', ld: { hunger: 8, courage: -6 }, lStat: 'mushroom_curse', r: '꾹 참고 지나친다', rd: { hunger: -4, courage: 5 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '숲속 간이 초소에서 따뜻한 수프가 보글보글 끓고 있다.', l: '보수를 내고 한 그릇 사 먹는다', ld: { hunger: 8, money: -7 }, r: '인사만 하고 지나간다', rd: { hunger: -4, bonding: 4 } },
+      { char: '하치와레', art: 'hachiware', text: '갑자기 숲에 찬 빗줄기가 쏟아지며 시야가 흐려진다.', l: '큰 나무 아래서 비를 피한다', ld: { hunger: 5, money: -4 }, r: '비를 맞으며 계속 수색한다', rd: { hunger: -6, money: 6, courage: 4 }, rStat: 'sand_cold' },
+      { char: '하치와레', art: 'hachiware', text: '나무 열매가 주렁주렁 열려 있지만 가시가 빽빽하게 돋아 있다.', l: '찔리더라도 따서 먹는다', ld: { hunger: 8, courage: -6 }, r: '바닥에 떨어진 것만 줍는다', rd: { hunger: 4, courage: -3 } },
+      { char: '하치와레', art: 'hachiware', text: '버려진 야영지에서 찌그러진 냄비와 통조림 하나를 발견했다.', l: '통조림을 따서 배를 채운다', ld: { hunger: 7, bonding: -5 }, r: '고철로 팔기 위해 챙긴다', rd: { money: 7, bonding: -5 } },
+      { char: '하치와레', art: 'hachiware', text: '이끼 낀 고목 아래에서 누군가 토벌봉을 휘두른 칼자국을 발견했다.', l: '흔적을 따라 자세를 다듬는다', ld: { hunger: -5, courage: 7 }, r: '괴물이 숨어있을지 몰라 경계한다', rd: { money: 4, courage: -4, bonding: -3 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '숲 입구 토벌 게시판에 위험도 별 3개 수배지가 붙어 있다.', l: '수배 대상을 추적한다', ld: { hunger: -6, money: 8, bonding: -3 }, r: '무리하지 않고 약초만 캔다', rd: { hunger: 5, money: -4, courage: -4 } }
+    ];
+    forestCards.forEach((c, i) => add({
+      id: `forest_${i + 1}`, char: c.char, art: c.art, tag: '#안개 자욱한 숲', theme: 'forest', pack: 'zone', zone: 'forest',
+      text: c.text,
+      left: { label: c.l, d: c.ld, setStatus: c.lStat || null },
+      right: { label: c.r, d: c.rd, setStatus: c.rStat || null }
+    }));
+
+    const caveCards = [
+      { char: '그림자 괴물', art: 'monster', text: '동굴 심연에서 안개를 집어삼키는 거대한 눈동자가 번쩍였다!', l: '토벌봉을 치켜들고 맞선다', ld: { hunger: -6, courage: 8 }, lStat: 'shadow_curse', r: '필사적으로 뒤로 후퇴한다', rd: { courage: -8, money: 5 } },
+      { char: '하치와레', art: 'hachiware', text: '동굴 바위 틈에서 낡은 동전 주머니를 발견했다.', l: '주인을 찾아주려 기다린다', ld: { money: -5, bonding: 5 }, r: '주인이 없으니 챙긴다', rd: { money: 7, bonding: -7 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '동굴 입구에서 빛나는 광석을 채굴할 일손을 구하고 있다.', l: '곡괭이질을 돕는다', ld: { hunger: -6, money: 8, bonding: -3 }, r: '어두운 곳은 무서워서 사양한다', rd: { hunger: 4, money: -5 } },
+      { char: '하치와레', art: 'hachiware', text: '바위 선반 위에 누군가 남긴 따뜻한 찐감자 두 알이 놓여 있다.', l: '배고프니 하나만 먹는다', ld: { hunger: 7, bonding: -5 }, r: '주인이 돌아올지 모르니 놔둔다', rd: { hunger: -4, bonding: 5 } },
+      { char: '하치와레', art: 'hachiware', text: '동굴 바닥에서 반짝이는 수정 조각을 주웠다.', l: '친구들 선물로 챙긴다', ld: { money: -4, bonding: 5 }, r: '상점에 팔아 보수로 바꾼다', rd: { money: 7, bonding: -6 } },
+      { char: '하치와레', art: 'hachiware', text: '안개가 너무 짙어져 한 치 앞도 보이지 않는다.', l: '벽을 짚으며 천천히 전진한다', ld: { hunger: -5, courage: 6 }, r: '안개가 걷힐 때까지 쉬어간다', rd: { hunger: 6, courage: -5 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '동굴 안쪽에서 길을 잃지 않도록 형광 표지판을 세우고 있다.', l: '표지판 설치를 거든다', ld: { hunger: -5, money: 5, courage: 4, bonding: -2 }, r: '따뜻한 차를 얻어 마신다', rd: { hunger: 6, money: -5, bonding: 4 } }
+    ];
+    caveCards.forEach((c, i) => add({
+      id: `cave_${i + 1}`, char: c.char, art: c.art, tag: '#어둠의 동굴', theme: 'cave', pack: 'zone', zone: 'cave',
+      text: c.text,
+      left: { label: c.l, d: c.ld, setStatus: c.lStat || null },
+      right: { label: c.r, d: c.rd }
+    }));
+
+    const towerCards = [
+      { char: '하치와레', art: 'hachiware', text: '공중에 떠 있는 낡은 회중시계가 거꾸로 돌아가고 있다.', l: '손을 뻗어 시계를 잡는다', ld: { money: 6, courage: -5 }, lStat: 'shadow_curse', r: '시간의 저주일지 모르니 피한다', rd: { money: -4, courage: 5 } },
+      { char: '하치와레', art: 'hachiware', text: '유리그릇 안에 무지갯빛으로 일렁이는 액체가 담겨 있다.', l: '한 모금 마셔본다', ld: { hunger: 7, courage: -5 }, lStat: 'mushroom_curse', r: '수상한 약이니 건드리지 않는다', rd: { hunger: -4, courage: 5 } },
+      { char: '낯선 갑옷씨', art: 'armor', text: '시계탑 계단에서 녹슨 톱니바퀴에 기름칠을 하고 있다.', l: '태엽 감는 일을 돕는다', ld: { hunger: -6, money: 7, bonding: -3 }, r: '방해될까 봐 조용히 비켜선다', rd: { hunger: 4, money: -4 } },
+      { char: '하치와레', art: 'hachiware', text: '낡은 책장 뒤에서 비상식량 건빵 상자를 발견했다.', l: '바로 꺼내 먹는다', ld: { hunger: 8, money: -5 }, r: '나중에 팔기 위해 챙긴다', rd: { hunger: -5, money: 7, bonding: -3 } },
+      { char: '하치와레', art: 'hachiware', text: '시계탑 구석의 따뜻한 난로 옆에 빈 의자가 놓여 있다.', l: '잠시 쉬며 체력을 회복한다', ld: { hunger: 7, money: -5 }, r: '방심하지 않고 계속 경계한다', rd: { hunger: -4, courage: 6 } },
+      { char: '시계탑 수호자', art: 'wizard', text: '거대한 톱니바퀴 사이에서 낡은 태엽 열쇠가 굴러떨어졌다.', l: '열쇠로 비상 상자를 열어본다', ld: { hunger: -5, money: 8, courage: -4 }, r: '수호자를 자극하지 않고 지나친다', rd: { hunger: 4, money: -4, courage: 4 } },
+      { char: '하치와레', art: 'hachiware', text: '돌벽에 긁힌 글씨가 보인다. "패러렐은 반복된다..."', l: '끝까지 읽어 단서를 새긴다', ld: { hunger: -4, courage: 6, bonding: -3 }, r: '오싹해서 서둘러 내려간다', rd: { hunger: 4, courage: -5 } }
+    ];
+    towerCards.forEach((c, i) => add({
+      id: `tower_${i + 1}`, char: c.char, art: c.art, tag: '#멈춘 시계탑', theme: 'tower', pack: 'zone', zone: 'tower',
+      text: c.text,
+      left: { label: c.l, d: c.ld, setStatus: c.lStat || null },
+      right: { label: c.r, d: c.rd }
+    }));
+
+    // --- G. COMPANION CARDS ---
+    const compList = [
+      { req: { hasChiikawa: true }, char: '치이카와', art: 'chiikawa', tag: '#동행', text: '무서운 그림자가 어른거리자 바들바들 떨면서도 작은 토벌봉을 꽉 쥐고 곁에 선다.', l: '함께 어깨를 맞대고 맞선다', ld: { hunger: -5, courage: 7, bonding: 3 }, r: '안심시키며 조용히 자리를 피한다', rd: { hunger: 4, courage: -5, bonding: -3 } },
+      { req: { hasChiikawa: true }, char: '치이카와', art: 'chiikawa', tag: '#동행', text: '아껴두었던 작은 비스킷 반쪽을 조심스레 건넨다.', l: '고맙게 받아 나눠 먹는다', ld: { hunger: 7, courage: -4, bonding: 3 }, r: '아직 버틸 수 있으니 양보한다', rd: { hunger: -4, courage: 5, bonding: 4 } },
+      { req: { hasChiikawa: true }, char: '치이카와', art: 'chiikawa', tag: '#동행', text: '곰돌이 포셰트를 만지작거리며 원래 세계의 집이 그리운지 눈시울이 붉어진다.', l: '반드시 돌아가자며 꼭 안아 준다', ld: { courage: -4, bonding: 5 }, r: '기분 전환 겸 함께 제초 알바를 뛴다', rd: { hunger: -5, money: 7, bonding: -4 } },
+      { req: { hasUsagi: true }, char: '우사기', art: 'usagi', tag: '#동행', text: '"우라라라앗!" 하고 뜬금없이 괴성을 지르며 거대한 토벌봉을 빙글빙글 돌린다.', l: '기세에 맞춰 함께 돌격한다', ld: { hunger: -6, money: 7, courage: 6, bonding: -3 }, r: '뒤따라가 뒷수습을 한다', rd: { hunger: -4, money: -4, bonding: 4 } },
+      { req: { hasUsagi: true }, char: '우사기', art: 'usagi', tag: '#동행', text: '땅바닥을 발로 쿵쿵 구르더니 숨겨진 보물 상자를 단번에 파냈다!', l: '상자 속 잿빛 동전을 챙긴다', ld: { money: 8, bonding: -5 }, r: '함정일지 모르니 토벌봉으로 찔러본다', rd: { hunger: -4, courage: 7 } },
+      { req: { hasUsagi: true }, char: '우사기', art: 'usagi', tag: '#동행', text: '풀밭에 대자로 드러누워 "푸루루루..." 소리를 내며 낮잠을 청한다.', l: '옆에 나란히 누워 체력을 보충한다', ld: { hunger: 7, money: -5, bonding: 3 }, r: '혼자라도 주변 정찰을 이어간다', rd: { hunger: -5, money: 6, courage: 4, bonding: -4 } },
+      { req: { hasChiikawa: true, hasUsagi: true }, char: '친구들', art: 'trio', tag: '#3인 동행', text: '셋이 나란히 길가에 걸터앉아 신나는 춤과 노래를 흥얼거린다!', l: '춤을 추며 불안감을 날린다', ld: { hunger: -5, courage: 6, bonding: 4 }, r: '미소 지으며 다음 일정을 세운다', rd: { money: 6, courage: -4, bonding: -4 } },
+      { req: { hasChiikawa: true, hasUsagi: true }, char: '친구들', art: 'trio', tag: '#3인 동행', text: '셋이 힘을 합쳐 제초 작업을 하니 평소보다 훨씬 빠르게 잡초가 뽑힌다!', l: '끝까지 구역을 비워 보수를 챙긴다', ld: { hunger: -6, money: 8, bonding: -4 }, r: '적당히 마치고 셋이 간식을 사 먹는다', rd: { hunger: 7, money: -7, bonding: 3 } }
+    ];
+    compList.forEach((c, i) => add({
+      id: `comp_${i + 1}`, char: c.char, art: c.art, tag: c.tag, theme: 'companion', pack: 'companion', req: c.req,
+      text: c.text, left: { label: c.l, d: c.ld }, right: { label: c.r, d: c.rd }
+    }));
+
+    // --- H. SUB-CHARACTERS ---
+    const subList = [
+      { id: 'sub_kuri', char: '쿠리만쥬', art: 'kuri', tag: '#조연', text: '"하아~" 하고 시원한 한숨을 내쉬며 따뜻한 특제 안주를 내민다.', l: '감사히 받아 나눠 먹는다', ld: { hunger: 8, money: -4, bonding: 4 }, r: '사양하고 맑은 물만 마신다', rd: { hunger: 3, courage: 4, bonding: -4 } },
+      { id: 'sub_rakko', char: '랏코', art: 'rakko', tag: '#조연', text: '망토를 두른 토벌 랭커가 괴물에 맞설 특훈을 제안한다.', l: '토벌봉을 들고 특훈을 받는다', ld: { hunger: -6, courage: 8, bonding: 3 }, r: '체력을 아끼며 정중히 사양한다', rd: { hunger: 5, courage: -5, bonding: -3 } },
+      { id: 'sub_deka', char: '데카츠요', art: 'dekasuyo', tag: '#조연', text: '이게 어떻게 된 일이야!!! 겨우 얻은 몸이!!!', l: '토벌봉을 들고 토벌한다', ld: { hunger: -4, courage: 6 }, r: '아직 커다란 토벌은 무리다 도망친다', rd: { courage: -6, bonding: -3 } },
+      { id: 'sub_momo_1', char: '모몽가', art: 'momonga', tag: '#조연', text: '너희들이구나.. 혹시나 겁 먹을까 숨어있다가.. 나도 함께 이곳으로 왔어..', l: '그렇지만.. 뭔가 달라.. 내가 아는 너랑은', ld: { bonding: -5 }, r: '그렇구나! 함께 가지.. 않을래?', rd: {}, rNext: 'sub_momo_2' },
+      { id: 'sub_momo_2', char: '모몽가', art: 'momonga', tag: '#조연', pack: 'followup', text: '그렇게 말해줘서.. 기뻐! 그렇지만 사양할게. 돌아가더라도.. 내가 있었다는 사실만은 기억해줘!', l: '(모르겠어.. 무슨 말인지..)', ld: { bonding: 4 }, r: '(돌아가고 싶지.. 않은 걸까?)', rd: { courage: 5, bonding: -3 } },
+      { id: 'sub_ano_1', char: '아노코', art: 'anoko', tag: '#조연', req: { noChiikawa: true }, text: '아는 얼굴.. 커다란 토벌 때.. 봤던 아이야!', l: '포기했었지.. 그때도..', ld: { courage: -5 }, r: '안 될 것 같아! 도망치면!', rd: { hunger: -4, courage: 5 } },
+      { id: 'sub_ano_2', char: '아노코', art: 'anoko', tag: '#조연', req: { hasChiikawa: true }, text: '지긋이 보더니 달아났다', l: '관심이.. 없는 걸까?', ld: { bonding: -5 }, r: '어째서.. 도망간 걸까?', rd: { bonding: 4 } },
+      { id: 'sub_ramen', char: '라멘집 갑옷씨', art: 'armor', tag: '#로우 가게', text: '잿빛 안개 속에 로우 가게가 불을 밝히고 있다. "주문은 어떻게 하시겠습니까?"', l: '마늘 조금, 야채 많이요!', ld: { hunger: 8, money: -7 }, r: '설거지 일손을 거든다', rd: { hunger: -5, money: 8, bonding: -3 } },
+      { id: 'sub_shisa', char: '시사', art: 'shisa', tag: '#조연', text: '갓 구운 따끈따끈한 설탕 도넛 봉투를 내밀며 환하게 웃는다.', l: '두 손으로 받아 맛있게 먹는다', ld: { hunger: 8, money: -4, bonding: 3 }, r: '답례로 보수를 조금 건넨다', rd: { money: -6, courage: 5, bonding: 4 } },
+      { id: 'sub_ode', char: '오데 & 고블린', art: 'armor', tag: '#조연', text: '거대한 체구의 수인이 길을 막은 커다란 바위를 맨손으로 번쩍 들어 치워주었다!', l: '감사의 동전을 건넨다', ld: { money: -6, courage: 5, bonding: 4 }, r: '인사하고 열린 길로 나아간다', rd: { money: 5, courage: 4, bonding: -4 } },
+      { id: 'sub_pajama', char: '파자마 파티즈', art: 'chiikawa', tag: '#조연', text: '알록달록한 파자마 차림의 멤버들이 줄을 맞춰 신나는 공연을 펼친다!', l: '박수 치며 함께 리듬을 탄다', ld: { hunger: -4, courage: 6, bonding: 3 }, r: '구경만 하고 갈 길을 간다', rd: { money: 5, courage: -4, bonding: -3 } }
+    ];
+    subList.forEach((s) => add({
+      id: s.id, char: s.char, art: s.art, tag: s.tag, theme: 'sub', pack: s.pack || 'sub', req: s.req || null,
+      text: s.text,
+      left: { label: s.l, d: s.ld },
+      right: { label: s.r, d: s.rd, nextId: s.rNext || null }
+    }));
+
+    // --- I. 5 RELICS (ACQUIRE & USE) ---
+    add({ id: 'rel_cam_g', char: '하치와레', art: 'hachiware', tag: '#유물 발견', theme: 'relic', pack: 'relic', req: { noRelic: 'camera' }, text: '잿빛 먼지 속에서 낡은 즉석카메라를 주웠다. 필름이 몇 장 남아 있다.', left: { label: '가방에 소중히 챙긴다', d: { money: -5, bonding: 4 }, addRelic: 'camera', toast: '📷 낡은 카메라 획득!' }, right: { label: '고장 났을지 모르니 놔둔다', d: { money: 4, bonding: -4 } } });
+    add({ id: 'rel_cam_u', char: '하치와레', art: 'hachiware', tag: '#낡은 카메라', theme: 'relic', pack: 'relic', req: { hasRelic: 'camera' }, text: '기억을 붙잡기 위해 카메라 셔터를 눌렀다. 찰칵 소리와 함께 사진이 나온다!', left: { label: '사진을 보며 추억을 되새긴다', d: { courage: 4, bonding: 5 } }, right: { label: '남은 필름을 상인에게 판다', d: { money: 8, bonding: -6 }, removeRelic: 'camera', toast: '📷 필름을 모두 사용했습니다.' } });
+
+    add({ id: 'rel_per_g', char: '하치와레', art: 'hachiware', tag: '#유물 발견', theme: 'relic', pack: 'relic', req: { noRelic: 'permit' }, text: '바람에 날려온 제초검정 5급 합격증이 발치에 떨어졌다!', left: { label: '주머니에 챙긴다', d: { courage: 6 }, addRelic: 'permit', toast: '📜 제초검정 합격증 획득!' }, right: { label: '게시판에 붙여둔다', d: { courage: -4, bonding: 4 } } });
+    add({ id: 'rel_per_u', char: '낯선 갑옷씨', art: 'armor', tag: '#합격증 활용', theme: 'relic', pack: 'relic', req: { hasRelic: 'permit' }, text: '합격증을 보여주자 갑옷씨가 특별 구역 제초 일감을 맡긴다!', left: { label: '특별 보수를 받는다', d: { hunger: -6, money: 9, bonding: -3 } }, right: { label: '주민들에게 요령을 알려준다', d: { hunger: -4, bonding: 5 } } });
+
+    add({ id: 'rel_can_g', char: '하치와레', art: 'hachiware', tag: '#유물 발견', theme: 'relic', pack: 'relic', req: { noRelic: 'candy' }, text: '바위 틈에서 별사탕이 가득 든 작은 유리병을 발견했다.', left: { label: '비상식량으로 챙긴다', d: { money: -4, courage: 4 }, addRelic: 'candy', toast: '🍬 별사탕 유리병 획득!' }, right: { label: '그 자리에서 털어 먹는다', d: { hunger: 8, courage: -5 } } });
+    add({ id: 'rel_can_u', char: '하치와레', art: 'hachiware', tag: '#별사탕 유리병', theme: 'relic', pack: 'relic', req: { hasRelic: 'candy' }, text: '지친 순간 가방 속 유리병에서 별사탕 한 알을 꺼내 입에 물었다.', left: { label: '천천히 녹여 먹는다', d: { hunger: 7, courage: 4 } }, right: { label: '지나는 주민에게 나눠준다', d: { bonding: 5 } } });
+
+    add({ id: 'rel_msk_g', char: '하치와레', art: 'monster', tag: '#유물 발견', theme: 'relic', pack: 'relic', req: { noRelic: 'mask' }, text: '기묘한 문양이 새겨진 나무 가면이 땅속에 반쯤 묻혀 있다.', left: { label: '호기심에 챙긴다', d: { courage: 7, bonding: -5 }, addRelic: 'mask', toast: '🎭 나무 가면 획득!' }, right: { label: '불길하니 묻어버린다', d: { hunger: -4, courage: -4, bonding: 4 } } });
+    add({ id: 'rel_msk_u', char: '기묘한 가면', art: 'monster', tag: '#나무 가면', theme: 'relic', pack: 'relic', req: { hasRelic: 'mask' }, text: '가면의 힘으로 괴물들이 물러나지만 마음이 차가워진다...', left: { label: '힘을 빌려 거침없이 돌파한다', d: { hunger: -5, money: 8, courage: 7, bonding: -8 } }, right: { label: '바위에 내리쳐 부순다', d: { courage: -6, bonding: 6 }, removeRelic: 'mask', toast: '🎭 나무 가면을 부쉈습니다.' } });
+
+    add({ id: 'rel_chm_g', char: '하치와레', art: 'chiikawa', tag: '#유물 발견', theme: 'relic', pack: 'relic', req: { noRelic: 'charm' }, text: '정성스레 엮은 털실 곰돌이 부적이 나뭇가지에 걸려 있다.', left: { label: '토벌봉 끝에 매단다', d: { money: -4, bonding: 4 }, addRelic: 'charm', toast: '🧸 곰돌이 부적 획득!' }, right: { label: '주인이 찾을지 모르니 둔다', d: { hunger: 4 } } });
+    add({ id: 'rel_chm_u', char: '하치와레', art: 'chiikawa', tag: '#곰돌이 부적', theme: 'relic', pack: 'relic', req: { hasRelic: 'charm' }, text: '낭떠러지에서 미끄러질 뻔한 순간 털실 부적이 걸려 몸을 지탱해 주었다!', left: { label: '안도의 한숨을 쉰다', d: { hunger: 4, courage: 6, bonding: 3 } }, right: { label: '기념으로 주변을 수색한다', d: { hunger: -5, money: 8, courage: 4, bonding: -3 } } });
+
+    // --- J. STATUS EFFECT INTRUDE & CLEAR CARDS ---
+    add({ id: 'st_mush_bad', char: '환각의 안개', art: 'monster', tag: '#독버섯 환각', theme: 'status_bad', pack: 'status_intrude', req: { status: 'mushroom_curse' }, text: '[독버섯 환각] 잿빛 나무들이 알록달록한 사탕처럼 일렁이며 방향 감각을 흔든다!', left: { label: '눈을 질끈 감고 걸어간다', d: { hunger: -5, courage: -5 } }, right: { label: '제자리에 웅크려 버틴다', d: { hunger: -4, money: -4 } } });
+    add({ id: 'st_mush_clear', char: '하치와레', art: 'hachiware', tag: '#환각 해제', theme: 'relief', pack: 'status_clear', req: { status: 'mushroom_curse' }, text: '[환각 해제] 맑은 샘물로 세수하자 어지럽던 환각이 스르르 흩어진다!', left: { label: '정신을 차리고 일어난다', d: { courage: 5 }, clearStatus: 'mushroom_curse', toast: '✨ 독버섯 환각이 풀렸습니다!' }, right: { label: '물 한 모금 마시고 출발한다', d: { hunger: 4 }, clearStatus: 'mushroom_curse', toast: '✨ 독버섯 환각이 풀렸습니다!' } });
+
+    add({ id: 'st_wep_bad', char: '부러진 토벌봉', art: 'monster', tag: '#토벌봉 손상', theme: 'status_bad', pack: 'status_intrude', req: { status: 'broken_weapon' }, text: '[토벌봉 손상] 토벌봉 끝이 찌그러져 제대로 힘을 싣기 어렵다.', left: { label: '무리해서 휘두르며 돌파한다', d: { hunger: -5, courage: -4 } }, right: { label: '조심스럽게 돌아간다', d: { hunger: -4, money: -4 } } });
+    add({ id: 'st_wep_clear', char: '낯선 갑옷씨', art: 'armor', tag: '#토벌봉 수리', theme: 'relief', pack: 'status_clear', req: { status: 'broken_weapon' }, text: '[토벌봉 수리] 갑옷씨가 망치질 몇 번으로 토벌봉을 말끔히 고쳐주었다!', left: { label: '보수를 내고 감사 인사한다', d: { money: -5, courage: 6 }, clearStatus: 'broken_weapon', toast: '✨ 토벌봉이 수리되었습니다!' }, right: { label: '가볍게 휘둘러 감각을 익힌다', d: { hunger: -4, courage: 6 }, clearStatus: 'broken_weapon', toast: '✨ 토벌봉이 수리되었습니다!' } });
+
+    add({ id: 'st_shd_bad', char: '짙은 그림자', art: 'monster', tag: '#가위눌림', theme: 'status_bad', pack: 'status_intrude', req: { status: 'shadow_curse' }, text: '[저주받은 가위눌림] 몸이 무겁게 눌리며 선택의 갈림길조차 흐릿하게 보인다...', left: { label: '어둠 속으로 발을 디딘다', d: { hunger: -5, courage: -5 } }, right: { label: '벽에 기대어 숨을 몰아쉰다', d: { money: -4, courage: -4 } } });
+    add({ id: 'st_shd_clear', char: '쿠리만쥬', art: 'kuri', tag: '#가위눌림 해제', theme: 'relief', pack: 'status_clear', req: { status: 'shadow_curse' }, text: '[가위눌림 해제] 따뜻한 찻잔의 온기에 차가운 가위눌림이 말끔히 걷혔다!', left: { label: '차를 마시고 기운을 차린다', d: { hunger: 4, courage: 5 }, clearStatus: 'shadow_curse', toast: '✨ 가위눌림이 풀렸습니다!' }, right: { label: '깊게 숨을 내쉬며 전진한다', d: { courage: 5, bonding: 3 }, clearStatus: 'shadow_curse', toast: '✨ 가위눌림이 풀렸습니다!' } });
+
+    add({ id: 'st_cld_bad', char: '하치와레', art: 'hachiware', tag: '#모래감기', theme: 'status_bad', pack: 'status_intrude', req: { status: 'sand_cold' }, text: '[잿빛 모래감기] 콜록콜록! 목이 칼칼하고 기운이 살짝 빠진다.', left: { label: '기침을 참으며 일감을 계속한다', d: { hunger: -5, money: 4, courage: -4 } }, right: { label: '목도리를 감싸고 천천히 걷는다', d: { hunger: -4, money: -3 } } });
+    add({ id: 'st_cld_clear', char: '시사', art: 'shisa', tag: '#감기 회복', theme: 'relief', pack: 'status_clear', req: { status: 'sand_cold' }, text: '[감기 회복] 시사가 건넨 따뜻한 유자차 덕분에 모래감기가 말끔히 나았다!', left: { label: '유자차를 마시고 목을 녹인다', d: { hunger: 6, bonding: 3 }, clearStatus: 'sand_cold', toast: '✨ 모래감기가 나았습니다!' }, right: { label: '상쾌한 기분으로 출발한다', d: { courage: 5, bonding: 3 }, clearStatus: 'sand_cold', toast: '✨ 모래감기가 나았습니다!' } });
+
+    // --- K. CRISIS RELIEF & SPECIAL STAR EVENTS ---
+    add({ id: 'rescue_low_1', char: '쿠리만쥬', art: 'kuri', tag: '#위기 극복', theme: 'relief', pack: 'rescue', text: '지친 기색을 눈치챈 쿠리만쥬가 따뜻한 냄비 요리와 보급품을 나눠준다.', left: { label: '따뜻하게 배를 채운다', d: { hunger: 16, money: -4, courage: 4 } }, right: { label: '보급품을 정리해 보수를 챙긴다', d: { hunger: -4, money: 16, courage: 4 } } });
+    add({ id: 'rescue_low_2', char: '랏코', art: 'rakko', tag: '#위기 극복', theme: 'relief', pack: 'rescue', text: '랏코가 어깨를 두드리며 "마음을 다잡고 균형을 지켜라"고 격려한다.', left: { label: '토벌봉을 고쳐 쥐고 용기를 낸다', d: { courage: 16, bonding: 4 } }, right: { label: '동료들과의 약속을 되새긴다', d: { courage: 4, bonding: 16 } } });
+    add({ id: 'rescue_high', char: '낯선 갑옷씨', art: 'armor', tag: '#균형 회복', theme: 'relief', pack: 'rescue', text: '무엇이든 너무 넘치면 잿빛 안개에 삼켜지기 쉽다. 잠시 숨을 고르며 짐을 비울 시간이다.', left: { label: '여분을 나누고 마음을 비운다', d: { hunger: -10, money: -10, courage: -9, bonding: -12 } }, right: { label: '장비를 정리하며 중심을 잡는다', d: { hunger: -7, money: -8, courage: -7, bonding: -10 } } });
+
+    add({ id: 'sp_star', char: '별똥별', art: 'star', tag: '#밤하늘의 기적', theme: 'special', pack: 'special', text: '잿빛 구름을 가르고 따뜻한 빛덩이가 발치에 떨어졌다. 소원을 들어주겠다는 듯 반짝인다!', left: { label: '무사히 집에 돌아가길 빈다', d: { hunger: 5, courage: 6, bonding: 4 } }, right: { label: '조심스레 쓰다듬어 준다', d: { money: 5, bonding: 5 } } });
+    add({ id: 'sp_blackstar', char: '검은 별똥별', art: 'blackstar', tag: '#불길한 유성', theme: 'special', pack: 'special', text: '불길한 검은 유성이 땅에 꽂히더니 오늘 하루를 영원히 반복시키려 한다!', left: { label: '토벌봉으로 정면 내리친다', d: { hunger: -6, courage: 8 } }, right: { label: '귀를 막고 전력으로 달아난다', d: { hunger: -5, money: -5, bonding: 4 } } });
+
+    return list;
+  }
+
+  // =========================================================================
+  // 5. Game State & Engine
+  // =========================================================================
+  const ALL_CARDS = buildAllCards();
+  const CARD_MAP = Object.fromEntries(ALL_CARDS.map(c => [c.id, c]));
+  const ZONE_CYCLE = ['plaza', 'forest', 'cave', 'tower'];
+
+  function loadMeta() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        return {
+          loopCount: p.loopCount || 1,
+          unlocked: Array.isArray(p.unlocked) ? p.unlocked : []
+        };
+      }
+    } catch (_) {}
+    return { loopCount: 1, unlocked: [] };
+  }
+
+  function saveMeta() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(meta));
+    } catch (_) {}
+  }
+
+  let meta = loadMeta();
+  let state = {};
+  let nextRestartBondPenalty = 0;
+  let toastTimer = null;
+  let isAnimating = false;
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 1850);
+  }
+
+  function startNewRun(incrementLoop = false, bondPenalty = 0) {
+    if (incrementLoop) {
+      meta.loopCount += 1;
+      saveMeta();
+    }
+    document.body.classList.remove('sky-theme');
+    document.getElementById('modal-ending').classList.remove('open');
+
+    state = {
+      turn: 0,
+      hunger: 50,
+      money: 50,
+      courage: 50,
+      bonding: Math.max(10, Math.min(90, 50 + bondPenalty)),
+      zone: 'meadow',
+      zoneIdx: 0,
+      hasChiikawa: false,
+      hasUsagi: false,
+      hasRainbowSeed: false,
+      chiikawaNextTurn: 18 + Math.floor(Math.random() * 6),  // 18~23
+      usagiNextTurn: 40 + Math.floor(Math.random() * 8),     // 40~47
+      seedNextTurn: 68 + Math.floor(Math.random() * 8),      // 68~75
+      statuses: {},
+      relics: {},
+      seenIds: new Set(),
+      forcedNextId: null,
+      inStoryChain: false,
+      ended: false,
+      currentCard: CARD_MAP['pro_1']
+    };
+
+    if (bondPenalty < 0) {
+      showToast(`친구를 두고 온 여파로 유대 ${bondPenalty} 상태로 시작합니다.`);
+    }
+    renderAll();
+  }
+
+  function getActiveStatuses() {
+    return Object.keys(state.statuses);
+  }
+
+  function pickNextCard() {
+    if (state.forcedNextId && CARD_MAP[state.forcedNextId]) {
+      const next = CARD_MAP[state.forcedNextId];
+      state.forcedNextId = null;
+      return next;
+    }
+
+    // Prologue 0~9
+    if (state.turn < 10) {
+      return CARD_MAP[`pro_${state.turn + 1}`] || CARD_MAP['pro_1'];
+    }
+
+    // Turn 100 -> Wizard Encounter!
+    if (state.turn >= 100) {
+      state.inStoryChain = true;
+      if (state.hasChiikawa && state.hasUsagi && state.hasRainbowSeed) {
+        return CARD_MAP['true_1'];
+      }
+      if (!state.hasChiikawa && !state.hasUsagi) {
+        return CARD_MAP['wiz_alone'];
+      }
+      if (state.hasChiikawa !== state.hasUsagi) {
+        return CARD_MAP['wiz_one'];
+      }
+      return CARD_MAP['wiz_noseed'];
+    }
+
+    // Zone rotation every 15 turns
+    if (state.zone === 'meadow') {
+      state.zone = ZONE_CYCLE[0];
+    } else if (state.turn > 10 && (state.turn - 10) % 15 === 0) {
+      state.zoneIdx = (state.zoneIdx + 1) % ZONE_CYCLE.length;
+      state.zone = ZONE_CYCLE[state.zoneIdx];
+      showToast(`📍 ${ZONES[state.zone]}(으)로 이동했습니다.`);
+    }
+
+    // Scheduled Main Story Chains (Chiikawa, Usagi, Rainbow Seed)
+    if (!state.hasChiikawa && state.turn >= state.chiikawaNextTurn) {
+      state.inStoryChain = true;
+      state.chiikawaNextTurn = 999;
+      return CARD_MAP['st_1_1'];
+    }
+    if (!state.hasUsagi && state.turn >= state.usagiNextTurn) {
+      state.inStoryChain = true;
+      state.usagiNextTurn = 999;
+      return CARD_MAP['st_2_1'];
+    }
+    if (!state.hasRainbowSeed && state.turn >= state.seedNextTurn) {
+      state.inStoryChain = true;
+      state.seedNextTurn = 999;
+      return CARD_MAP['st_3_1'];
+    }
+
+    // Status Effects Intrude / Guaranteed Clear
+    const activeStatuses = getActiveStatuses();
+    if (activeStatuses.length > 0) {
+      const sKey = activeStatuses[0];
+      const elapsed = state.turn - state.statuses[sKey];
+      if (elapsed >= 11) {
+        return CARD_MAP[STATUS_DEFS[sKey].clearId];
+      }
+      if (elapsed >= 4 && Math.random() < 0.34) {
+        if (elapsed >= 6 && Math.random() < 0.45) {
+          return CARD_MAP[STATUS_DEFS[sKey].clearId];
+        }
+        const badPool = ALL_CARDS.filter(c => c.pack === 'status_intrude' && c.req && c.req.status === sKey);
+        if (badPool.length) return badPool[0];
+      }
+    }
+
+    // Crisis Relief when any stat <= 15 or >= 85
+    const statVals = [state.hunger, state.money, state.courage, state.bonding];
+    if (statVals.some(v => v >= 85) && Math.random() < 0.52) {
+      return CARD_MAP['rescue_high'];
+    }
+    if (statVals.some(v => v <= 15) && Math.random() < 0.52) {
+      return Math.random() < 0.5 ? CARD_MAP['rescue_low_1'] : CARD_MAP['rescue_low_2'];
+    }
+
+    // Regular Deck Pool
+    const pool = ALL_CARDS.filter(c => {
+      if (['prologue', 'story', 'followup', 'status_intrude', 'status_clear', 'rescue'].includes(c.pack)) return false;
+      if (c.zone && c.zone !== state.zone) return false;
+      if (c.req) {
+        if (c.req.hasChiikawa && !state.hasChiikawa) return false;
+        if (c.req.noChiikawa && state.hasChiikawa) return false;
+        if (c.req.hasUsagi && !state.hasUsagi) return false;
+        if (c.req.noUsagi && state.hasUsagi) return false;
+        if (c.req.hasRelic && !state.relics[c.req.hasRelic]) return false;
+        if (c.req.noRelic && state.relics[c.req.noRelic]) return false;
+      }
+      return true;
+    });
+
+    const unseen = pool.filter(c => !state.seenIds.has(c.id));
+    const candidates = unseen.length ? unseen : pool;
+    if (!unseen.length) state.seenIds.clear();
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)] || CARD_MAP['plaza_1'];
+    state.seenIds.add(chosen.id);
+    return chosen;
+  }
+
+  function computeEffectiveDelta(rawDelta, choice) {
+    const d = {
+      hunger: rawDelta.hunger || 0,
+      money: rawDelta.money || 0,
+      courage: rawDelta.courage || 0,
+      bonding: rawDelta.bonding || 0
+    };
+    if (state.statuses.sand_cold && d.hunger > 0) {
+      d.hunger = Math.max(1, d.hunger - 2);
+    }
+    if (state.statuses.broken_weapon && choice && /토벌봉/.test(choice.label)) {
+      d.courage -= 3;
+    }
+    return d;
+  }
+
+  function updatePreview(dir) {
+    const keys = ['hunger', 'money', 'courage', 'bonding'];
+    const card = state.currentCard;
+    const btnL = document.getElementById('btn-left');
+    const btnR = document.getElementById('btn-right');
+
+    if (!dir || !card || state.ended) {
+      keys.forEach(k => {
+        const dot = document.getElementById(`dot-${k}`);
+        dot.className = 'preview-dot';
+        dot.style.width = '0px';
+        dot.style.height = '0px';
+      });
+      document.getElementById('stamp-left').style.opacity = '0';
+      document.getElementById('stamp-right').style.opacity = '0';
+      btnL.classList.remove('active-hl', 'dimmed');
+      btnR.classList.remove('active-hl', 'dimmed');
+      return;
+    }
+
+    const choice = dir === 'left' ? card.left : card.right;
+    const hideDots = Boolean(state.statuses.mushroom_curse);
+    const eff = computeEffectiveDelta(choice.d, choice);
+
+    btnL.classList.toggle('active-hl', dir === 'left');
+    btnL.classList.toggle('dimmed', dir === 'right');
+    btnR.classList.toggle('active-hl', dir === 'right');
+    btnR.classList.toggle('dimmed', dir === 'left');
+
+    keys.forEach(k => {
+      const dot = document.getElementById(`dot-${k}`);
+      const val = eff[k] || 0;
+      if (hideDots || val === 0) {
+        dot.className = 'preview-dot';
+        dot.style.width = '0px';
+        dot.style.height = '0px';
+        return;
+      }
+      const size = Math.abs(val) >= 7 ? 12 : 8;
+      dot.style.width = `${size}px`;
+      dot.style.height = `${size}px`;
+      dot.className = `preview-dot show ${val > 0 ? 'pos' : 'neg'}`;
+    });
+  }
+
+  function checkStatGameOver() {
+    const pairs = [
+      [state.hunger, 'end_hunger_0', 'end_hunger_100'],
+      [state.money, 'end_money_0', 'end_money_100'],
+      [state.courage, 'end_courage_0', 'end_courage_100'],
+      [state.bonding, 'end_bonding_0', 'end_bonding_100']
+    ];
+    for (const [val, lowId, highId] of pairs) {
+      if (val <= 0) return lowId;
+      if (val >= 100) return highId;
+    }
+    return null;
+  }
+
+  function triggerEnding(endingId, bondPenaltyOnRestart = 0) {
+    state.ended = true;
+    nextRestartBondPenalty = bondPenaltyOnRestart;
+
+    const ending = ENDINGS_CATALOG.find(e => e.id === endingId) || ENDINGS_CATALOG[0];
+    if (!meta.unlocked.includes(ending.id)) {
+      meta.unlocked.push(ending.id);
+      saveMeta();
+    }
+
+    const isTrue = ending.id === 'end_true_5';
+    if (isTrue) {
+      document.body.classList.add('sky-theme');
+      SFX.clear();
+    } else {
+      SFX.bad();
+    }
+
+    const box = document.getElementById('ending-card-modal');
+    box.classList.toggle('true-ending-box', isTrue);
+    document.getElementById('ending-type-pill').textContent = ending.type;
+    document.getElementById('ending-svg-box').innerHTML = getSVG(isTrue ? 'trio' : (ending.id.startsWith('end_wizard') ? 'wizard' : 'hachiware'));
+    document.getElementById('ending-title').textContent = ending.title;
+    document.getElementById('ending-desc').textContent = ending.desc;
+    document.getElementById('ending-turns').textContent = `${state.turn}턴`;
+    document.getElementById('ending-loops').textContent = `루프 #${meta.loopCount}`;
+    document.getElementById('btn-ending-restart').textContent = isTrue
+      ? '파란 하늘을 기억하며 새 루프 시작'
+      : '다시 눈을 뜬다 (루프 +1)';
+
+    updatePreview(null);
+    updateCodexBadge();
+    document.getElementById('modal-ending').classList.add('open');
+  }
+
+  function commitChoice(dir) {
+    if (isAnimating || !state.currentCard || state.ended) return;
+    isAnimating = true;
+    updatePreview(null);
+    SFX.swipe(dir);
+
+    const cardEl = document.getElementById('active-card');
+    cardEl.classList.remove('spring-back');
+    cardEl.classList.add('fly-out');
+    const flyX = dir === 'left' ? -420 : 420;
+    const flyRot = dir === 'left' ? -20 : 20;
+    cardEl.style.transform = `translate3d(${flyX}px, 24px, 0) rotate(${flyRot}deg)`;
+    cardEl.style.opacity = '0';
+
+    setTimeout(() => {
+      resolveChoice(dir);
+      isAnimating = false;
+    }, 185);
+  }
+
+  function resolveChoice(dir) {
+    const card = state.currentCard;
+    const choice = dir === 'left' ? card.left : card.right;
+
+    // Apply deltas
+    const eff = computeEffectiveDelta(choice.d, choice);
+    state.hunger = Math.max(0, Math.min(100, state.hunger + eff.hunger));
+    state.money = Math.max(0, Math.min(100, state.money + eff.money));
+    state.courage = Math.max(0, Math.min(100, state.courage + eff.courage));
+    state.bonding = Math.max(0, Math.min(100, state.bonding + eff.bonding));
+
+    // Story / Item / Status hooks
+    if (choice.enterSky) {
+      state.zone = 'sky';
+      document.body.classList.add('sky-theme');
+      SFX.clear();
+    }
+
+    if (choice.recruit === 'chiikawa' && !state.hasChiikawa) {
+      state.hasChiikawa = true;
+      state.inStoryChain = false;
+      SFX.good();
+    } else if (choice.recruit === 'usagi' && !state.hasUsagi) {
+      state.hasUsagi = true;
+      state.inStoryChain = false;
+      SFX.good();
+    }
+
+    if (choice.grantSeed && !state.hasRainbowSeed) {
+      state.hasRainbowSeed = true;
+      state.inStoryChain = false;
+      SFX.good();
+    }
+
+    if (choice.deferChain === 'chiikawa') {
+      state.inStoryChain = false;
+      state.chiikawaNextTurn = Math.min(92, state.turn + 12 + Math.floor(Math.random() * 6));
+    } else if (choice.deferChain === 'usagi') {
+      state.inStoryChain = false;
+      state.usagiNextTurn = Math.min(94, state.turn + 12 + Math.floor(Math.random() * 6));
+    }
+
+    if (choice.setStatus && !state.statuses[choice.setStatus]) {
+      state.statuses[choice.setStatus] = state.turn;
+      SFX.bad();
+      showToast(`${STATUS_DEFS[choice.setStatus].name} 상태가 되었습니다!`);
+    }
+    if (choice.clearStatus && state.statuses[choice.clearStatus] !== undefined) {
+      delete state.statuses[choice.clearStatus];
+      SFX.good();
+    }
+    if (choice.addRelic) {
+      state.relics[choice.addRelic] = true;
+      SFX.good();
+    }
+    if (choice.removeRelic) {
+      delete state.relics[choice.removeRelic];
+    }
+    if (choice.toast) {
+      showToast(choice.toast);
+    }
+
+    // Immediate story ending?
+    if (choice.endingId) {
+      renderGauges();
+      triggerEnding(choice.endingId, choice.penaltyBondOnRestart || 0);
+      return;
+    }
+
+    // Check stat 0 / 100 Game Over
+    const statOver = checkStatGameOver();
+    if (statOver) {
+      renderGauges();
+      triggerEnding(statOver, 0);
+      return;
+    }
+
+    // Chain continuation
+    if (choice.nextId) {
+      state.forcedNextId = choice.nextId;
+    } else {
+      state.inStoryChain = false;
+    }
+
+    // Advance turn (prologue advances 0..9 -> 10; story chain cards don't burn turn count so 100 turns stay fair)
+    if (state.turn < 10) {
+      state.turn += 1;
+    } else if (!choice.nextId) {
+      state.turn += 1;
+    }
+
+    state.currentCard = pickNextCard();
+    renderAll();
+  }
+
+  function renderGauges() {
+    const items = [
+      ['hunger', state.hunger],
+      ['money', state.money],
+      ['courage', state.courage],
+      ['bonding', state.bonding]
+    ];
+    items.forEach(([key, val]) => {
+      document.getElementById(`val-${key}`).textContent = val;
+      const liq = document.getElementById(`liquid-${key}`);
+      liq.style.height = `${val}%`;
+      liq.classList.toggle('danger', val <= 15 || val >= 85);
+    });
+  }
+
+  function updateCodexBadge() {
+    document.getElementById('codex-count-pill').textContent = `${meta.unlocked.length}/${ENDINGS_CATALOG.length}`;
+  }
+
+  function renderAll() {
+    document.getElementById('loop-pill').textContent = `루프 #${meta.loopCount}`;
+    renderGauges();
+    updateCodexBadge();
+
+    document.getElementById('zone-pill').textContent = `📍 ${ZONES[state.zone] || ZONES.meadow}`;
+    document.getElementById('turn-pill').textContent = state.turn < 10
+      ? '⏳ 프롤로그'
+      : `⏳ ${Math.min(state.turn, 100)} / 100 턴`;
+
+    // Companion / Seed / Relic / Status chips
+    const chipsRow = document.getElementById('chips-row');
+    const chips = [];
+    if (state.hasChiikawa) chips.push('<span class="chip companion">🐱 치이카와</span>');
+    if (state.hasUsagi) chips.push('<span class="chip companion">🐰 우사기</span>');
+    if (state.hasRainbowSeed) chips.push('<span class="chip seed">🌈 무지개 씨앗</span>');
+    getActiveStatuses().forEach(sk => {
+      chips.push(`<span class="chip status">${STATUS_DEFS[sk].short}</span>`);
+    });
+    Object.keys(state.relics).forEach(rk => {
+      chips.push(`<span class="chip relic">${RELIC_DEFS[rk]}</span>`);
+    });
+    chipsRow.innerHTML = chips.join('');
+
+    // Render Card
+    const card = state.currentCard;
+    const cardEl = document.getElementById('active-card');
+    const innerEl = document.getElementById('card-inner');
+
+    cardEl.classList.remove('fly-out', 'spring-back');
+    cardEl.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+    cardEl.style.opacity = '1';
+
+    innerEl.setAttribute('data-theme', card.theme || 'plaza');
+    innerEl.classList.toggle('wobble', !state.ended && getActiveStatuses().length > 0);
+
+    document.getElementById('char-pill').textContent = card.char;
+
+    const tagEl = document.getElementById('tag-pill');
+    tagEl.textContent = card.tag || `#${ZONES[state.zone] || '잿빛 세계'}`;
+    tagEl.classList.toggle('main-story-tag', Boolean(card.isMainStory));
+
+    document.getElementById('art-svg-wrap').innerHTML = getSVG(card.art);
+    document.getElementById('card-text').textContent = card.text;
+
+    const obscure = !state.ended && Boolean(state.statuses.shadow_curse) && !card.isMainStory;
+    const lText = obscure ? '???' : card.left.label;
+    const rText = obscure ? '???' : card.right.label;
+
+    document.getElementById('label-left').textContent = lText;
+    document.getElementById('label-right').textContent = rText;
+    document.getElementById('stamp-left-text').textContent = lText;
+    document.getElementById('stamp-right-text').textContent = rText;
+  }
+
+  // =========================================================================
+  // 6. Clean Touch & Mouse Swipe Handling (No Double-Firing)
+  // =========================================================================
+  function bindInteractions() {
+    const cardEl = document.getElementById('active-card');
+    const THRESHOLD = 44;
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let isTouchSession = false;
+
+    const onStart = (x, y) => {
+      if (isAnimating || state.ended) return;
+      dragging = true;
+      startX = x;
+      startY = y;
+      currentX = 0;
+      cardEl.classList.remove('spring-back', 'fly-out');
+    };
+
+    const onMove = (x) => {
+      if (!dragging || isAnimating) return;
+      currentX = x - startX;
+      const rot = Math.max(-17, Math.min(17, currentX * 0.065));
+      cardEl.style.transform = `translate3d(${currentX}px, ${Math.abs(currentX) * 0.035}px, 0) rotate(${rot}deg)`;
+
+      const ratio = Math.min(Math.abs(currentX) / THRESHOLD, 1);
+      if (currentX < -10) {
+        document.getElementById('stamp-left').style.opacity = String(ratio);
+        document.getElementById('stamp-right').style.opacity = '0';
+        updatePreview('left');
+      } else if (currentX > 10) {
+        document.getElementById('stamp-right').style.opacity = String(ratio);
+        document.getElementById('stamp-left').style.opacity = '0';
+        updatePreview('right');
+      } else {
+        document.getElementById('stamp-left').style.opacity = '0';
+        document.getElementById('stamp-right').style.opacity = '0';
+        updatePreview(null);
+      }
+    };
+
+    const onEnd = () => {
+      if (!dragging) return;
+      dragging = false;
+      if (currentX <= -THRESHOLD) {
+        commitChoice('left');
+      } else if (currentX >= THRESHOLD) {
+        commitChoice('right');
+      } else {
+        cardEl.classList.add('spring-back');
+        cardEl.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+        updatePreview(null);
+      }
+      currentX = 0;
+    };
+
+    // Touch Events
+    cardEl.addEventListener('touchstart', (e) => {
+      if (!e.touches.length) return;
+      isTouchSession = true;
+      onStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!dragging || !e.touches.length) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && e.cancelable) {
+        e.preventDefault();
+      }
+      onMove(e.touches[0].clientX);
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+      if (dragging) onEnd();
+      setTimeout(() => { isTouchSession = false; }, 350);
+    });
+    window.addEventListener('touchcancel', () => {
+      if (dragging) onEnd();
+      isTouchSession = false;
+    });
+
+    // Mouse Events
+    cardEl.addEventListener('mousedown', (e) => {
+      if (isTouchSession || e.button !== 0 || e.target.closest('button')) return;
+      onStart(e.clientX, e.clientY);
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (dragging && !isTouchSession) onMove(e.clientX);
+    });
+    window.addEventListener('mouseup', () => {
+      if (dragging && !isTouchSession) onEnd();
+    });
+
+    // Choice Buttons (Click + Hover Preview)
+    const btnL = document.getElementById('btn-left');
+    const btnR = document.getElementById('btn-right');
+    btnL.addEventListener('mouseenter', () => { if (!dragging && !isAnimating) updatePreview('left'); });
+    btnL.addEventListener('mouseleave', () => { if (!dragging) updatePreview(null); });
+    btnR.addEventListener('mouseenter', () => { if (!dragging && !isAnimating) updatePreview('right'); });
+    btnR.addEventListener('mouseleave', () => { if (!dragging) updatePreview(null); });
+    btnL.addEventListener('click', () => { if (Math.abs(currentX) < 10) commitChoice('left'); });
+    btnR.addEventListener('click', () => { if (Math.abs(currentX) < 10) commitChoice('right'); });
+
+    // Keyboard Arrows
+    window.addEventListener('keydown', (e) => {
+      const anyModal = document.querySelector('.modal-backdrop.open');
+      if (anyModal) {
+        if (e.key === 'Escape' && anyModal.id !== 'modal-ending') {
+          anyModal.classList.remove('open');
+        }
+        return;
+      }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); commitChoice('left'); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); commitChoice('right'); }
+    });
+
+    // Top Sound Toggle
+    document.getElementById('btn-sound').addEventListener('click', (e) => {
+      SFX.muted = !SFX.muted;
+      e.currentTarget.textContent = SFX.muted ? '🔇' : '🔊';
+    });
+
+    // Footer Buttons
+    document.getElementById('btn-guide').addEventListener('click', () => {
+      document.getElementById('modal-guide').classList.add('open');
+    });
+
+    document.getElementById('btn-codex').addEventListener('click', () => {
+      renderCodex();
+      document.getElementById('modal-codex').classList.add('open');
+    });
+
+    document.getElementById('btn-restart').addEventListener('click', () => {
+      startNewRun(true, 0);
+      showToast('새로운 루프를 시작합니다!');
+    });
+
+    document.getElementById('btn-ending-restart').addEventListener('click', () => {
+      const pen = nextRestartBondPenalty;
+      nextRestartBondPenalty = 0;
+      startNewRun(true, pen);
+    });
+
+    // Modal Close Buttons & Backdrop Click
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(btn.getAttribute('data-close')).classList.remove('open');
+      });
+    });
+    ['modal-guide', 'modal-codex'].forEach(id => {
+      document.getElementById(id).addEventListener('click', (e) => {
+        if (e.target.id === id) e.currentTarget.classList.remove('open');
+      });
+    });
+  }
+
+  function renderCodex() {
+    const unlockedSet = new Set(meta.unlocked);
+    document.getElementById('codex-modal-title').textContent = `🏆 엔딩 도감 (${unlockedSet.size} / ${ENDINGS_CATALOG.length})`;
+    const listEl = document.getElementById('codex-list');
+    listEl.innerHTML = ENDINGS_CATALOG.map((e, i) => {
+      const ok = unlockedSet.has(e.id);
+      return `<div class="codex-item ${ok ? 'unlocked' : ''}">
+        <div class="codex-top">
+          <span>${ok ? e.title : `#${String(i + 1).padStart(2, '0')}. ??? (미발견 엔딩)`}</span>
+          <span class="codex-badge">${e.type}</span>
+        </div>
+        <div class="codex-desc">${ok ? e.desc : '잿빛 세계를 탐험하며 조건을 달성해 해금해 보세요.'}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Boot
+  bindInteractions();
+  startNewRun(false, 0);
+})();
+</script>
+</body>
+</html>
