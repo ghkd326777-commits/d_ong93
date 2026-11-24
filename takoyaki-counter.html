@@ -299,6 +299,9 @@ main.home-screen{
 .dialog .crew-ability p{margin:0;color:#5a4637;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
 .crew-ability[aria-current="true"]{background:#f1e4ef;border-color:#8a6287;border-left-width:3px;padding-left:5px}
 .crew-ability[aria-current="true"] strong,.dialog .crew-ability[aria-current="true"] p{color:#362418}
+.crew-ability-name{font-weight:750}
+#prepChefText .crew-ability-name{color:#873656}
+#prepHelperText .crew-ability-name{color:#225a62}
 .crew-role{width:100%;min-height:44px;margin-top:3px;background:#fff8ed;color:#543623;border-color:#b99170}
 .crew-detail .crew-skin-heading{margin-top:12px}
 #savePrep{background:#a63c31;color:#fffaf6}
@@ -371,6 +374,8 @@ main.home-screen{
 .card-price{color:var(--gold);font-size:14px;font-weight:850;line-height:1.25;font-variant-numeric:tabular-nums;white-space:nowrap}
 .dialog .card-detail{font-size:11px;color:var(--muted);line-height:1.35;margin:0;overflow-wrap:anywhere}
 .character-card .quiet{margin-top:4px;width:100%;min-height:42px;font-size:11px;padding:4px;white-space:normal}
+.character-card .quiet:enabled{background:var(--gold);border-color:#f0b766;color:#38251b;font-weight:800}
+.character-card .quiet:enabled:active{background:#edb965}
 .character-card .quiet:disabled{opacity:.68}
 .dialog .wallet{margin:0 0 8px;color:var(--gold);font-weight:750}
 .dialog .shop-status{text-align:left;min-height:1.4em;margin:0 0 6px}
@@ -1047,6 +1052,18 @@ function buildCrew(){
   });
 }
 
+function renderCrewAbility(id,name,description){
+  const text=$(id);
+  if(!name){
+    text.textContent=description;
+    return;
+  }
+  const label=document.createElement('span');
+  label.className='crew-ability-name';
+  label.textContent=name;
+  text.replaceChildren(label,' · '+description);
+}
+
 function renderCrew(){
   for(const {id,name} of CREW){
     const equipped=draft[id+'Skin'];
@@ -1066,8 +1083,9 @@ function renderCrew(){
     $('crewDetailName').textContent=name;
     $('prepChefAbility').setAttribute('aria-current',active);
     $('prepHelperAbility').setAttribute('aria-current',!active);
-    $('prepChefText').textContent=skin?skin.skill+' · '+skin.chef:'스킬 없음';
-    $('prepHelperText').textContent=skin?.helper??'추가 효과 없음';
+    const [helperName,...helperText]=(skin?.helper??'').split(' · ');
+    renderCrewAbility('prepChefText',skin?.skill,skin?.chef??'스킬 없음');
+    renderCrewAbility('prepHelperText',helperName,helperText.join(' · ')||'추가 효과 없음');
     $('assignChef').hidden=active;
 
     for(const skinId of ['regular',...Object.keys(SKINS[id])]){
