@@ -244,10 +244,45 @@ main.home-screen{
 .dialog h2{font-size:27px;margin:4px 0 10px;letter-spacing:-.04em}
 .dialog p{color:var(--muted);font-size:14px;line-height:1.55;margin:0 0 16px}
 .action{display:block;width:100%;min-height:48px;padding:6px;color:#322017;background:var(--gold);border:0;border-radius:11px;font-weight:850}
-#results{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
 #results[hidden],#dialogBody[hidden],#dialogAction[hidden]{display:none}
-#results div{border-radius:8px;background:#261913;padding:8px;font-size:12px;color:var(--muted)}
-#results b{display:block;font-size:18px;color:var(--cream)}
+.dialog:has(#results:not([hidden])){
+  display:flex;flex-direction:column;width:min(100%,440px);padding:clamp(10px,3vw,17px);
+  background:#241a29;border-color:#aa799a;
+}
+.dialog:has(#results:not([hidden])) #dialogTitle{margin:2px 0 9px;font-size:20px;color:#fff2d7}
+.dialog:has(#results:not([hidden])) #dialogBody{order:1;margin:9px 3px 10px;font-size:12px;color:#dcc9d6}
+.dialog:has(#results:not([hidden])) :is(#dialogAction,#resultHome){order:2}
+#results{
+  overflow:hidden;border:2px solid #f1c779;border-radius:15px;padding:9px;
+  background:linear-gradient(145deg,#643356,#36213f 50%,#352541);
+  box-shadow:inset 0 0 0 2px #f6cb8438,0 3px 0 #1b1222;
+  font-variant-numeric:tabular-nums;
+}
+.result-brand{display:block;margin:0 0 7px;font-size:13px;font-weight:850;color:#fff2d7}
+.result-score{
+  position:relative;isolation:isolate;overflow:hidden;padding:9px 7px 8px;border:1px solid #ffedaa;border-radius:11px;
+  background:radial-gradient(ellipse at 50% 22%,#fff4bd,#ffce71 67%,#f59567);
+  color:#4c253d;
+}
+.result-score::before{
+  content:"";position:absolute;inset:0;z-index:-1;opacity:.48;
+  background:repeating-conic-gradient(from 5deg at 50% 110%,#fff9d4 0deg 9deg,transparent 9deg 19deg);
+}
+.result-score span{display:block;font-size:13px;font-weight:850}
+.result-score strong{
+  display:block;overflow-wrap:anywhere;font-size:clamp(36px,11vw,57px);
+  font-weight:950;letter-spacing:-.045em;line-height:1.04;color:#4e2541;
+  text-shadow:0 2px #fff6d2;
+}
+.result-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:7px 0 0}
+.result-stats div{min-width:0;padding:5px 3px;border:1px solid #866586;border-radius:8px;background:#241b30;color:#e9d8e5}
+.result-stats .result-combo{background:#632f55;border-color:#e398c9;color:#ffe0f0}
+.result-stats .result-level{background:#243e5d;border-color:#90bbdf;color:#e0f3ff}
+.result-stats dt{font-size:11px;font-weight:700}
+.result-stats dd{margin:0;font-size:clamp(15px,4.8vw,21px);font-weight:850;line-height:1.18;overflow-wrap:anywhere}
+.result-stats :is(.result-combo,.result-level) dd{font-size:clamp(22px,6vw,29px)}
+.result-wallet{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:6px 1px 0;color:#ead5e3;font-size:11px}
+.result-wallet b{color:#fff0c7;font-size:12px;overflow-wrap:anywhere;text-align:right}
 .menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
 .menu-actions .wide{grid-column:1/-1}
 .dialog [hidden],.cook-actions [hidden]{display:none}
@@ -257,6 +292,7 @@ main.home-screen{
   color:#39251b;background:#fff8ed;border-color:#cdb399;color-scheme:light;
 }
 .overlay:has(#prepPanel:not([hidden])){padding:12px 8px}
+.dialog:has(#prepPanel:not([hidden])) #dialogTitle{padding-inline:43px;font-size:clamp(20px,6vw,27px)}
 .dialog:has(#prepPanel:not([hidden])) #dialogTitle::after{content:"";display:block;width:44px;height:2px;margin:5px auto 0;border-radius:2px;background:#b85e51}
 #prepPanel:not([hidden]){
   display:grid;flex:1;min-height:0;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
@@ -558,7 +594,17 @@ main.home-screen{
       <div class="pack-stage" id="packStage" aria-hidden="true"><div class="pack-seal" id="packSeal">✦</div></div>
       <div class="card-grid pack-grid" id="packCards" hidden></div>
     </section>
-    <div id="results" hidden></div>
+    <section id="results" aria-label="이번 영업 기록" hidden>
+      <b class="result-brand">치이카와 : 마다 스다코</b>
+      <div class="result-score"><span>✦ 최종 점수 ✦</span><strong id="resultScore"></strong></div>
+      <dl class="result-stats">
+        <div class="result-combo"><dt>최대 콤보</dt><dd id="resultCombo"></dd></div>
+        <div class="result-level"><dt>도달 레벨</dt><dd id="resultLevel"></dd></div>
+        <div><dt>성공 주문</dt><dd id="resultOrders"></dd></div>
+        <div><dt>적립 매출</dt><dd id="resultSales"></dd></div>
+      </dl>
+      <div class="result-wallet"><span>영업 후 보유금</span><b id="resultWallet"></b></div>
+    </section>
     <button type="button" class="action" id="dialogAction" hidden>게임 시작</button>
     <button type="button" class="quiet" id="pauseSound" aria-label="효과음" aria-pressed="true" hidden><span aria-hidden="true">🔊</span></button>
     <button type="button" class="quiet" id="endRound" hidden>영업 마감 (매출 적립)</button>
@@ -588,7 +634,7 @@ const SKIN_LEVELS={파자마:3,요정:5,비옷:7,너구리:9,매지컬:11,문어
 const SKIN_PRICES={파자마:3000,요정:5000,비옷:5000,너구리:8000,매지컬:8000,문어옷:10000};
 const SKINS = {
   chiikawa:{
-    pajama:{name:'파자마',skill:'생명 회복',chef:'생명 1칸을 회복해요. 생명이 1칸이면 2칸 회복해요.',helper:'생명 · 한 판 첫 조리 실패의 생명 손실을 막아요.'},
+    pajama:{name:'파자마',skill:'생명 회복',chef:'생명 1칸을 회복해요. 생명이 1칸이면 2칸 회복해요.',helper:'생명 · 한 판 첫 서빙 실패로 인한 생명 손실을 막아요.'},
     octopus:{name:'문어옷',skill:'즉석 조리',chef:'반죽 최대 3칸을 바로 뒤집을 수 있고, 뒤집는 즉시 완성돼요.',helper:'속도 · 뒤집기 적정 상태까지의 시간이 8% 줄어요.'},
     tanukiChii:{name:'너구리',skill:'진열대 정리',chef:'진열대 앞 6칸에서 불량품을 최대 4알 없애요.',helper:'보정 · 타기 시작한 직후 꺼내면 정상 품질로 살릴 수 있어요.'},
     fairyChii:{name:'요정',skill:'대기 멈춤',chef:'현재 손님의 대기 시간을 12초 동안 멈춰요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
@@ -601,7 +647,7 @@ const SKINS = {
     tanukiHachi:{name:'너구리',skill:'품질 보정',chef:'진열대 앞 4칸의 불량품 최대 2알을 정상으로 바꿔요.',helper:'보정 · 한 판에 처음 꺼낸 탄 타코야키 1알을 정상으로 바꿔요.'},
     fairy:{name:'요정',skill:'급한 주문 구제',chef:'급한 손님 최대 2명의 대기 시간을 20초씩 늘려요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
     magicalHachi:{name:'매지컬',skill:'특별 영업',chef:'다음 유료 주문 5건의 매출을 50% 늘려요.',helper:'콤보 · 덤 콤보를 세 번 이어갈 때마다 스킬 게이지를 2%p 더 채워요.'},
-    rainHachi:{name:'비옷',skill:'불판 일시 정지',chef:'12초 동안 조리만 멈춰요. 이미 익은 것은 꺼낼 수 있어요.',helper:'생명 · 강불에서의 첫 조리 실패로 인한 생명 손실을 막아요.'}
+    rainHachi:{name:'비옷',skill:'불판 일시 정지',chef:'12초 동안 조리만 멈춰요. 이미 익은 것은 꺼낼 수 있어요.',helper:'보정 · 한 판에 강불에서 처음 꺼낸 탄 것이나 덜 익은 것 1알을 정상으로 바꿔요.'}
   },
   usagi:{
     pajamaUsagi:{name:'파자마',skill:'불판 구제',chef:'탔거나 너무 일찍 뒤집은 타코야키 최대 3알을 정상으로 살려요.',helper:'보정 · 뒷면이 거의 익었을 때 조금 일찍 꺼내도 정상 품질이 돼요.'},
@@ -1107,6 +1153,7 @@ function showPrep(){
   showDialog('🍽️ 오픈 준비 🍽️','',null,null);
   renderCrew();
   $('prepPanel').hidden=false;
+  $('infoCloseBar').hidden=false;
   $('overlay').scrollTop=0;
   $('crewDetail').scrollTop=0;
   $('dialogTitle').focus({preventScroll:true});
@@ -1439,8 +1486,8 @@ function resetRound(){
   sound.unlock();
   const helpers=new Set(CREW.filter(person=>person.id!==lineup.chef).map(person=>lineup[person.id+'Skin']));
   Object.assign(state,{
-    helpers,guestShields:0,firstEscapeShield:helpers.has('pajamaHachi'),firstBurnRepair:helpers.has('tanukiHachi'),
-    strongRawShield:helpers.has('rainHachi'),nextGuestBonus:0,bonusSales:0,
+    helpers,guestShields:0,firstOrderShield:helpers.has('pajama'),firstEscapeShield:helpers.has('pajamaHachi'),firstBurnRepair:helpers.has('tanukiHachi'),
+    strongCookRepair:helpers.has('rainHachi'),nextGuestBonus:0,bonusSales:0,
     freezeCookUntil:0,protectCookUntil:0,delayGuestsUntil:0,
     mode:'countdown',elapsed:0,last:performance.now(),count:RULES.count,gas:RULES.initialGas,gasPending:0,heatTime:0,
     chefSkin:lineup[lineup.chef+'Skin']||'regular',
@@ -1448,7 +1495,6 @@ function resetRound(){
     helperSpeed:lineup.chef!=='chiikawa'&&lineup.chiikawaSkin==='octopus',
     helperBack:lineup.chef!=='usagi'&&lineup.usagiSkin==='tanuki',
     helperFlame:lineup.chef!=='usagi'&&lineup.usagiSkin==='raincoat',
-    helperShield:lineup.chef!=='chiikawa'&&lineup.chiikawaSkin==='pajama',
     helperPatience:lineup.chef!=='hachiware'&&lineup.hachiwareSkin==='fairy',settled:false,
     heatHoldUntil:0,picksLeft:0,frontBonusHeat:0,
     cells:Array.from({length:12},()=>({phase:'empty',since:0,early:false})),
@@ -1470,7 +1516,7 @@ function showGuide(){
   $('dialogTitle').focus({preventScroll:true});
 }
 
-function showDialog(title,body,action,handler,results){
+function showDialog(title,body,action,handler){
   $('homeScreen').hidden=true;
   $('overlay').hidden=false;
   $('game').hidden=['prep','info','pack','guide'].includes(state.mode);
@@ -1485,16 +1531,9 @@ function showDialog(title,body,action,handler,results){
   $('dialogBody').hidden=!body;
   $('dialogAction').hidden=!action;
   $('dialogAction').textContent=action||'';
-  $('results').hidden=!results;
-  if(results){
-    $('results').replaceChildren(...results.map(([label,value])=>{
-      const item=document.createElement('div');
-      const strong=document.createElement('b');
-      strong.textContent=value; item.append(label,strong); return item;
-    }));
-  }
+  $('results').hidden=state.mode!=='result';
   dialogAction=handler;
-  if(action) $('dialogAction').focus();
+  if(action) $('dialogAction').focus({preventScroll:state.mode==='result'});
 }
 
 function hideDialog(){
@@ -1688,8 +1727,7 @@ function addGuest(now){
   const kind=chooseGuest();
   const patience=RULES.patience*(1+.05*Number(state.helperPatience)+.05*Number(state.helpers.has('fairyChii')))+state.nextGuestBonus;
   state.nextGuestBonus=0;
-  const guest={id,kind,order:RULES.orders[id%RULES.orders.length],deadline:now+patience,patience,
-    greetingUntil:now+GUEST_SPEECH_DURATION};
+  const guest={id,kind,order:RULES.orders[id%RULES.orders.length],deadline:now+patience,patience};
   if(kind==='anoko') guest.changeAt=now+12000;
   if(kind==='kurimanju') guest.askAgain=Math.random()<.35;
   state.guests[slot]=guest;
@@ -1728,8 +1766,9 @@ function failGuest(slot,message,departed=false){
     message+=' 불판에 먼지가 날렸어요.';
   }
   if(state.helpers.has('fairyUsagi')) state.nextGuestBonus=10000;
-  if(state.guestShields||departed&&state.firstEscapeShield){
-    if(departed&&state.firstEscapeShield) state.firstEscapeShield=false;
+  const firstShield=departed?'firstEscapeShield':'firstOrderShield';
+  if(state[firstShield]||state.guestShields){
+    if(state[firstShield]) state[firstShield]=false;
     else state.guestShields--;
     notify(message+' · 생명 보호','good');
   } else loseLife(message,VISITORS[kind].name+' · “'+GUEST_SPEECH[kind].failure+'”');
@@ -1737,7 +1776,7 @@ function failGuest(slot,message,departed=false){
 
 function checkGuestPriority(){
   const slot=state.guests.findIndex(guest=>isWaitingGuest(guest)&&guest.kind==='kani');
-  if(slot>=0&&state.mode==='play') failGuest(slot,'다른 손님에게 먼저 서빙해서 카니가 돌아갔어요.');
+  if(slot>=0&&state.mode==='play') failGuest(slot,'다른 손님에게 먼저 서빙해서 카니가 돌아갔어요.',true);
 }
 
 function removeGuest(slot){
@@ -1934,12 +1973,22 @@ function cook(index){
     if(status==='take'&&!cell.early){
       quality=goldenWindow(cell,state.heatTime-cell.since)?'gold':'good';
     }
-    if(quality==='burnt'){
+    if(quality==='burnt'&&state.helpers.has('tanukiChii')){
       const burntAt=cell.phase==='front'?frontBurnTime():backBurnTime();
-      if(state.helpers.has('tanukiChii')&&cellAge(cell)-burntAt<200) quality='good';
-      else if(state.firstBurnRepair){state.firstBurnRepair=false;quality='good';}
+      if(cellAge(cell)-burntAt<200) quality='good';
     } else if(quality==='raw'&&!cell.early&&state.helpers.has('pajamaUsagi')&&backReadyTime()-cellAge(cell)<=160) quality='good';
     const full=state.stock.length>=RULES.stock;
+    let repaired=false;
+    if(!full&&!edible(quality)){
+      if(state.strongCookRepair&&state.gas>=STRONG_GAS){
+        state.strongCookRepair=false;
+        repaired=true;
+      } else if(quality==='burnt'&&state.firstBurnRepair){
+        state.firstBurnRepair=false;
+        repaired=true;
+      }
+      if(repaired) quality='good';
+    }
     state.cells[index]={phase:'empty',since:state.heatTime,early:false};
     if(!full){
       state.stock.push(quality);
@@ -1947,16 +1996,12 @@ function cook(index){
     }
     if(edible(quality)){
       const message=quality==='gold'?'황금 타코야키! 서빙할 때 2개로 계산해요.':'잘 익은 타코야키 +1';
-      notify(full?'진열대가 가득 차서 폐기했어요.':message,full?'':'good');
+      notify(full?'진열대가 가득 차서 폐기했어요.':repaired?'보조 능력 · 품질 보정 +1':message,full?'':'good');
     } else if(quality==='burnt'){
       notify(full?'진열대가 가득 차서 탄 타코야키를 폐기했어요.':'탄 타코야키를 진열대에 올렸어요.','bad');
     } else {
       const message=full?'덜 익은 타코야키를 폐기했어요.':'덜 익은 타코야키를 꺼냈어요.';
-      if(state.helperShield||state.strongRawShield&&state.gas>=STRONG_GAS){
-        if(state.helperShield) state.helperShield=false;
-        else state.strongRawShield=false;
-        notify(message+' · 생명 보호','good');
-      } else loseLife(message);
+      loseLife(message);
     }
   }
   render();
@@ -2134,11 +2179,14 @@ function finish(reason,guestLine=''){
   const summary=[reason,guestLine,newTiers.length?'상점에서 '+newTiers.join('·')+' 스킨을 구매할 수 있어요.':'',
     saved?'':'보유금과 수집 기록은 이번 접속에만 유지돼요.'].filter(Boolean).join(' ');
   render();
-  showDialog('영업 마감',summary,'다시 시작',resetRound,[
-    ['적립 매출',number.format(state.sales)+'원'],['보유금',number.format(profile.coins)+'원'],
-    ['점수',number.format(state.score)+'점'],['성공 주문',state.served+'건'],
-    ['최대 콤보',state.maxCombo],['도달 레벨',state.level]
-  ]);
+  $('resultScore').textContent=number.format(state.score);
+  $('resultCombo').textContent=number.format(state.maxCombo);
+  $('resultLevel').textContent='Lv. '+number.format(state.level);
+  $('resultOrders').textContent=number.format(state.served)+'건';
+  $('resultSales').textContent=number.format(state.sales)+'원';
+  $('resultWallet').textContent=number.format(profile.coins)+'원';
+  showDialog('영업 마감',summary,'다시 시작',resetRound);
+  $('overlay').scrollTop=0;
 }
 
 function pause(){
@@ -2185,7 +2233,7 @@ function renderComboBurst(){
 
 function renderGuestSpeech(slot,guest){
   const bubble=$('guestSpeech-'+slot);
-  const event=guest?.reaction??(guest?.greetingUntil>state.elapsed?'visit':null);
+  const event=guest?(guest.reaction??'visit'):null;
   if(event){
     const text=GUEST_SPEECH[guest.kind][event];
     if(bubble.textContent!==text) bubble.textContent=text;
@@ -2322,7 +2370,7 @@ document.querySelectorAll('#infoNav button').forEach(button=>{
 });
 $('savePrep').addEventListener('click',persistLineup);
 $('closeInfo').addEventListener('click',()=>{
-  const opener=$('infoNav').hidden?'openShop':'openCatalog';
+  const opener=state.mode==='prep'?'openPrep':$('infoNav').hidden?'openShop':'openCatalog';
   showHome();
   $(opener).focus({preventScroll:true});
 });
