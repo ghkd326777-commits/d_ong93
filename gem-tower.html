@@ -499,7 +499,7 @@
       </div>
 
       <!-- 하단 박스: 인스펙터 + 동적 조작 영역 -->
-      <div class="relative bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm flex flex-col gap-2">
+      <div id="inspectorPanelBox" class="relative bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm flex flex-col gap-2 transition-colors">
         <!-- 긴 설명 전체 보기 미니 팝업 (설명이 ...으로 끊길 때 설명 탭 시 표시) -->
         <div id="inspectorDescPopover" class="hidden pop-anim absolute bottom-full left-0 right-0 mb-2 mx-auto max-w-md rounded-2xl bg-slate-900/95 backdrop-blur-md border border-emerald-400/70 shadow-2xl px-3.5 py-3 text-left z-50">
           <div class="flex items-center justify-between gap-2 mb-1.5">
@@ -615,8 +615,8 @@
       <!-- 필터 탭 -->
       <div id="codexTabs" class="shrink-0 px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto">
         <button data-tab="craftable" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">조합가능</button>
-        <button data-tab="all" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">스페셜(14)</button>
-        <button data-tab="slates" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">🪨 슬레이트(12)</button>
+        <button data-tab="all" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">스페셜(20)</button>
+        <button data-tab="slates" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">🪨 슬레이트(18)</button>
         <button data-tab="owned" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">보유 중</button>
         <button data-tab="early" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">초반</button>
         <button data-tab="mid" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">중반</button>
@@ -663,15 +663,15 @@
           </div>
           <ul class="list-disc pl-4 space-y-1 text-[11px]">
             <li><strong>보석 등급</strong>: 최하급(0) → 하급(1) → 중급(2) → 상급(3) → 최상급(P) → 그레이트(G) 순으로 강해집니다.</li>
-            <li><strong>2합 / 4합 승급</strong>: 한 라운드에 같은 보석·같은 등급이 <strong>2개</strong> 뜨면 1단계 승급, <strong>4개</strong> 뜨면 2단계 승급(최상급 4개는 전설 <strong>스톤 오브 브릭스</strong>)이 가능합니다.</li>
-            <li><strong>스페셜 타워 (13종)</strong>: 상단 <strong>[📖 도감]</strong>의 레시피 재료를 모으면 강력한 고유 스킬과 진화 트리를 가진 스페셜 타워로 조합됩니다. (한 라운드 5개 안에서 재료가 다 모이면 즉시 <strong>원힛 조합</strong> 가능)</li>
+            <li><strong>2합 / 4합 승급</strong>: 한 라운드에 같은 보석·같은 등급이 <strong>2개</strong> 뜨면 1단계 승급, <strong>4개</strong> 뜨면 2단계 승급이 가능합니다.</li>
+            <li><strong>스페셜 타워 (19종)</strong>: 상단 <strong>[📖 도감]</strong>의 레시피 재료를 모으면 강력한 고유 스킬과 진화 트리를 가진 스페셜 타워로 조합됩니다. (한 라운드 5개 안에서 재료가 다 모이면 즉시 <strong>원힛 조합</strong> 가능)</li>
           </ul>
         </div>
 
         <!-- 3. 바닥 통과형 슬레이트 -->
         <div class="rounded-xl bg-white border border-teal-200/90 p-3 shadow-sm">
           <div class="font-extrabold text-teal-900 mb-1 flex items-center gap-1.5">
-            <span>3️⃣ 바닥 통과형 슬레이트 (기본 8종 + 조합 4종)</span>
+            <span>3️⃣ 바닥 통과형 슬레이트 (기본 12종 + 조합 6종)</span>
           </div>
           <ul class="list-disc pl-4 space-y-1 text-[11px]">
             <li><strong>길막 없는 바닥 함정</strong>: 슬레이트는 몬스터가 위를 <strong>밟고 지나가는 바닥 타일</strong>이며, 바위나 타워와 <strong>중첩</strong>할 수도 있습니다. (중첩된 타일은 한 번 더 탭하면 슬레이트 정보 확인)</li>
@@ -1173,6 +1173,71 @@
             { name: '파라이바 토르말린', cost: 0, damage: 165, range: 4.6, cooldown: 0.38, splashRadius: 2.0, slowPct: 0.30, slowDuration: 3.5, armorShred: 4, shredDuration: 4.5, desc: '4재료 초고속 연사(0.38s) + 광역 냉기(30% 둔화 + 방어력 -4)' },
             { name: '파라이바 토르말린 패싯', cost: 270, damage: 320, range: 5.1, cooldown: 0.34, splashRadius: 2.5, slowPct: 0.38, slowDuration: 4.0, armorShred: 7, shredDuration: 5.5, desc: '초고속 연사(0.34s) + 강화 광역 냉기(38% 둔화 + 방어력 -7)' }
           ]
+        },
+        pearl: {
+          id: 'pearl', name: '진주', category: 'early',
+          color: '#f8fafc', stroke: '#67e8f9', accent: '#38bdf8',
+          targetType: 'both',
+          recipe: [{ gemId: 'aquamarine', grade: 1 }, { gemId: 'diamond', grade: 0 }, { gemId: 'opal', grade: 0 }],
+          tiers: [
+            { name: '진주', cost: 0, damage: 18, range: 4.2, cooldown: 0.75, multiTargets: 2, slowPct: 0.15, slowDuration: 2.0, desc: '2타겟 연쇄 공격 + 적중 시 15% 둔화(2초)' },
+            { name: '아코야 진주', cost: 45, damage: 46, range: 4.7, cooldown: 0.68, multiTargets: 3, slowPct: 0.22, slowDuration: 2.5, pearlAuraRange: 4.0, pearlSpeedAura: 0.10, desc: '3타겟 연쇄 공격 + 22% 둔화 + 반경 4.0칸 아군 공속 +10% 오라' },
+            { name: '흑진주 (블랙 펄)', cost: 215, damage: 135, range: 5.3, cooldown: 0.60, multiTargets: 4, slowPct: 0.30, slowDuration: 3.0, pearlAuraRange: 4.5, pearlSpeedAura: 0.18, armorShred: 4, shredDuration: 4.0, desc: '4타겟 연쇄 공격 + 30% 둔화 + 방어력 -4 + 반경 4.5칸 아군 공속 +18% 오라' }
+          ]
+        },
+        garnet: {
+          id: 'garnet', name: '가넷', category: 'mid',
+          color: '#9f1239', stroke: '#fda4af', accent: '#fb7185',
+          targetType: 'both',
+          recipe: [{ gemId: 'ruby', grade: 3 }, { gemId: 'diamond', grade: 2 }, { gemId: 'amethyst', grade: 1 }],
+          tiers: [
+            { name: '가넷', cost: 0, damage: 145, range: 5.2, cooldown: 0.85, critChance: 0.20, critMult: 2.5, bleedDps: 35, bleedDuration: 3.0, desc: '20% 확률 2.5배 치명타 + 출혈(초당 35, 3.0초)' },
+            { name: '로돌라이트 가넷', cost: 95, damage: 290, range: 5.7, cooldown: 0.78, critChance: 0.25, critMult: 3.0, bleedDps: 75, bleedDuration: 3.5, bonusArmorIgnorePct: 0.20, desc: '25% 확률 3.0배 치명타 + 출혈(초당 75, 3.5초) + 방어 무시 피해 20% 추가' },
+            { name: '임페리얼 가넷', cost: 235, damage: 560, range: 6.3, cooldown: 0.72, critChance: 0.30, critMult: 4.0, bleedDps: 145, bleedDuration: 4.0, bonusArmorIgnorePct: 0.30, bloodBurstRadius: 2.0, bloodBurstDmgMult: 0.80, desc: '30% 확률 4.0배 치명타 + 출혈(초당 145, 4초) + 처치 시 2.0칸 혈광 폭발(공격력 80%)' }
+          ]
+        },
+        amber: {
+          id: 'amber', name: '호박', category: 'late',
+          color: '#d97706', stroke: '#fde68a', accent: '#fbbf24',
+          targetType: 'both',
+          recipe: [{ gemId: 'topaz', grade: 4 }, { gemId: 'ruby', grade: 3 }, { gemId: 'emerald', grade: 2 }],
+          tiers: [
+            { name: '호박', cost: 0, damage: 175, range: 5.3, cooldown: 0.88, splashRadius: 2.4, slowPct: 0.35, slowDuration: 4.0, stunChance: 0.10, stunDuration: 1.2, desc: '2.4칸 광역 송진 피해 + 35% 둔화(4초) + 10% 확률 1.2초 송진 속박' },
+            { name: '고대 호박 (에인션트 앰버)', cost: 250, damage: 350, range: 5.9, cooldown: 0.80, splashRadius: 2.9, slowPct: 0.45, slowDuration: 4.5, stunChance: 0.16, stunDuration: 1.6, trappedDmgAmp: 0.20, desc: '2.9칸 광역 송진 피해 + 45% 둔화(4.5초) + 16% 확률 1.6초 속박 + 둔화/속박 대상 피해 +20% 증폭' }
+          ]
+        },
+        turquoise: {
+          id: 'turquoise', name: '터키석', category: 'early',
+          color: '#06b6d4', stroke: '#a5f3fc', accent: '#0284c7',
+          targetType: 'both',
+          recipe: [{ gemId: 'sapphire', grade: 1 }, { gemId: 'aquamarine', grade: 0 }, { gemId: 'topaz', grade: 0 }],
+          tiers: [
+            { name: '터키석', cost: 0, damage: 22, range: 4.4, cooldown: 0.85, splashRadius: 1.8, slowPct: 0.25, slowDuration: 3.0, desc: '착탄 반경 1.8칸 광역 하늘빛 충격파 + 25% 둔화(3초)' },
+            { name: '페르시안 터키석', cost: 50, damage: 56, range: 4.9, cooldown: 0.78, splashRadius: 2.3, slowPct: 0.34, slowDuration: 3.5, armorShred: 2, shredDuration: 4.0, desc: '반경 2.3칸 광역 충격파 + 34% 둔화 + 적 방어력 -2 감소' },
+            { name: '킹맨 터키석', cost: 215, damage: 165, range: 5.5, cooldown: 0.70, splashRadius: 2.8, slowPct: 0.42, slowDuration: 4.0, armorShred: 5, shredDuration: 4.5, desc: '반경 2.8칸 강화 광역 충격파 + 42% 둔화 + 적 방어력 -5 감소' }
+          ]
+        },
+        peridot: {
+          id: 'peridot', name: '페리도트', category: 'mid',
+          color: '#84cc16', stroke: '#ecfccb', accent: '#65a30d',
+          targetType: 'both',
+          recipe: [{ gemId: 'emerald', grade: 3 }, { gemId: 'topaz', grade: 2 }, { gemId: 'aquamarine', grade: 1 }],
+          tiers: [
+            { name: '페리도트', cost: 0, damage: 115, range: 5.0, cooldown: 0.75, poisonDps: 45, poisonDuration: 4.0, armorShred: 4, shredDuration: 4.5, desc: '감람석 독성 탄환 · 중독(초당 45, 4초) + 적 방어력 -4 감소' },
+            { name: '올리빈 페리도트', cost: 100, damage: 235, range: 5.5, cooldown: 0.68, poisonDps: 95, poisonDuration: 4.5, armorShred: 7, shredDuration: 5.0, slowPct: 0.25, desc: '강화 독성 탄환 · 중독(초당 95) + 25% 둔화 + 적 방어력 -7 감소' },
+            { name: '이브닝 에메랄드', cost: 245, damage: 460, range: 6.1, cooldown: 0.62, poisonDps: 175, poisonDuration: 5.0, armorShred: 11, shredDuration: 5.5, slowPct: 0.35, splashRadius: 2.0, desc: '반경 2.0칸 독성 폭발 · 중독(초당 175) + 35% 둔화 + 방어력 -11 감소' }
+          ]
+        },
+        moonstone: {
+          id: 'moonstone', name: '문스톤', category: 'mid',
+          color: '#cbd5e1', stroke: '#e0f2fe', accent: '#7dd3fc',
+          targetType: 'both',
+          recipe: [{ gemId: 'opal', grade: 3 }, { gemId: 'sapphire', grade: 2 }, { gemId: 'diamond', grade: 1 }],
+          tiers: [
+            { name: '문스톤', cost: 0, damage: 95, range: 5.3, cooldown: 0.80, moonAuraRange: 4.5, moonSpeedAura: 0.15, slowPct: 0.25, slowDuration: 3.5, desc: '월광 탄환(25% 둔화) + 반경 4.5칸 아군 공속 +15% 오라' },
+            { name: '레인보우 문스톤', cost: 115, damage: 205, range: 5.8, cooldown: 0.74, moonAuraRange: 5.2, moonSpeedAura: 0.24, moonDmgAura: 0.12, slowPct: 0.32, slowDuration: 4.0, desc: '월광 탄환(32% 둔화) + 반경 5.2칸 아군 공속 +24% & 공격력 +12% 오라' },
+            { name: '블루 쉰 문스톤', cost: 260, damage: 390, range: 6.4, cooldown: 0.68, moonAuraRange: 6.0, moonSpeedAura: 0.32, moonDmgAura: 0.20, multiTargets: 3, slowPct: 0.38, slowDuration: 4.5, desc: '3타겟 월광 연사(38% 둔화) + 반경 6.0칸 아군 공속 +32% & 공격력 +20% 오라' }
+          ]
         }
       };
 
@@ -1273,6 +1338,50 @@
           damage: 118, range: 1.8, stepRange: 1.8, cooldown: 0.90,
           auraRange: 4.0, slateDmgAura: 0.15,
           desc: '바닥 통과형 · 좁은 범위(1.8칸)를 밟는 지상 적에게 직접 피해 + 반경 5.5칸 아군 공격력 +15% 오라'
+        },
+        fissure_slate: {
+          id: 'fissure_slate', name: '균열 슬레이트', rune: '⋕',
+          slabColor: '#33221c', runeColor: '#fb923c', borderColor: '#f97316',
+          targetType: 'both',
+          main: { gemId: 'diamond', grade: 2 },
+          subs: ['ruby', 'emerald'],
+          subGrade: 1,
+          damage: 68, range: 4.4, cooldown: 0.90,
+          armorShred: 6, shredDuration: 4.5,
+          desc: '바닥 통과형 · 적중 시 적 방어력 -6 감소(4.5초) + 균열 탄환 피해'
+        },
+        burn_slate: {
+          id: 'burn_slate', name: '화염 슬레이트', rune: '❖',
+          slabColor: '#3b1d18', runeColor: '#fdba74', borderColor: '#fb923c',
+          targetType: 'both',
+          main: { gemId: 'ruby', grade: 2 },
+          subs: ['topaz', 'opal'],
+          subGrade: 1,
+          damage: 62, range: 4.5, cooldown: 0.88,
+          splashRadius: 1.8, burnDps: 44, burnDuration: 3.5,
+          desc: '바닥 통과형 · 1.8칸 광역 화염 피해 + 화상(초당 44, 3.5초)'
+        },
+        crit_slate: {
+          id: 'crit_slate', name: '관통 슬레이트', rune: '✦',
+          slabColor: '#1e2538', runeColor: '#fde047', borderColor: '#facc15',
+          targetType: 'both',
+          main: { gemId: 'topaz', grade: 2 },
+          subs: ['diamond', 'sapphire'],
+          subGrade: 1,
+          damage: 85, range: 5.0, cooldown: 0.92,
+          critChance: 0.35, critMult: 2.6,
+          desc: '바닥 통과형 · 35% 확률로 2.6배 치명타 피해 발동'
+        },
+        chain_slate: {
+          id: 'chain_slate', name: '번개 슬레이트', rune: 'ϟ',
+          slabColor: '#17293d', runeColor: '#7dd3fc', borderColor: '#38bdf8',
+          targetType: 'both',
+          main: { gemId: 'sapphire', grade: 2 },
+          subs: ['aquamarine', 'emerald'],
+          subGrade: 1,
+          damage: 52, range: 4.5, cooldown: 0.56,
+          multiTargets: 3,
+          desc: '바닥 통과형 · 빠른 연사(0.56s)로 최대 3마리 동시 연쇄 타격'
         }
       };
 
@@ -1331,6 +1440,27 @@
           attackAllInRange: true,
           auraRange: 5.0, viperDmgAura: 0.30,
           desc: '바닥 통과형 · 초장거리(10.5칸) 사거리 내 모든 적 동시 공격 + 반경 7.0칸 아군 공격력 +30% 오라(블랙 오팔과 별도 중첩)'
+        },
+        magma_slate: {
+          id: 'magma_slate', name: '용암 슬레이트', rune: '✺',
+          isCombo: true,
+          slabColor: '#3b1912', runeColor: '#fb923c', borderColor: '#f97316',
+          targetType: 'both',
+          recipe: ['fissure_slate', 'burn_slate'],
+          damage: 155, range: 5.4, cooldown: 0.78,
+          splashRadius: 2.5, armorShred: 14, shredDuration: 5.5,
+          burnDps: 95, burnDuration: 4.5, magmaBurstChance: 0.25, magmaBurstDmg: 340, magmaBurstRadius: 2.6,
+          desc: '바닥 통과형 · 2.5칸 광역 용암 피해 + 방어력 -14 감소 + 화상(초당 95) + 25% 확률 용암 폭발(340 고정 광역)'
+        },
+        storm_slate: {
+          id: 'storm_slate', name: '폭풍 슬레이트', rune: '⟁',
+          isCombo: true,
+          slabColor: '#16243b', runeColor: '#fde047', borderColor: '#38bdf8',
+          targetType: 'both',
+          recipe: ['crit_slate', 'chain_slate'],
+          damage: 135, range: 5.6, cooldown: 0.48,
+          multiTargets: 4, critChance: 0.40, critMult: 3.4,
+          desc: '바닥 통과형 · 초고속(0.48s) 4타겟 동시 연쇄 공격 + 40% 확률 3.4배 치명타'
         }
       };
 
@@ -1607,6 +1737,8 @@
         endlessMode: false,         // 50R + 데미지 테스터 이후 무한 모드 여부
         activeChance: null,         // { type: 'slate'|'gem', targetId, label }
         chanceUsedThisRound: false, // 이번 라운드 찬스 사용 여부
+        bryvxCheatActive: false,    // 개발자 치트: 라운드 보석 생성 시 브릭스 5% 출현
+        bryvxArtTapCount: 0,        // 브릭스 도감 그림 연속 탭 횟수
         damageTester: {
           active: false,
           totalDamage: 0,
@@ -2069,6 +2201,32 @@
             }
           }
 
+          // 공속 오라 4: 진주 스페셜 (아코야 +10%, 흑진주 +18%, 별도 중첩)
+          let bestPearlSpeed = 0;
+          for (const pr of state.keptGems) {
+            if (pr === t || pr.type !== 'special' || pr.specialId !== 'pearl') continue;
+            const pSpec = SPECIALS_DB.pearl.tiers[pr.tier];
+            if (!pSpec || !pSpec.pearlAuraRange || !pSpec.pearlSpeedAura) continue;
+            const distMajor = Math.hypot(t.sx - pr.sx, t.sy - pr.sy) / 2;
+            if (distMajor <= pSpec.pearlAuraRange) {
+              bestPearlSpeed = Math.max(bestPearlSpeed, pSpec.pearlSpeedAura);
+            }
+          }
+
+          // 공속 & 공격력 오라 5: 문스톤 스페셜 (월광 오라, 별도 중첩)
+          let bestMoonSpeed = 0;
+          let bestMoonDmg = 0;
+          for (const ms of state.keptGems) {
+            if (ms === t || ms.type !== 'special' || ms.specialId !== 'moonstone') continue;
+            const mSpec = SPECIALS_DB.moonstone.tiers[ms.tier];
+            if (!mSpec || !mSpec.moonAuraRange) continue;
+            const distMajor = Math.hypot(t.sx - ms.sx, t.sy - ms.sy) / 2;
+            if (distMajor <= mSpec.moonAuraRange) {
+              if (mSpec.moonSpeedAura) bestMoonSpeed = Math.max(bestMoonSpeed, mSpec.moonSpeedAura);
+              if (mSpec.moonDmgAura) bestMoonDmg = Math.max(bestMoonDmg, mSpec.moonDmgAura);
+            }
+          }
+
           // 공격력 오라들 (브릭스 + 블랙 오팔 + 옐로우 사파이어 + 데미지 슬레이트 + 바이퍼 슬레이트 중첩)
           let bestBlackOpal = 0;
           for (const bo of blackOpals) {
@@ -2108,8 +2266,8 @@
             }
           }
 
-          t.speedBonusTotal = bestOpalSpeed + bestSlateSpeed + bestWraithSpeed;
-          t.dmgBonusTotal = bryvxBonus + bestBlackOpal + bestYellowSapp + bestDmgSlate + bestViperSlate;
+          t.speedBonusTotal = bestOpalSpeed + bestSlateSpeed + bestWraithSpeed + bestPearlSpeed + bestMoonSpeed;
+          t.dmgBonusTotal = bryvxBonus + bestBlackOpal + bestYellowSapp + bestDmgSlate + bestViperSlate + bestMoonDmg;
           t.dmgMult = 1 + t.dmgBonusTotal;
         }
       }
@@ -3258,7 +3416,9 @@
       const MAX_SPECIAL_MOVE_COST = 100;
 
       function isMaxEvolvedSpecial(tower) {
-        if (!tower || tower.type !== 'special') return false;
+        if (!tower) return false;
+        if (tower.type === 'gem' && tower.gemId === 'bryvx') return true;
+        if (tower.type !== 'special') return false;
         const def = SPECIALS_DB[tower.specialId];
         return !!def && tower.tier >= def.tiers.length - 1;
       }
@@ -3508,13 +3668,17 @@
           state.moveMode = null;
           state.selectedEntity = entity;
 
-          const spDef = SPECIALS_DB[entity.specialId];
+          const isBryvxMove = entity.type === 'gem' && entity.gemId === 'bryvx';
+          const spDef = entity.type === 'special' ? SPECIALS_DB[entity.specialId] : null;
+          const moveEntityName = isBryvxMove
+            ? '스톤 오브 브릭스'
+            : (spDef ? spDef.tiers[entity.tier].name : '스페셜 타워');
           state.effects.push({
             type: 'ring',
             x: (entity.sx + 1) * S,
             y: (entity.sy + 1) * S,
             radius: 52,
-            color: spDef ? spDef.stroke : '#fde047',
+            color: isBryvxMove ? '#c084fc' : (spDef ? spDef.stroke : '#fde047'),
             life: 0.55,
             maxLife: 0.55,
           });
@@ -3523,7 +3687,7 @@
           refreshCraftableCache();
           updateAllUI();
           saveGame(false);
-          showToast(`👑 [${spDef ? spDef.tiers[entity.tier].name : '스페셜 타워'}] 바위로 이동 완료! (-${cost}G)`);
+          showToast(`👑 [${moveEntityName}] 바위로 이동 완료! (-${cost}G)`);
         }
       }
 
@@ -3716,6 +3880,23 @@
             };
             builtToast = `🎲 찬스 대성공! [최상급 ${spec.name}] 출현 (${state.tempGems.length + 1}/${GAME_CONFIG.BUILD_COUNT_PER_ROUND})`;
           }
+        }
+
+        if (!builtEntity && state.bryvxCheatActive && Math.random() < 0.05) {
+          builtEntity = {
+            type: 'gem',
+            gemId: 'bryvx',
+            grade: 5,
+            sx,
+            sy,
+            temp: true,
+            cooldown: 0,
+            kills: 0,
+            dmgMult: 1.0,
+            dmgBonusTotal: 0,
+            speedBonusTotal: 0,
+          };
+          builtToast = `🔴 브릭스 출현 (5%)! 스톤 오브 브릭스 건설 (${state.tempGems.length + 1}/${GAME_CONFIG.BUILD_COUNT_PER_ROUND})`;
         }
 
         if (!builtEntity) {
@@ -4275,6 +4456,9 @@
           burnTimer: 0,
           burnDps: 0,
           burnSource: null,
+          bleedTimer: 0,
+          bleedDps: 0,
+          bleedSource: null,
           stunTimer: 0,
           armorShredTimer: 0,
           armorShredAmt: 0,
@@ -4516,6 +4700,15 @@
             m.hp -= bDmg;
             if (m.hp <= 0) { killMonster(m, m.burnSource || null); state.monsters.splice(i, 1); continue; }
           }
+          if (m.bleedTimer > 0) {
+            m.bleedTimer -= simDt;
+            const blDmg = m.bleedDps * simDt;
+            if (m.isTester && state.damageTester && state.damageTester.active) {
+              state.damageTester.totalDamage += blDmg;
+            }
+            m.hp -= blDmg;
+            if (m.hp <= 0) { killMonster(m, m.bleedSource || null); state.monsters.splice(i, 1); continue; }
+          }
           if (m.isBoss || m.isTester) {
             m.stunTimer = 0;
           } else if (m.stunTimer > 0) {
@@ -4715,6 +4908,8 @@
               maxShots = stats.tSpec.multiTargets;
             } else if (tower.type === 'slate' && stats.def.attackAllInRange) {
               maxShots = candidates.length;
+            } else if (tower.type === 'slate' && stats.def.multiTargets) {
+              maxShots = stats.def.multiTargets;
             }
 
             const count = Math.min(maxShots, candidates.length);
@@ -4857,6 +5052,65 @@
               target.poisonTimer = Math.max(target.poisonTimer, def.poisonDuration);
             }
           }
+
+          if (def.critChance && Math.random() < def.critChance) {
+            dmg = Math.round(dmg * (def.critMult || 2.5));
+            spawnCritText(target.x, target.y, dmg, def.runeColor || '#fde047');
+          }
+
+          if (def.splashRadius) {
+            const rPx = def.splashRadius * T;
+            state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: rPx, color: def.runeColor, life: 0.25, maxLife: 0.25 });
+            for (const m of state.monsters) {
+              if (!m.alive) continue;
+              if (Math.hypot(m.x - target.x, m.y - target.y) <= rPx) {
+                damageMonster(m, dmg, tower, false);
+                if (def.slowPct && def.slowDuration) {
+                  m.slowFactor = Math.min(m.slowFactor, 1 - def.slowPct);
+                  m.slowTimer = Math.max(m.slowTimer, def.slowDuration);
+                }
+                if (def.armorShred && m.alive) {
+                  m.armorShredAmt = Math.max(m.armorShredAmt, def.armorShred);
+                  m.armorShredTimer = Math.max(m.armorShredTimer, def.shredDuration || 4.5);
+                }
+                if (def.burnDps && m.alive) {
+                  const effBurn = Math.round(def.burnDps * effStats.dmgMult);
+                  if (effBurn >= m.burnDps) {
+                    m.burnDps = effBurn;
+                    m.burnSource = tower;
+                  }
+                  m.burnTimer = Math.max(m.burnTimer, def.burnDuration || 3.5);
+                }
+              }
+            }
+          } else {
+            damageMonster(target, dmg, tower, false);
+            if (def.armorShred && target.alive) {
+              target.armorShredAmt = Math.max(target.armorShredAmt, def.armorShred);
+              target.armorShredTimer = Math.max(target.armorShredTimer, def.shredDuration || 4.5);
+            }
+            if (def.burnDps && target.alive) {
+              const effBurn = Math.round(def.burnDps * effStats.dmgMult);
+              if (effBurn >= target.burnDps) {
+                target.burnDps = effBurn;
+                target.burnSource = tower;
+              }
+              target.burnTimer = Math.max(target.burnTimer, def.burnDuration || 3.5);
+            }
+          }
+
+          if (def.magmaBurstChance && Math.random() < def.magmaBurstChance) {
+            const mrPx = (def.magmaBurstRadius || 2.5) * T;
+            const mDmg = Math.round((def.magmaBurstDmg || 300) * effStats.dmgMult);
+            state.effects.push({ type: 'flame', x: target.x, y: target.y, radius: mrPx, color: '#f97316', life: 0.42, maxLife: 0.42 });
+            state.floatingTexts.push({ x: target.x, y: target.y - 18, text: '🌋 용암 폭발!', color: '#fb923c', life: 0.85, maxLife: 0.85 });
+            for (const m of state.monsters) {
+              if (!m.alive) continue;
+              if (Math.hypot(m.x - target.x, m.y - target.y) <= mrPx) {
+                damageMonster(m, mDmg, tower, true);
+              }
+            }
+          }
           return;
         }
 
@@ -4982,6 +5236,26 @@
           target.armorShredAmt = Math.max(target.armorShredAmt, tSpec.armorShred);
           target.armorShredTimer = Math.max(target.armorShredTimer, tSpec.shredDuration || 5.0);
         }
+        if (tSpec.bleedDps && target.alive) {
+          const effBleed = Math.round(tSpec.bleedDps * getTowerEffectiveStats(tower).dmgMult);
+          if (effBleed >= target.bleedDps) {
+            target.bleedDps = effBleed;
+            target.bleedSource = tower;
+          }
+          target.bleedTimer = Math.max(target.bleedTimer, tSpec.bleedDuration || 3.0);
+        }
+        if (tSpec.bonusArmorIgnorePct && target.alive) {
+          const extraTrueDmg = Math.round(dmg * tSpec.bonusArmorIgnorePct);
+          if (extraTrueDmg > 0) {
+            damageMonster(target, extraTrueDmg, tower, true);
+          }
+        }
+        if (tSpec.trappedDmgAmp && target.alive && (target.slowTimer > 0 || target.stunTimer > 0)) {
+          const ampDmg = Math.round(dmg * tSpec.trappedDmgAmp);
+          if (ampDmg > 0) {
+            damageMonster(target, ampDmg, tower, false);
+          }
+        }
         if (tSpec.stunChance && Math.random() < tSpec.stunChance) {
           if (target.isBoss || target.isTester) {
             state.floatingTexts.push({ x: target.x, y: target.y - 14, text: '스턴 무효', color: '#cbd5e1', life: 0.7, maxLife: 0.7 });
@@ -5052,6 +5326,22 @@
             if (!other.alive) continue;
             if (Math.hypot(other.x - m.x, other.y - m.y) <= explodeRPx) {
               damageMonster(other, explodeDmg, srcTower, false);
+            }
+          }
+        }
+
+        if (tower && tower.type === 'special' && tower.specialId === 'garnet') {
+          const gSpec = SPECIALS_DB.garnet.tiers[tower.tier];
+          if (gSpec && gSpec.bloodBurstRadius && gSpec.bloodBurstDmgMult) {
+            const bRadiusPx = gSpec.bloodBurstRadius * GAME_CONFIG.MAJOR_TILE_SIZE;
+            const bStats = getTowerEffectiveStats(tower);
+            const bDmg = Math.round(bStats.effDmg * gSpec.bloodBurstDmgMult);
+            state.effects.push({ type: 'flame', x: m.x, y: m.y, radius: bRadiusPx, color: '#fb7185', life: 0.36, maxLife: 0.36 });
+            for (const other of state.monsters) {
+              if (!other.alive) continue;
+              if (Math.hypot(other.x - m.x, other.y - m.y) <= bRadiusPx) {
+                damageMonster(other, bDmg, tower, false);
+              }
             }
           }
         }
@@ -5407,6 +5697,35 @@
             c.beginPath();
             c.arc(cx, cy, T * (0.34 + pulse * 0.06), 0, Math.PI * 2);
             c.stroke();
+          } else if (slateId === 'magma_slate') {
+            const mRad = T * (0.28 + pulse * 0.14);
+            c.strokeStyle = `rgba(251, 146, 60, ${0.5 + pulse * 0.45})`;
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.arc(cx, cy, mRad, 0, Math.PI * 2);
+            c.stroke();
+            for (let i = 0; i < 4; i++) {
+              const a = cPhase * 0.5 + (Math.PI / 2) * i;
+              c.beginPath();
+              c.arc(cx + Math.cos(a) * T * 0.35, cy + Math.sin(a) * T * 0.35, 2.1, 0, Math.PI * 2);
+              c.fillStyle = '#fb923c';
+              c.fill();
+            }
+          } else if (slateId === 'storm_slate') {
+            const sRad = T * (0.28 + pulse * 0.12);
+            c.strokeStyle = `rgba(125, 211, 252, ${0.42 + pulse * 0.42})`;
+            c.lineWidth = 1.3;
+            c.beginPath();
+            c.arc(cx, cy, sRad, 0, Math.PI * 2);
+            c.stroke();
+
+            for (let i = 0; i < 4; i++) {
+              const a = cPhase * 0.65 + (Math.PI / 2) * i;
+              c.beginPath();
+              c.arc(cx + Math.cos(a) * T * 0.35, cy + Math.sin(a) * T * 0.35, 1.9, 0, Math.PI * 2);
+              c.fillStyle = '#fde047';
+              c.fill();
+            }
           } else {
             c.strokeStyle = `rgba(253, 224, 71, ${0.42 + pulse * 0.42})`;
             c.lineWidth = 1.2;
@@ -5914,6 +6233,143 @@
             c.arc(cx, cy, r * (0.45 + pulse * 0.45), 0, Math.PI * 2);
             c.strokeStyle = `rgba(163, 230, 53, ${0.65 * (1 - pulse * 0.65)})`;
             c.lineWidth = 1.2;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'pearl': {
+            c.save();
+            const pGrad = c.createRadialGradient(cx - r * 0.25, cy - r * 0.25, r * 0.08, cx, cy, r * 0.95);
+            pGrad.addColorStop(0, '#ffffff');
+            pGrad.addColorStop(0.55, '#f0f9ff');
+            pGrad.addColorStop(1, '#bae6fd');
+            c.beginPath();
+            c.arc(cx, cy, r * 0.86, 0, Math.PI * 2);
+            c.fillStyle = pGrad;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.45 + pulse * 0.45), 0, Math.PI * 2);
+            c.strokeStyle = `rgba(103, 232, 249, ${0.65 * (1 - pulse * 0.6)})`;
+            c.lineWidth = 1.2;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'garnet': {
+            c.save();
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(phase * 0.35);
+            drawGemShape(c, 'octagon', 0, 0, r * 0.96);
+            c.fillStyle = def.color;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+            c.restore();
+
+            drawGemShape(c, 'diamond', cx, cy, r * (0.54 + pulse * 0.07));
+            c.fillStyle = '#e11d48';
+            c.fill();
+            c.strokeStyle = '#fecdd3';
+            c.lineWidth = 1.2;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'amber': {
+            c.save();
+            const aGrad = c.createRadialGradient(cx - r * 0.2, cy - r * 0.2, r * 0.1, cx, cy, r * 1.0);
+            aGrad.addColorStop(0, '#fef08a');
+            aGrad.addColorStop(0.55, '#f59e0b');
+            aGrad.addColorStop(1, '#b45309');
+            drawGemShape(c, 'pentagon', cx, cy, r * 0.95);
+            c.fillStyle = aGrad;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.24 + pulse * 0.07), 0, Math.PI * 2);
+            c.fillStyle = '#78350f';
+            c.fill();
+            c.restore();
+            break;
+          }
+
+          case 'turquoise': {
+            c.save();
+            drawGemShape(c, 'hexagon', cx, cy, r * 0.94);
+            c.fillStyle = def.color;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+
+            // 터키석 특유의 모암(매트릭스) 결 무늬
+            c.strokeStyle = '#164e63';
+            c.lineWidth = 1.1;
+            c.beginPath();
+            c.moveTo(cx - r * 0.48, cy - r * 0.22);
+            c.lineTo(cx - r * 0.08, cy + r * 0.05);
+            c.lineTo(cx + r * 0.44, cy - r * 0.30);
+            c.moveTo(cx - r * 0.08, cy + r * 0.05);
+            c.lineTo(cx + r * 0.16, cy + r * 0.52);
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'peridot': {
+            c.save();
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-phase * 0.30);
+            drawGemShape(c, 'octagon', 0, 0, r * 0.96);
+            c.fillStyle = def.color;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+            c.restore();
+
+            drawGemShape(c, 'star4', cx, cy, r * (0.56 + pulse * 0.08));
+            c.fillStyle = '#d9f99d';
+            c.fill();
+            c.strokeStyle = '#3f6212';
+            c.lineWidth = 1.1;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'moonstone': {
+            c.save();
+            const mGrad = c.createRadialGradient(cx - r * 0.22, cy - r * 0.22, r * 0.08, cx, cy, r * 0.96);
+            mGrad.addColorStop(0, '#ffffff');
+            mGrad.addColorStop(0.50, '#bae6fd');
+            mGrad.addColorStop(1, '#64748b');
+            c.beginPath();
+            c.arc(cx, cy, r * 0.90, 0, Math.PI * 2);
+            c.fillStyle = mGrad;
+            c.fill();
+            c.strokeStyle = def.stroke;
+            c.lineWidth = 1.7;
+            c.stroke();
+
+            // 초승달 문양 + 월광 맥동
+            c.beginPath();
+            c.arc(cx - r * 0.08, cy, r * 0.44, 0.35 * Math.PI, 1.65 * Math.PI);
+            c.strokeStyle = `rgba(14, 165, 233, ${0.65 + pulse * 0.3})`;
+            c.lineWidth = 2.0;
             c.stroke();
             c.restore();
             break;
@@ -6445,6 +6901,25 @@
                   stroke: '#c2410c',
                   dash: [6, 4],
                   label: `화염 오라 (${tSpec.immolationRange}칸)`
+                });
+              }
+              if (tSpec.pearlAuraRange && tSpec.pearlSpeedAura) {
+                effectCircles.push({
+                  radiusTiles: tSpec.pearlAuraRange,
+                  fill: 'rgba(103, 232, 249, 0.07)',
+                  stroke: '#0284c7',
+                  dash: [6, 4],
+                  label: `공속 오라 +${Math.round(tSpec.pearlSpeedAura * 100)}% (${tSpec.pearlAuraRange}칸)`
+                });
+              }
+              if (tSpec.moonAuraRange && tSpec.moonSpeedAura) {
+                const dmgPart = tSpec.moonDmgAura ? ` · 공 +${Math.round(tSpec.moonDmgAura * 100)}%` : '';
+                effectCircles.push({
+                  radiusTiles: tSpec.moonAuraRange,
+                  fill: 'rgba(125, 211, 252, 0.07)',
+                  stroke: '#0369a1',
+                  dash: [6, 4],
+                  label: `월광 오라 공속 +${Math.round(tSpec.moonSpeedAura * 100)}%${dmgPart} (${tSpec.moonAuraRange}칸)`
                 });
               }
               if (tSpec.splashRadius) {
@@ -7116,7 +7591,25 @@
         });
       }
 
+      function syncInspectorPanelTheme() {
+        const panel = document.getElementById('inspectorPanelBox');
+        if (!panel) return;
+        const sel = state.selectedEntity;
+        let cls = 'relative bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm flex flex-col gap-2 transition-colors';
+        if (sel && sel.type === 'gem' && sel.gemId === 'bryvx') {
+          cls = 'relative bg-gradient-to-br from-purple-100/95 via-emerald-50/95 to-amber-100/90 rounded-2xl p-2.5 border-2 border-purple-400 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'special') {
+          cls = 'relative bg-gradient-to-br from-amber-50/90 to-violet-50/80 rounded-2xl p-2.5 border border-amber-300/90 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'slate') {
+          cls = 'relative bg-gradient-to-br from-teal-50/90 to-emerald-50/80 rounded-2xl p-2.5 border border-teal-300/90 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'rock') {
+          cls = 'relative bg-slate-100/95 rounded-2xl p-2.5 border border-slate-300 shadow-sm flex flex-col gap-2 transition-colors';
+        }
+        panel.className = cls;
+      }
+
       function _updateAllUIInner() {
+        syncInspectorPanelTheme();
         updateHUD();
         updateWaveCounter();
         renderTempGemTray();
@@ -7168,9 +7661,11 @@
           } else {
             state.selectedEntity = state.moveMode.entity;
             const isSlateMove = state.moveMode.kind === 'slate';
+            const moveEnt = state.moveMode.entity;
+            const isBryvxEnt = !isSlateMove && moveEnt && moveEnt.type === 'gem' && moveEnt.gemId === 'bryvx';
             const mDef = isSlateMove
-              ? getSlateDef(state.moveMode.entity.slateId)
-              : SPECIALS_DB[state.moveMode.entity.specialId].tiers[state.moveMode.entity.tier];
+              ? getSlateDef(moveEnt.slateId)
+              : (isBryvxEnt ? GEMS_DB.bryvx : SPECIALS_DB[moveEnt.specialId].tiers[moveEnt.tier]);
             const mName = isSlateMove ? (mDef ? mDef.name : '슬레이트') : (mDef ? mDef.name : '스페셜');
             phaseBadge.textContent = isSlateMove ? '슬레이트 이동' : '타워 이동 (100G)';
             phaseBadge.className = 'shrink-0 px-2 py-0.5 rounded-md text-[11px] font-extrabold tracking-wide bg-amber-100 text-amber-800 border border-amber-300';
@@ -7512,7 +8007,8 @@
             } else if (!cell.temp) {
               const canDown = canDowngradeRoundGem(cell);
               const canDestGem = canDestroyGem(cell);
-              if (spOptions.length > 0 || canDown || canDestGem) {
+              const canMoveBryvx = isMaxEvolvedSpecial(cell);
+              if (spOptions.length > 0 || canDown || canDestGem || canMoveBryvx) {
                 dynamicActionsWrap.classList.remove('hidden');
                 for (const opt of spOptions) {
                   const def = SPECIALS_DB[opt.specialId];
@@ -7525,6 +8021,26 @@
                     'bg-gradient-to-b from-sky-500 to-cyan-600 hover:from-sky-400 hover:to-cyan-500 text-white',
                     () => downgradeRoundGem(cell)
                   );
+                }
+                if (canMoveBryvx) {
+                  const isMovingThisBryvx = !!(state.moveMode && state.moveMode.kind === 'special' && state.moveMode.entity === cell);
+                  if (isMovingThisBryvx) {
+                    addActionBtn(
+                      '✖ 이동 취소',
+                      'bg-slate-700 hover:bg-slate-600 text-slate-100',
+                      () => cancelMoveMode(true)
+                    );
+                  } else {
+                    const canAffordMove = state.gold >= MAX_SPECIAL_MOVE_COST;
+                    addActionBtn(
+                      `🪨 바위로 이동 (${MAX_SPECIAL_MOVE_COST} G)`,
+                      canAffordMove
+                        ? 'bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950'
+                        : 'bg-slate-700 text-slate-300',
+                      () => startMaxSpecialMove(cell),
+                      !canAffordMove
+                    );
+                  }
                 }
                 if (canDestGem) {
                   addActionBtn(
@@ -7577,7 +8093,7 @@
         inspectorTitle.textContent = state.phase === 'SELECT' ? '유지/조합할 보석을 탭하세요' : '빈 공간을 탭해 반칸 배치';
         inspectorSub.textContent = state.phase === 'SELECT'
           ? '선택하지 않은 4개 보석은 바위가 됩니다. 원힛·석판·2합 배지를 확인하세요.'
-          : '상단 [도감]에서 13종 스페셜 타워와 8종 기본 슬레이트 조합식을 확인할 수 있습니다.';
+          : '상단 [도감]에서 스페셜 타워와 12종 기본 슬레이트 조합식을 확인할 수 있습니다.';
 
       }
 
@@ -7812,6 +8328,7 @@
        * 12. INTERACTIVE RECIPE CODEX MODAL (스페셜 13종 + 슬레이트 8종)
        * ========================================================================= */
       function openCodexModal() {
+        state.bryvxArtTapCount = 0;
         closeQualityPopover();
         refreshCraftableCache();
         renderCodexModal();
@@ -8321,29 +8838,49 @@
           codexList.appendChild(card);
         }
 
-        // 스페셜 타워 도감 제일 아래: 히든 전설 '스톤 오브 브릭스' (재료·능력치 비공개, 별도 배경색 구분)
+        // 스페셜 타워 도감 제일 아래: 히든 전설 '스톤 오브 브릭스' (재료·능력치 비공개, 별도 배경색 구분 + 개발자 치트 트리거)
         if (state.codexFilter === 'all' || state.codexFilter === 'late') {
+          const isRedCheat = !!state.bryvxCheatActive;
           const bryvxCard = document.createElement('div');
-          bryvxCard.className = 'rounded-xl p-3 border border-indigo-300/90 bg-gradient-to-br from-indigo-100/80 via-purple-50/90 to-slate-100/95 shadow-sm';
+          bryvxCard.className = isRedCheat
+            ? 'rounded-xl p-3 border-2 border-rose-500 bg-gradient-to-br from-rose-200/95 via-red-100/95 to-rose-50 shadow-md transition-colors'
+            : 'rounded-xl p-3 border border-indigo-300/90 bg-gradient-to-br from-indigo-100/80 via-purple-50/90 to-slate-100/95 shadow-sm transition-colors';
           bryvxCard.innerHTML = `
             <div class="flex items-start justify-between gap-2 mb-1.5">
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 min-w-0 flex-wrap mb-1.5">
-                  <span class="w-4 h-4 rounded-full shrink-0 border-2 border-amber-400 flex items-center justify-center text-[9px] font-extrabold text-slate-950" style="background:#34d399">★</span>
-                  <span class="text-sm font-extrabold text-indigo-950 truncate">스톤 오브 브릭스</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-indigo-200/80 text-indigo-900 border border-indigo-300">전설 · 히든</span>
+                  <span class="w-4 h-4 rounded-full shrink-0 border-2 ${isRedCheat ? 'border-rose-600' : 'border-amber-400'} flex items-center justify-center text-[9px] font-extrabold text-slate-950" style="background:${isRedCheat ? '#fb7185' : '#34d399'}">★</span>
+                  <span class="text-sm font-extrabold ${isRedCheat ? 'text-rose-950' : 'text-indigo-950'} truncate">스톤 오브 브릭스</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold ${isRedCheat ? 'bg-rose-600 text-white border border-rose-700' : 'bg-indigo-200/80 text-indigo-900 border border-indigo-300'}">${isRedCheat ? '전설 · 붉은 치트 ON (5%)' : '전설 · 히든'}</span>
                 </div>
                 <div class="flex flex-wrap gap-1">
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border bg-white/75 border-indigo-200 text-indigo-900">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border ${isRedCheat ? 'bg-white/85 border-rose-300 text-rose-900' : 'bg-white/75 border-indigo-200 text-indigo-900'}">
                     <span>🔒 조합 재료: 비공개 (???)</span>
                   </span>
                 </div>
               </div>
-              <canvas data-art-type="gem" data-art-id="bryvx" data-art-grade="5" width="36" height="36" class="codex-art-canvas w-9 h-9 shrink-0 block"></canvas>
+              <canvas id="bryvxCodexArtCanvas" data-art-type="gem" data-art-id="bryvx" data-art-grade="5" width="36" height="36" class="codex-art-canvas w-9 h-9 shrink-0 block cursor-pointer rounded-lg"></canvas>
             </div>
-            <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-relaxed">🔒 능력치 및 고유 효과: 비공개 (???)</div>
-            <div class="text-[10px] text-indigo-800/80 font-medium pt-1 border-t border-indigo-200/70">히든 전설 타워 · 직접 발견해 보세요.</div>
+            <div class="text-[11px] font-semibold ${isRedCheat ? 'text-rose-900' : 'text-slate-700'} mb-1 leading-relaxed">🔒 능력치 및 고유 효과: 비공개 (???)</div>
+            <div class="text-[10px] ${isRedCheat ? 'text-rose-800 font-bold border-rose-300/80' : 'text-indigo-800/80 font-medium border-indigo-200/70'} pt-1 border-t">${isRedCheat ? '붉은 빛 치트 활성화 중: 보석 생성마다 5% 확률로 스톤 오브 브릭스 출현' : '히든 전설 타워 · 직접 발견해 보세요.'}</div>
           `;
+          const artCanvas = bryvxCard.querySelector('#bryvxCodexArtCanvas');
+          if (artCanvas) {
+            artCanvas.addEventListener('click', (e) => {
+              e.stopPropagation();
+              state.bryvxArtTapCount = (state.bryvxArtTapCount || 0) + 1;
+              if (state.bryvxArtTapCount >= 10) {
+                state.bryvxArtTapCount = 0;
+                state.bryvxCheatActive = !state.bryvxCheatActive;
+                renderCodexModal();
+                showToast(
+                  state.bryvxCheatActive
+                    ? '🔴 브릭스 치트 ON! (붉은 빛 · 보석 생성 시 5% 확률 브릭스 출현)'
+                    : '⚪ 브릭스 치트 OFF! (일반 확률로 복귀)'
+                );
+              }
+            });
+          }
           codexList.appendChild(bryvxCard);
         }
 
