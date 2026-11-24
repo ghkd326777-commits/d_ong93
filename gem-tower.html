@@ -329,7 +329,7 @@
               </button>
             </div>
             <p class="text-[11px] text-slate-700 leading-relaxed">
-              활성화 중 <strong>골드 획득 2배</strong> &amp; <strong>스페셜 타워 진화 비용 0.5배</strong>가 적용됩니다.
+              활성화 중 <strong>골드 2배</strong> · <strong>진화 비용 0.5배</strong> · <strong>적 방깎 15%</strong> · <strong>적 체력 -25%</strong>가 적용됩니다.
             </p>
           </div>
         </div>
@@ -1027,11 +1027,13 @@
           id: 'bryvx', name: '스톤 오브 브릭스', shape: 'bryvx',
           color: '#34d399', stroke: '#fde047',
           targetType: 'both',
-          damage:   [500, 500, 500, 500, 500, 500],
-          range:    [8.5, 8.5, 8.5, 8.5, 8.5, 8.5],
-          cooldown: [0.85, 0.85, 0.85, 0.85, 0.85, 0.85],
-          globalDmgBonus: 0.50,
-          getDesc: () => '전설 타워 · 맵 전체 아군 타워 공격력 +50% 오라',
+          damage:   [2200, 2200, 2200, 2200, 2200, 2200],
+          range:    [14.0, 14.0, 14.0, 14.0, 14.0, 14.0],
+          cooldown: [0.42, 0.42, 0.42, 0.42, 0.42, 0.42],
+          splashRadius: 3.4,
+          globalDmgBonus: 1.00,
+          globalArmorShred: 20,
+          getDesc: () => '압도적 전설 · 전역 아군 공 +100% & 적 방어력 -20 오라 · 3.4칸 광역 폭격',
         }
       };
 
@@ -2155,7 +2157,7 @@
       // 모든 유지 타워 및 슬레이트의 오라 재계산 (오팔 + 오팔맥상 + 생령 공속 중첩, 공버프 중첩)
       function recalculateAuras() {
         const hasBryvx = state.keptGems.some((g) => g.type === 'gem' && g.gemId === 'bryvx');
-        const bryvxBonus = hasBryvx ? 0.50 : 0;
+        const bryvxBonus = hasBryvx ? 1.00 : 0;
 
         const opals = state.keptGems.filter((g) => g.type === 'gem' && g.gemId === 'opal');
         const blackOpals = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'black_opal');
@@ -4030,7 +4032,7 @@
           if (combo.isBryvx) {
             target.gemId = 'bryvx';
             target.grade = 5;
-            toastMsg = `👑 전설 탄생! 스톤 오브 브릭스 (전체 공격력 +50%)`;
+            toastMsg = `👑 전설 탄생! 스톤 오브 브릭스 (전역 공 +100% · 방깎 -20 · 광역폭격)`;
           } else {
             target.grade = Math.min(5, target.grade + 2);
             toastMsg = `🌟 4합 대승급! ${GRADES_DB[target.grade].name} ${GEMS_DB[target.gemId].name} 완성`;
@@ -4436,7 +4438,8 @@
         const T = GAME_CONFIG.MAJOR_TILE_SIZE;
         const wStats = getRoundWaveStats(state.round);
         const air = wStats.isAir;
-        const maxHp = wStats.maxHp;
+        const cowardHpMult = (state.cowardMode && !wStats.isTester) ? 0.75 : 1.0;
+        const maxHp = Math.max(1, Math.round(wStats.maxHp * cowardHpMult));
         const baseArmor = wStats.baseArmor;
         const speed = wStats.speedTiles * T;
         const reward = getMonsterKillGold(state.round, wStats.isTester);
@@ -4553,9 +4556,12 @@
         const S = GAME_CONFIG.SUB_TILE_SIZE;
         const T = GAME_CONFIG.MAJOR_TILE_SIZE;
         let auraRed = 0;
+        let hasBryvxGlobal = false;
 
         for (const t of state.keptGems) {
-          if (t.type === 'special' && t.specialId === 'red_crystal') {
+          if (t.type === 'gem' && t.gemId === 'bryvx') {
+            hasBryvxGlobal = true;
+          } else if (t.type === 'special' && t.specialId === 'red_crystal') {
             const tSpec = SPECIALS_DB.red_crystal.tiers[t.tier];
             const tx = (t.sx + 1) * S;
             const ty = (t.sy + 1) * S;
@@ -4564,7 +4570,16 @@
             }
           }
         }
-        return m.baseArmor - m.armorShredAmt - auraRed;
+        const bryvxArmorRed = hasBryvxGlobal ? (GEMS_DB.bryvx.globalArmorShred || 20) : 0;
+        const rawArmorAfterFlat = m.baseArmor - m.armorShredAmt - auraRed - bryvxArmorRed;
+        if (state.cowardMode && !m.isTester) {
+          if (rawArmorAfterFlat >= 0) {
+            return rawArmorAfterFlat * 0.85;
+          } else {
+            return rawArmorAfterFlat * 1.15;
+          }
+        }
+        return rawArmorAfterFlat;
       }
 
       function updateSimulation(dt) {
@@ -5127,6 +5142,17 @@
           if (tower.gemId === 'ruby' && g < 5) {
             const rPx = spec.splashRadius[g] * T;
             state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: rPx, color: spec.color, life: 0.24, maxLife: 0.24 });
+            for (const m of state.monsters) {
+              if (m.alive && Math.hypot(m.x - target.x, m.y - target.y) <= rPx) {
+                damageMonster(m, dmg, tower, false);
+              }
+            }
+            return;
+          }
+
+          if (tower.gemId === 'bryvx' && spec.splashRadius) {
+            const rPx = spec.splashRadius * T;
+            state.effects.push({ type: 'flame', x: target.x, y: target.y, radius: rPx, color: '#fde047', life: 0.32, maxLife: 0.32 });
             for (const m of state.monsters) {
               if (m.alive && Math.hypot(m.x - target.x, m.y - target.y) <= rPx) {
                 damageMonster(m, dmg, tower, false);
@@ -7426,7 +7452,8 @@
             : 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200';
         }
 
-        riHpText.textContent = wStats.maxHp.toLocaleString();
+        const dispHp = (state.cowardMode && !isTester) ? Math.max(1, Math.round(wStats.maxHp * 0.75)) : wStats.maxHp;
+        riHpText.textContent = dispHp.toLocaleString();
         riArmorText.textContent = `${wStats.baseArmor}`;
         riSpeedText.textContent = `${wStats.speedTiles.toFixed(2)} 칸/s`;
         riCountRewardText.textContent = isTester ? '1마리 · 측정용' : `${count}마리 · +${effClearGold}G`;
