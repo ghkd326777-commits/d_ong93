@@ -356,7 +356,14 @@ main.home-screen{
   content:"◆" / "";position:absolute;right:4px;bottom:2px;color:#35614a;font-size:11px;line-height:1
 }
 .character-card[data-rarity="LR"] .card-art::after{content:"✧" / "";font-size:16px;color:#41598d;text-shadow:0 0 5px #fff}
-.dialog .pack-odds{margin:0 0 8px;font-size:11px;font-variant-numeric:tabular-nums}
+.pack-odds{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 8px;font-size:11px;font-weight:750;font-variant-numeric:tabular-nums}
+.pack-odds span{white-space:nowrap}
+.pack-odds [data-rarity="C"]{color:#ded4c8}
+.pack-odds [data-rarity="UC"]{color:#a9d5af}
+.pack-odds [data-rarity="R"]{color:#f3b98f}
+.pack-odds [data-rarity="SR"]{color:#a9d9ff}
+.pack-odds [data-rarity="UR"]{color:#ffe084}
+.pack-odds [data-rarity="LR"]{color:#e2b5ff}
 .card-copy{display:grid;align-content:start;gap:3px;min-width:0;padding:6px 3px 3px}
 .card-name{font-size:13px;color:var(--cream);line-height:1.25;overflow-wrap:anywhere}
 .card-status{width:max-content;max-width:100%;font-size:10px;line-height:1.15;padding:3px 5px;border-radius:4px;background:#4b352a;color:#ffdbaa}
@@ -572,8 +579,8 @@ const CREW = [
   {id:'hachiware',name:'하치와레'},
   {id:'usagi',name:'우사기'}
 ];
-const SKIN_LEVELS={파자마:5,요정:7,비옷:9,너구리:11,매지컬:13,문어옷:15};
-const SKIN_PRICE=10000;
+const SKIN_LEVELS={파자마:3,요정:5,비옷:7,너구리:9,매지컬:11,문어옷:13};
+const SKIN_PRICES={파자마:3000,요정:5000,비옷:5000,너구리:8000,매지컬:8000,문어옷:10000};
 const SKINS = {
   chiikawa:{
     pajama:{name:'파자마',skill:'생명 회복',chef:'생명 1칸을 회복해요. 생명이 1칸이면 2칸 회복해요.',helper:'생명 · 한 판 첫 조리 실패의 생명 손실을 막아요.'},
@@ -1168,17 +1175,18 @@ function renderSkinCards(store){
     for(const {person,id,skin} of options){
       const owned=ownsSkin(person.id,id);
       const meetsLevel=profile.bestLevel>=SKIN_LEVELS[series];
+      const price=SKIN_PRICES[series];
       const entry=characterCard(grid,{
         label:person.name+' · '+series,
         detail:owned?skin.skill:store?'':skinCondition(skin),
         status:store?'':owned?'보유 중':meetsLevel?'구매 가능':'레벨 제한',
-        price:store&&!owned?SKIN_PRICE:null,
+        price:store&&!owned?price:null,
         tone:person.id,state:owned?'owned':store&&meetsLevel?'sale':'locked',
         sprite:SPRITES[id],mark:SKIN_MARKS[series]
       });
       if(store){
-        shopButton(entry,owned?'보유 중':!meetsLevel?'Lv. '+SKIN_LEVELS[series]+' 필요':profile.coins<SKIN_PRICE?'보유금 부족':'구매',
-          'buy-'+id,owned||!meetsLevel||profile.coins<SKIN_PRICE,()=>buySkin(person,id));
+        shopButton(entry,owned?'보유 중':!meetsLevel?'Lv. '+SKIN_LEVELS[series]+' 필요':profile.coins<price?'보유금 부족':'구매',
+          'buy-'+id,owned||!meetsLevel||profile.coins<price,()=>buySkin(person,id));
       }
     }
   }
@@ -1229,8 +1237,9 @@ function shopButton(entry,label,id,disabled,action){
 
 function buySkin(person,id){
   const skin=SKINS[person.id][id];
-  if(state.mode!=='info'||ownsSkin(person.id,id)||profile.bestLevel<SKIN_LEVELS[skin.name]||profile.coins<SKIN_PRICE) return;
-  profile.coins-=SKIN_PRICE;
+  const price=SKIN_PRICES[skin.name];
+  if(state.mode!=='info'||ownsSkin(person.id,id)||profile.bestLevel<SKIN_LEVELS[skin.name]||profile.coins<price) return;
+  profile.coins-=price;
   profile.skins.push(id);
   const saved=saveProfile();
   showInfo(false,skin.name+' '+person.name+' 스킨을 구매했어요.'+(saved?'':' 이번 접속에만 기록돼요.'));
@@ -1340,11 +1349,16 @@ function renderShop(){
   const packs=cardSection('카드팩');
   packs.id='cardPackShelf';
   packs.tabIndex=-1;
-  const odds=document.createElement('p');
+  const odds=document.createElement('div');
   odds.className='pack-odds';
-  odds.textContent='카드 한 장당 · '+CARD_RARITIES.map(({rarity,weight})=>
-    rarity+' '+(100*weight/CARD_TOTAL_WEIGHT).toFixed(2)+'%'
-  ).join(' · ');
+  odds.setAttribute('role','group');
+  odds.setAttribute('aria-label','등급별 등장 확률');
+  for(const {rarity,weight} of CARD_RARITIES){
+    const chance=document.createElement('span');
+    chance.dataset.rarity=rarity;
+    chance.textContent=rarity+' '+(100*weight/CARD_TOTAL_WEIGHT).toFixed(2)+'%';
+    odds.append(chance);
+  }
   packs.before(odds);
   for(const {count,price,tone} of CARD_PACKS){
     const entry=characterCard(packs,{
