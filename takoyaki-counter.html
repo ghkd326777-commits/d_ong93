@@ -2313,8 +2313,7 @@ function render(){
     const timed=Math.ceil((Math.max(state.freezeCookUntil,state.protectCookUntil,state.delayGuestsUntil)-state.elapsed)/1000);
     const count=state.picksLeft||state.guestShields||state.bonusSales;
     const label=count?count+'회 남음'
-      :hold>0?hold+'초 유지':timed>0?timed+'초 유지':state.charge<100?state.charge+'%'
-      :'';
+      :hold>0?hold+'초 유지':timed>0?timed+'초 유지':'';
     if($('skillName').textContent!==skillName) $('skillName').textContent=skillName;
     if($('skillStatus').textContent!==label) $('skillStatus').textContent=label;
   }
