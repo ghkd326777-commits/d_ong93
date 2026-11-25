@@ -598,7 +598,7 @@
 
   <!-- ==================== 조합 도감 모달 ([도감] - 밝은 테마) ==================== -->
   <div id="codexModal" class="fixed inset-0 z-50 bg-slate-900/55 backdrop-blur-sm hidden items-center justify-center p-2.5 sm:p-4">
-    <div class="w-full max-w-lg max-h-[86dvh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden pop-anim">
+    <div class="w-full max-w-lg h-[86dvh] max-h-[86dvh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden pop-anim">
       <!-- 모달 헤더 -->
       <div class="shrink-0 px-4 py-3 bg-gradient-to-r from-slate-50 to-indigo-50/70 border-b border-slate-200 flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -615,8 +615,8 @@
       <!-- 필터 탭 -->
       <div id="codexTabs" class="shrink-0 px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto">
         <button data-tab="craftable" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">조합가능</button>
-        <button data-tab="all" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">스페셜(20)</button>
-        <button data-tab="slates" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">🪨 슬레이트(18)</button>
+        <button data-tab="all" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">스페셜(28)</button>
+        <button data-tab="slates" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">🪨 슬레이트(22)</button>
         <button data-tab="owned" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">보유 중</button>
         <button data-tab="early" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">초반</button>
         <button data-tab="mid" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">중반</button>
@@ -624,7 +624,7 @@
       </div>
 
       <!-- 레시피 카드 리스트 -->
-      <div id="codexList" class="codex-scroll flex-1 p-3 bg-slate-100/60 flex flex-col gap-2.5"></div>
+      <div id="codexList" class="codex-scroll flex-1 min-h-0 p-3 pb-6 bg-slate-100/60 flex flex-col gap-2.5"></div>
     </div>
   </div>
 
@@ -852,6 +852,51 @@
         class="action-btn w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-lime-400 text-slate-950 text-sm font-extrabold shadow-lg">
         🔄 새 게임
       </button>
+    </div>
+  </div>
+
+  <!-- ==================== 개발자 치트: 바위 → 기본 8종 보석 변환 모달 ==================== -->
+  <div id="rockCheatModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="w-full max-w-md max-h-[86dvh] bg-white border-2 border-indigo-300 rounded-2xl shadow-2xl flex flex-col overflow-hidden pop-anim">
+      <div class="shrink-0 px-4 py-3 bg-gradient-to-r from-indigo-50 via-purple-50 to-amber-50 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h2 class="text-sm sm:text-base font-extrabold text-slate-900">🛠️ 바위 보석 소환 치트</h2>
+          <p id="rcTargetInfo" class="text-[11px] text-slate-600 font-medium">보석과 등급을 선택한 뒤 [확정]을 누르세요.</p>
+        </div>
+        <button id="btnCloseRockCheat" type="button"
+          class="w-8 h-8 rounded-xl bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-sm font-bold flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="codex-scroll flex-1 p-3 bg-slate-50/80 flex flex-col gap-3">
+        <div>
+          <div class="text-[11px] font-extrabold text-slate-700 mb-1.5">1️⃣ 기본 보석 선택 (8종)</div>
+          <div id="rcGemGrid" class="grid grid-cols-4 gap-1.5"></div>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-extrabold text-slate-700 mb-1.5">2️⃣ 등급 선택 (최하급 ~ 그레이트)</div>
+          <div id="rcGradeGrid" class="grid grid-cols-3 gap-1.5"></div>
+        </div>
+
+        <div id="rcPreviewBox" class="rounded-xl bg-white border border-indigo-200 p-2.5 flex items-center gap-2.5">
+          <canvas id="rcPreviewCanvas" width="36" height="36" class="w-9 h-9 rounded-lg border border-slate-200 shrink-0 block"></canvas>
+          <div class="min-w-0 flex-1">
+            <div id="rcSelectedName" class="text-xs font-extrabold text-slate-900 truncate">최하급 루비</div>
+            <div id="rcSelectedDesc" class="text-[10.5px] text-slate-600 truncate">선택한 바위가 이 보석으로 변환됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="shrink-0 p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+        <button id="btnCancelRockCheat" type="button"
+          class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-extrabold text-slate-700 transition">
+          닫기
+        </button>
+        <button id="btnConfirmRockCheat" type="button"
+          class="action-btn flex-1 py-2.5 rounded-xl bg-gradient-to-b from-indigo-500 to-purple-600 text-white text-xs font-extrabold">
+          확정
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1240,6 +1285,108 @@
             { name: '레인보우 문스톤', cost: 115, damage: 205, range: 5.8, cooldown: 0.74, moonAuraRange: 5.2, moonSpeedAura: 0.24, moonDmgAura: 0.12, slowPct: 0.32, slowDuration: 4.0, desc: '월광 탄환(32% 둔화) + 반경 5.2칸 아군 공속 +24% & 공격력 +12% 오라' },
             { name: '블루 쉰 문스톤', cost: 260, damage: 390, range: 6.4, cooldown: 0.68, moonAuraRange: 6.0, moonSpeedAura: 0.32, moonDmgAura: 0.20, multiTargets: 3, slowPct: 0.38, slowDuration: 4.5, desc: '3타겟 월광 연사(38% 둔화) + 반경 6.0칸 아군 공속 +32% & 공격력 +20% 오라' }
           ]
+        },
+        prism_sovereign: {
+          id: 'prism_sovereign', name: '프리즘 소버린', category: 'late',
+          color: '#38bdf8', stroke: '#fef08a', accent: '#f472b6',
+          targetType: 'both',
+          isGreatCombo: true,
+          isPrism: true,
+          prismRank: 'I',
+          recipe: [{ gemId: 'diamond', grade: 5 }, { gemId: 'amethyst', grade: 5 }],
+          tiers: [
+            { name: '프리즘 소버린', cost: 0, damage: 780, range: 9.8, cooldown: 0.62, critChance: 0.38, critMult: 4.8, bonusArmorIgnorePct: 0.35, desc: '프리즘 I · 지상·공중 초장거리(9.8칸) 저격 + 38% 확률 4.8배 치명타 + 치명타 방어 무시 피해 35% 추가' },
+            { name: '앱솔루트 프리즘 소버린', cost: 340, damage: 1380, range: 11.2, cooldown: 0.54, critChance: 0.45, critMult: 5.5, bonusArmorIgnorePct: 0.50, desc: '프리즘 I 초월 · 사거리 11.2칸 전장 저격 + 45% 확률 5.5배 치명타 + 방어 무시 피해 50% 추가' }
+          ]
+        },
+        frost_venom: {
+          id: 'frost_venom', name: '프로스트 베놈', category: 'late',
+          color: '#2dd4bf', stroke: '#a7f3d0', accent: '#60a5fa',
+          targetType: 'both',
+          isGreatCombo: true,
+          isPrism: true,
+          prismRank: 'I',
+          recipe: [{ gemId: 'sapphire', grade: 5 }, { gemId: 'emerald', grade: 5 }],
+          tiers: [
+            { name: '프로스트 베놈', cost: 0, damage: 420, range: 6.8, cooldown: 0.58, splashRadius: 2.5, slowPct: 0.50, slowDuration: 4.5, poisonDps: 240, poisonDuration: 5.0, armorShred: 8, shredDuration: 5.0, desc: '프리즘 I · 2.5칸 광역 빙독 · 50% 둔화 + 초당 240 중독 + 적 방어력 -8 감소' },
+            { name: '아비스 프로스트 베놈', cost: 320, damage: 760, range: 7.6, cooldown: 0.50, splashRadius: 3.1, slowPct: 0.60, slowDuration: 5.0, poisonDps: 440, poisonDuration: 5.5, armorShred: 14, shredDuration: 6.0, desc: '프리즘 I 초월 · 3.1칸 광역 심연 빙독 · 60% 둔화 + 초당 440 중독 + 적 방어력 -14 감소' }
+          ]
+        },
+        flare_nova: {
+          id: 'flare_nova', name: '플레어 노바', category: 'late',
+          color: '#fb7185', stroke: '#fde047', accent: '#f97316',
+          targetType: 'both',
+          isGreatCombo: true,
+          isPrism: true,
+          prismRank: 'I',
+          recipe: [{ gemId: 'ruby', grade: 5 }, { gemId: 'topaz', grade: 5 }],
+          tiers: [
+            { name: '플레어 노바', cost: 0, damage: 540, range: 5.6, cooldown: 0.44, multiTargets: 7, splashRadius: 1.9, flameStrikeChance: 0.22, flameStrikeDmg: 650, flameStrikeRadius: 2.8, desc: '프리즘 I · 7타겟 동시 연사 + 1.9칸 광역 열파 + 22% 확률 초신성 폭발(650 고정 광역)' },
+            { name: '슈퍼노바 플레어', cost: 330, damage: 960, range: 6.2, cooldown: 0.38, multiTargets: 9, splashRadius: 2.3, flameStrikeChance: 0.30, flameStrikeDmg: 1200, flameStrikeRadius: 3.4, desc: '프리즘 I 초월 · 9타겟 동시 연사 + 2.3칸 광역 열파 + 30% 확률 초신성 폭발(1200 고정 광역)' }
+          ]
+        },
+        aether_pulse: {
+          id: 'aether_pulse', name: '에테르 펄스', category: 'late',
+          color: '#c084fc', stroke: '#67e8f9', accent: '#fde047',
+          targetType: 'both',
+          isGreatCombo: true,
+          isPrism: true,
+          prismRank: 'I',
+          recipe: [{ gemId: 'aquamarine', grade: 5 }, { gemId: 'opal', grade: 5 }],
+          tiers: [
+            { name: '에테르 펄스', cost: 0, damage: 340, range: 5.2, cooldown: 0.32, dmgAuraRange: 6.5, dmgAuraBonus: 0.25, pearlAuraRange: 6.5, pearlSpeedAura: 0.55, desc: '프리즘 I · 0.32s 초고속 연사 + 반경 6.5칸 아군 공속 +55% & 공격력 +25% 에테르 오라' },
+            { name: '인피니티 에테르 펄스', cost: 340, damage: 620, range: 6.0, cooldown: 0.26, dmgAuraRange: 8.0, dmgAuraBonus: 0.40, pearlAuraRange: 8.0, pearlSpeedAura: 0.75, desc: '프리즘 I 초월 · 0.26s 초고속 연사 + 반경 8.0칸 아군 공속 +75% & 공격력 +40% 에테르 오라' }
+          ]
+        },
+        celestial_eclipse: {
+          id: 'celestial_eclipse', name: '셀레스티얼 이클립스', category: 'late',
+          color: '#818cf8', stroke: '#f0abfc', accent: '#38bdf8',
+          targetType: 'both',
+          isPrism: true,
+          prismRank: 'II',
+          isTranscendentPrism: true,
+          specialRecipe: [{ specialId: 'prism_sovereign', tier: 1 }, { specialId: 'frost_venom', tier: 1 }],
+          recipe: [],
+          tiers: [
+            { name: '셀레스티얼 이클립스', cost: 0, damage: 2400, range: 13.0, cooldown: 0.42, splashRadius: 3.4, slowPct: 0.65, slowDuration: 5.0, poisonDps: 800, poisonDuration: 6.0, armorShred: 20, shredDuration: 6.0, critChance: 0.50, critMult: 6.0, bonusArmorIgnorePct: 0.60, trappedDmgAmp: 0.25, desc: '프리즘 II · 사거리 13.0칸 · 3.4칸 극저온 빙독(65% 둔화 · 초당 800 중독 · 방어 -20) + 50% 확률 6.0배 치명타(방어 무시 60% 추가)' }
+          ]
+        },
+        cosmic_heart: {
+          id: 'cosmic_heart', name: '코스믹 하트', category: 'late',
+          color: '#f472b6', stroke: '#fde047', accent: '#22d3ee',
+          targetType: 'both',
+          isPrism: true,
+          prismRank: 'II',
+          isTranscendentPrism: true,
+          specialRecipe: [{ specialId: 'flare_nova', tier: 1 }, { specialId: 'aether_pulse', tier: 1 }],
+          recipe: [],
+          tiers: [
+            { name: '코스믹 하트', cost: 0, damage: 1350, range: 7.2, cooldown: 0.20, multiTargets: 10, splashRadius: 2.6, flameStrikeChance: 0.35, flameStrikeDmg: 1800, flameStrikeRadius: 3.6, dmgAuraRange: 9.0, dmgAuraBonus: 0.50, pearlAuraRange: 9.0, pearlSpeedAura: 0.90, desc: '프리즘 II · 0.20s 10타겟 초신성 연사(2.6칸 열파 · 35% 확률 1800 고정 폭발) + 반경 9.0칸 아군 공속 +90% & 공격력 +50% 오라' }
+          ]
+        },
+        omega_cosmos: {
+          id: 'omega_cosmos', name: '오메가 코스모스', category: 'late',
+          color: '#facc15', stroke: '#ffffff', accent: '#a855f7',
+          targetType: 'both',
+          isPrism: true,
+          prismRank: 'III',
+          isTranscendentPrism: true,
+          specialRecipe: [{ specialId: 'celestial_eclipse', tier: 0 }, { specialId: 'cosmic_heart', tier: 0 }],
+          recipe: [],
+          tiers: [
+            { name: '오메가 코스모스', cost: 0, damage: 3600, range: 14.0, cooldown: 0.22, multiTargets: 12, splashRadius: 3.8, slowPct: 0.70, slowDuration: 5.5, poisonDps: 1200, poisonDuration: 6.5, armorShred: 28, shredDuration: 6.5, critChance: 0.55, critMult: 6.5, bonusArmorIgnorePct: 0.70, flameStrikeChance: 0.40, flameStrikeDmg: 2500, flameStrikeRadius: 4.0, dmgAuraRange: 10.5, dmgAuraBonus: 0.65, pearlAuraRange: 10.5, pearlSpeedAura: 1.00, desc: '프리즘 III · 전장 종결자 · 사거리 14.0칸 · 0.22s 12타겟 초신성/빙독 난사 + 55% 6.5배 치명타(방어 무시 70%) + 반경 10.5칸 아군 공속 +100% & 공격력 +65% 오라' }
+          ]
+        },
+        the_end_of_bryvx: {
+          id: 'the_end_of_bryvx', name: '디 엔드 오브 브릭스', category: 'late',
+          color: '#e879f9', stroke: '#fde047', accent: '#34d399',
+          targetType: 'both',
+          isDivinity: true,
+          specialRecipe: [{ specialId: 'omega_cosmos', tier: 0 }, { gemId: 'bryvx', grade: 5 }],
+          recipe: [],
+          tiers: [
+            { name: '디 엔드 오브 브릭스', cost: 0, damage: 6400, range: 15.0, cooldown: 0.18, multiTargets: 14, splashRadius: 4.2, slowPct: 0.75, slowDuration: 6.0, poisonDps: 1800, poisonDuration: 7.0, armorShred: 35, shredDuration: 7.0, critChance: 0.65, critMult: 7.5, bonusArmorIgnorePct: 0.80, flameStrikeChance: 0.48, flameStrikeDmg: 3800, flameStrikeRadius: 4.5, dmgAuraRange: 12.0, dmgAuraBonus: 1.25, pearlAuraRange: 12.0, pearlSpeedAura: 1.25, desc: '신격 등급 · 반경 3칸 암흑/회색조 영역 & 8색 회전 경계 · 사거리 15.0칸 · 0.18s 14타겟 폭격 + 65% 7.5배 치명타(방어 무시 80%) + 반경 12.0칸 아군 공속 +125% & 공격력 +125% 오라' }
+          ]
         }
       };
 
@@ -1463,6 +1610,83 @@
           damage: 135, range: 5.6, cooldown: 0.48,
           multiTargets: 4, critChance: 0.40, critMult: 3.4,
           desc: '바닥 통과형 · 초고속(0.48s) 4타겟 동시 연쇄 공격 + 40% 확률 3.4배 치명타'
+        },
+        astral_viper_slate: {
+          id: 'astral_viper_slate', name: '아스트랄 바이퍼 슬레이트', rune: '⚚',
+          isCombo: true,
+          isMix: true,
+          isHidden: true,
+          slabColor: '#2a1638', runeColor: '#f472b6', borderColor: '#e879f9',
+          targetType: 'both',
+          recipe: ['ancient_trap_slate', 'viper_slate'],
+          damage: 265, range: 10.5, cooldown: 0.92,
+          attackAllInRange: true,
+          rootDuration: 2.5,
+          armorShred: 30, shredDuration: 6.0,
+          aggroDuration: 2.5,
+          auraRange: 5.5, viperDmgAura: 0.35,
+          desc: '믹스 등급 · 전범위 동시 타격 + 2.5초 속박/어그로 + 방어력 -30 감소 + 반경 7.5칸 아군 공격력 +35% 오라'
+        },
+        soul_pest_slate: {
+          id: 'soul_pest_slate', name: '소울 페스트 슬레이트', rune: '❂',
+          isCombo: true,
+          isMix: true,
+          isHidden: true,
+          slabColor: '#142e2a', runeColor: '#38bdf8', borderColor: '#2dd4bf',
+          targetType: 'both',
+          recipe: ['wraith_slate', 'elder_slate'],
+          damage: 185, range: 5.4, cooldown: 0.72,
+          auraRange: 5.5, wraithSpeedAura: 0.42,
+          slowAuraRange: 3.8, slowPct: 0.25,
+          armorShredChance: 0.45, armorShred: 15, shredDuration: 6.0,
+          goldChance: 0.03, goldMin: 10, goldMax: 20,
+          poisonChance: 0.70, poisonDps: 145, poisonDuration: 5.5,
+          incinerateHitDmg: 45, incinerateHitRadius: 1.8,
+          incinerateDeathDmg: 280, incinerateDeathHpPct: 0.10, incinerateDeathRadius: 3.0,
+          incinerateDuration: 5.5,
+          desc: '믹스 등급 · 반경 7.5칸 공속 +42% 오라 + 70% 강력 중독(초당 145) + 방깎/골드 + 인시너레이트 연쇄 폭발'
+        },
+        tempest_lava_slate: {
+          id: 'tempest_lava_slate', name: '템페스트 라바 슬레이트', rune: '⚡',
+          isCombo: true,
+          isMix: true,
+          isHidden: true,
+          slabColor: '#2e1a18', runeColor: '#fb923c', borderColor: '#38bdf8',
+          targetType: 'both',
+          recipe: ['magma_slate', 'storm_slate'],
+          damage: 235, range: 6.0, cooldown: 0.42,
+          multiTargets: 5, critChance: 0.45, critMult: 3.8,
+          splashRadius: 2.8, armorShred: 18, shredDuration: 6.0,
+          burnDps: 135, burnDuration: 5.0, magmaBurstChance: 0.32, magmaBurstDmg: 520, magmaBurstRadius: 3.0,
+          desc: '믹스 등급 · 0.42s 5타겟 폭풍 연사 + 45% 3.8배 치명타 + 2.8칸 광역 용암/화상 + 32% 확률 용암 폭발(520 고정 광역)'
+        },
+        trinity_doom_slate: {
+          id: 'trinity_doom_slate', name: '트리니티 둠 슬레이트', rune: '✺',
+          isCombo: true,
+          isMix: true,
+          isHidden: true,
+          isTrinityDoom: true,
+          isLuminous: true,
+          slabColor: '#f8fafc', runeColor: '#ffffff', borderColor: '#38bdf8',
+          targetType: 'both',
+          recipe: ['astral_viper_slate', 'soul_pest_slate', 'tempest_lava_slate'],
+          damage: 420, range: 11.0, cooldown: 0.38,
+          attackAllInRange: true,
+          rootDuration: 2.5,
+          armorShred: 34, shredDuration: 6.5,
+          aggroDuration: 2.5,
+          auraRange: 6.0, viperDmgAura: 0.42, wraithSpeedAura: 0.48,
+          slowAuraRange: 4.0, slowPct: 0.30,
+          armorShredChance: 0.50,
+          goldChance: 0.04, goldMin: 15, goldMax: 25,
+          poisonChance: 0.75, poisonDps: 190, poisonDuration: 6.0,
+          incinerateHitDmg: 65, incinerateHitRadius: 2.0,
+          incinerateDeathDmg: 380, incinerateDeathHpPct: 0.12, incinerateDeathRadius: 3.4,
+          incinerateDuration: 6.0,
+          critChance: 0.50, critMult: 4.2,
+          splashRadius: 3.0,
+          burnDps: 175, burnDuration: 5.5, magmaBurstChance: 0.38, magmaBurstDmg: 720, magmaBurstRadius: 3.4,
+          desc: '루미너스 등급 · 🔒 비공개 (???)'
         }
       };
 
@@ -1741,6 +1965,10 @@
         chanceUsedThisRound: false, // 이번 라운드 찬스 사용 여부
         bryvxCheatActive: false,    // 개발자 치트: 라운드 보석 생성 시 브릭스 5% 출현
         bryvxArtTapCount: 0,        // 브릭스 도감 그림 연속 탭 횟수
+        rockInspectorTapCount: 0,   // 선택된 바위 그림 연속 탭 횟수 (20회 시 치트 모달)
+        rockCheatTargetRock: null,
+        rockCheatGemId: 'ruby',
+        rockCheatGrade: 0,
         damageTester: {
           active: false,
           totalDamage: 0,
@@ -2028,6 +2256,55 @@
         return { specialId: specialDef.id, anchor: anchorGem, ingredients: matched };
       }
 
+      function isEntityMatchingSpecialReq(ent, req) {
+        if (!ent || !req) return false;
+        if (req.specialId) {
+          return ent.type === 'special' && ent.specialId === req.specialId && (ent.tier || 0) >= (req.tier || 0);
+        }
+        if (req.gemId) {
+          return ent.type === 'gem' && !ent.temp && ent.gemId === req.gemId && (ent.grade || 0) >= (req.grade || 0);
+        }
+        return false;
+      }
+
+      function matchSpecialRecipeWithAnchor(specialDef, anchorEntity, pool) {
+        if (!specialDef.specialRecipe || !anchorEntity) return null;
+        const reqs = specialDef.specialRecipe;
+        const anchorReqIdx = reqs.findIndex((r) => isEntityMatchingSpecialReq(anchorEntity, r));
+        if (anchorReqIdx === -1) return null;
+
+        const used = new Set([anchorEntity]);
+        const matched = [anchorEntity];
+
+        for (let i = 0; i < reqs.length; i++) {
+          if (i === anchorReqIdx) continue;
+          const req = reqs[i];
+          const found = pool.find((t) => !used.has(t) && isEntityMatchingSpecialReq(t, req));
+          if (!found) return null;
+          used.add(found);
+          matched.push(found);
+        }
+        return { specialId: specialDef.id, anchor: anchorEntity, ingredients: matched, isOneHit: false };
+      }
+
+      function getSpecialOptionsForEntity(entity) {
+        if (!entity) return [];
+        const results = [];
+        const permPool = state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx')));
+        for (const key of SPECIAL_KEYS) {
+          const def = SPECIALS_DB[key];
+          if (!def.specialRecipe) continue;
+          const m = matchSpecialRecipeWithAnchor(def, entity, permPool);
+          if (m) results.push(m);
+        }
+        return results;
+      }
+
+      function getSpecialOptionsForSpecial(specialTower) {
+        if (!specialTower || specialTower.type !== 'special') return [];
+        return getSpecialOptionsForEntity(specialTower);
+      }
+
       function getSpecialOptionsForGem(gem) {
         if (!gem || gem.type !== 'gem' || gem.gemId === 'bryvx') return [];
         const results = [];
@@ -2035,6 +2312,7 @@
 
         for (const key of SPECIAL_KEYS) {
           const def = SPECIALS_DB[key];
+          if (def.specialRecipe) continue;
           if (gem.temp && state.phase === 'SELECT') {
             // 5개 선택 단계에서는 이번 라운드에 뽑은 tempGems 내부 조합(원힛)만 허용
             const oneHit = matchRecipeWithAnchor(def, gem, state.tempGems);
@@ -2090,6 +2368,22 @@
         const results = [];
         for (const key of COMBINED_SLATE_KEYS) {
           const def = COMBINED_SLATES_DB[key];
+          if (!def || !Array.isArray(def.recipe)) continue;
+          if (def.recipe.length === 3) {
+            const [r0, r1, r2] = def.recipe;
+            if (anchorSlate.slateId !== r0 && anchorSlate.slateId !== r1 && anchorSlate.slateId !== r2) continue;
+            const others = def.recipe.filter((rid, idx) => {
+              if (anchorSlate.slateId === r0) return idx !== 0;
+              if (anchorSlate.slateId === r1) return idx !== 1;
+              return idx !== 2;
+            });
+            const p1 = state.slates.find((s) => s !== anchorSlate && s.slateId === others[0]);
+            const p2 = state.slates.find((s) => s !== anchorSlate && s !== p1 && s.slateId === others[1]);
+            if (p1 && p2) {
+              results.push({ comboId: key, anchor: anchorSlate, partner: p1, extraPartners: [p2] });
+            }
+            continue;
+          }
           const [reqA, reqB] = def.recipe;
           if (anchorSlate.slateId !== reqA && anchorSlate.slateId !== reqB) continue;
           const needId = anchorSlate.slateId === reqA ? reqB : reqA;
@@ -2107,8 +2401,18 @@
         const list = [];
         const permBasicGems = state.keptGems.filter((g) => g.type === 'gem' && g.gemId !== 'bryvx');
 
+        const permSpecialPool = state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx')));
         for (const key of SPECIAL_KEYS) {
           const def = SPECIALS_DB[key];
+          if (def.specialRecipe) {
+            if (state.phase !== 'SELECT') {
+              for (const sp of permSpecialPool) {
+                const m = matchSpecialRecipeWithAnchor(def, sp, permSpecialPool);
+                if (m) { list.push(m); break; }
+              }
+            }
+            continue;
+          }
           if (state.phase === 'SELECT') {
             for (const tg of state.tempGems) {
               const m = matchRecipeWithAnchor(def, tg, state.tempGems);
@@ -2139,11 +2443,21 @@
         }
         state.slateCraftableList = slateList;
 
-        // 3) 조합 슬레이트 (필드에 완성된 기본 슬레이트 2종 보유 시)
+        // 3) 조합 슬레이트 (필드에 완성된 재료 슬레이트 보유 시)
         const comboSlateList = [];
         if (state.phase !== 'GAMEOVER') {
           for (const key of COMBINED_SLATE_KEYS) {
             const def = COMBINED_SLATES_DB[key];
+            if (!def || !Array.isArray(def.recipe)) continue;
+            if (def.recipe.length === 3) {
+              const s1 = state.slates.find((s) => s.slateId === def.recipe[0]);
+              const s2 = state.slates.find((s) => s !== s1 && s.slateId === def.recipe[1]);
+              const s3 = state.slates.find((s) => s !== s1 && s !== s2 && s.slateId === def.recipe[2]);
+              if (s1 && s2 && s3) {
+                comboSlateList.push({ comboId: key, anchor: s1, partner: s2, extraPartners: [s3] });
+              }
+              continue;
+            }
             const s1 = state.slates.find((s) => s.slateId === def.recipe[0]);
             const s2 = state.slates.find((s) => s.slateId === def.recipe[1]);
             if (s1 && s2) {
@@ -3445,6 +3759,7 @@
         setEntityOccupancy(tempRock, true);
 
         const candidates = [];
+        // 1) 바위 후보
         for (const rock of state.rocks) {
           setEntityOccupancy(rock, false);
           specialEntity.sx = rock.sx;
@@ -3470,6 +3785,18 @@
         specialEntity.sx = origSx;
         specialEntity.sy = origSy;
         setEntityOccupancy(specialEntity, true);
+
+        // 2) 필드 타워(기본 보석·스페셜 타워) 후보: 두 타워의 좌표를 서로 맞교환(Swap)
+        for (const otherTower of state.keptGems) {
+          if (!otherTower || otherTower === specialEntity) continue;
+          candidates.push({
+            kind: 'tower',
+            tower: otherTower,
+            sx: otherTower.sx,
+            sy: otherTower.sy,
+            path: state.currentPath,
+          });
+        }
 
         return candidates;
       }
@@ -3593,7 +3920,7 @@
           candidates,
         };
         updateAllUI();
-        showToast('🪨 이동할 바위 1개를 탭하세요! (100G 소모, 기존 자리는 바위화)');
+        showToast('🔄 이동할 바위 또는 위치를 교환할 타워를 탭하세요! (100G 소모)');
       }
 
       function getMoveCandidateAtSubCell(subX, subY) {
@@ -3648,9 +3975,64 @@
           }
           const oldSx = entity.sx;
           const oldSy = entity.sy;
-          const targetRock = cand.rock;
-
           state.gold -= cost;
+
+          const isBryvxMove = entity.type === 'gem' && entity.gemId === 'bryvx';
+          const spDef = entity.type === 'special' ? SPECIALS_DB[entity.specialId] : null;
+          const moveEntityName = isBryvxMove
+            ? '스톤 오브 브릭스'
+            : (spDef ? spDef.tiers[entity.tier].name : '스페셜 타워');
+
+          if (cand.kind === 'tower' && cand.tower) {
+            const targetTower = cand.tower;
+            const targetName = getTowerEffectiveStats(targetTower).name;
+
+            setEntityOccupancy(entity, false);
+            setEntityOccupancy(targetTower, false);
+
+            entity.sx = cand.sx;
+            entity.sy = cand.sy;
+            entity.cooldown = 0;
+
+            targetTower.sx = oldSx;
+            targetTower.sy = oldSy;
+            targetTower.cooldown = 0;
+
+            setEntityOccupancy(entity, true);
+            setEntityOccupancy(targetTower, true);
+
+            state.moveMode = null;
+            state.selectedEntity = entity;
+
+            state.effects.push({
+              type: 'ring',
+              x: (entity.sx + 1) * S,
+              y: (entity.sy + 1) * S,
+              radius: 52,
+              color: '#38bdf8',
+              life: 0.55,
+              maxLife: 0.55,
+            });
+            state.effects.push({
+              type: 'ring',
+              x: (targetTower.sx + 1) * S,
+              y: (targetTower.sy + 1) * S,
+              radius: 44,
+              color: '#f472b6',
+              life: 0.5,
+              maxLife: 0.5,
+            });
+
+            reconcileOccGrid();
+            recalculateAuras();
+            refreshCraftableCache();
+            updateAllUI();
+            saveGame(false);
+            showToast(`🔄 [${moveEntityName}] ↔ [${targetName}] 위치 교환 완료! (-${cost}G)`);
+            return;
+          }
+
+          const targetRock = cand.rock;
 
           setEntityOccupancy(entity, false);
           const newRock = { type: 'rock', sx: oldSx, sy: oldSy };
@@ -3670,11 +4052,6 @@
           state.moveMode = null;
           state.selectedEntity = entity;
 
-          const isBryvxMove = entity.type === 'gem' && entity.gemId === 'bryvx';
-          const spDef = entity.type === 'special' ? SPECIALS_DB[entity.specialId] : null;
-          const moveEntityName = isBryvxMove
-            ? '스톤 오브 브릭스'
-            : (spDef ? spDef.tiers[entity.tier].name : '스페셜 타워');
           state.effects.push({
             type: 'ring',
             x: (entity.sx + 1) * S,
@@ -3763,7 +4140,7 @@
           if (cand) {
             executeMoveToCandidate(cand);
           } else {
-            showToast('황금색으로 표시된 이동 가능 바위를 탭하거나 [이동 취소]를 누르세요.');
+            showToast('표시된 바위 또는 위치 교환할 타워를 탭하거나 [이동 취소]를 누르세요.');
           }
           return;
         }
@@ -4132,21 +4509,28 @@
         const def = COMBINED_SLATES_DB[comboId];
         if (!def) return;
 
+        const extraPartners = Array.isArray(option.extraPartners) ? option.extraPartners : [];
+        const allPartners = [partner, ...extraPartners].filter(Boolean);
+
         // 유효성 재확인
-        if (!state.slates.includes(anchor) || !state.slates.includes(partner)) return;
+        if (!state.slates.includes(anchor) || allPartners.some((pt) => !state.slates.includes(pt))) return;
 
         const S = GAME_CONFIG.SUB_TILE_SIZE;
 
         // 1) 소모된 보조 슬레이트 제거 (빈 바닥화)
-        const pIdx = state.slates.indexOf(partner);
-        if (pIdx !== -1) state.slates.splice(pIdx, 1);
+        let extraKills = 0;
+        for (const pt of allPartners) {
+          extraKills += (pt.kills || 0);
+          const pIdx = state.slates.indexOf(pt);
+          if (pIdx !== -1) state.slates.splice(pIdx, 1);
+        }
         reconcileOccGrid();
 
         // 2) 선택한 슬레이트를 조합 슬레이트로 승격 (합성 후 1회 이동 가능)
         anchor.slateId = comboId;
         anchor.isCombo = true;
         anchor.moveUsed = false;
-        anchor.kills = (anchor.kills || 0) + (partner.kills || 0);
+        anchor.kills = (anchor.kills || 0) + extraKills;
         anchor.cooldown = 0;
         state.selectedEntity = anchor;
 
@@ -5752,6 +6136,148 @@
               c.fillStyle = '#fde047';
               c.fill();
             }
+          } else if (slateId === 'astral_viper_slate') {
+            const scanY = cy + Math.sin(cPhase * 0.85) * (T * 0.30);
+            c.strokeStyle = `rgba(244, 114, 182, ${0.50 + pulse * 0.45})`;
+            c.lineWidth = 1.6;
+            c.beginPath();
+            c.moveTo(cx - T * 0.34, scanY);
+            c.lineTo(cx + T * 0.34, scanY);
+            c.stroke();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(cPhase * 0.6);
+            c.strokeStyle = 'rgba(232, 121, 249, 0.75)';
+            c.lineWidth = 1.3;
+            const dRad = T * 0.38;
+            c.beginPath();
+            c.moveTo(0, -dRad); c.lineTo(dRad, 0); c.lineTo(0, dRad); c.lineTo(-dRad, 0);
+            c.closePath();
+            c.stroke();
+            c.restore();
+
+            for (let i = 0; i < 4; i++) {
+              const a = -cPhase * 0.7 + (Math.PI / 2) * i;
+              c.beginPath();
+              c.arc(cx + Math.cos(a) * T * 0.35, cy + Math.sin(a) * T * 0.35, 2.2, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#f472b6' : '#fde047';
+              c.fill();
+            }
+          } else if (slateId === 'soul_pest_slate') {
+            const waveR = T * (0.22 + pulse * 0.20);
+            c.strokeStyle = `rgba(56, 189, 248, ${(1 - pulse * 0.6) * 0.85})`;
+            c.lineWidth = 1.4;
+            c.beginPath();
+            c.arc(cx, cy, waveR, 0, Math.PI * 2);
+            c.stroke();
+
+            for (let i = 0; i < 4; i++) {
+              const a = cPhase * 0.85 + (Math.PI / 2) * i;
+              c.beginPath();
+              c.arc(cx + Math.cos(a) * T * 0.36, cy + Math.sin(a) * T * 0.36, 2.4, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#38bdf8' : '#34d399';
+              c.fill();
+            }
+          } else if (slateId === 'tempest_lava_slate') {
+            const mRad = T * (0.26 + pulse * 0.16);
+            c.strokeStyle = `rgba(251, 146, 60, ${0.55 + pulse * 0.4})`;
+            c.lineWidth = 1.6;
+            c.beginPath();
+            c.arc(cx, cy, mRad, 0, Math.PI * 2);
+            c.stroke();
+
+            for (let i = 0; i < 6; i++) {
+              const a = -cPhase * 0.75 + (Math.PI / 3) * i;
+              c.beginPath();
+              c.arc(cx + Math.cos(a) * T * 0.35, cy + Math.sin(a) * T * 0.35, 2.0 + pulse * 0.6, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#fb923c' : '#38bdf8';
+              c.fill();
+            }
+          } else if (slateId === 'trinity_doom_slate') {
+            // 루미너스 종결 연출: 삼원색(R/G/B) 광선 수렴 + 다중 링 + 순백 성광 폭발
+            const outerAuraR = T * (0.44 + pulse * 0.10);
+            const outerAura = c.createRadialGradient(cx, cy, T * 0.04, cx, cy, outerAuraR);
+            outerAura.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+            outerAura.addColorStop(0.28, 'rgba(240, 249, 255, 0.85)');
+            outerAura.addColorStop(0.55, 'rgba(254, 240, 138, 0.42)');
+            outerAura.addColorStop(0.82, 'rgba(125, 211, 252, 0.24)');
+            outerAura.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            c.fillStyle = outerAura;
+            c.beginPath();
+            c.arc(cx, cy, outerAuraR, 0, Math.PI * 2);
+            c.fill();
+
+            // 회전하는 삼원색 프레임 링 (빨강·초록·파랑 3분할 호)
+            const rgbPalette = [
+              { col: '#ff3b5c', glow: 'rgba(255, 59, 92, 0.55)' },
+              { col: '#10e878', glow: 'rgba(16, 232, 120, 0.55)' },
+              { col: '#2997ff', glow: 'rgba(41, 151, 255, 0.55)' },
+            ];
+            for (let idx = 0; idx < 3; idx++) {
+              const segStart = cPhase * 0.55 + (idx * Math.PI * 2) / 3;
+              const segEnd = segStart + (Math.PI * 2) / 3 - 0.14;
+              c.strokeStyle = rgbPalette[idx].col;
+              c.lineWidth = 2.0;
+              c.beginPath();
+              c.arc(cx, cy, T * 0.39, segStart, segEnd);
+              c.stroke();
+
+              // 역회전 안쪽 RGB 프리즘 링
+              const revStart = -cPhase * 0.75 + (idx * Math.PI * 2) / 3;
+              const revEnd = revStart + (Math.PI * 2) / 3 - 0.22;
+              c.strokeStyle = rgbPalette[(idx + 1) % 3].col;
+              c.lineWidth = 1.3;
+              c.beginPath();
+              c.arc(cx, cy, T * 0.25, revStart, revEnd);
+              c.stroke();
+            }
+
+            // 수렴하는 삼원색 광선 빔 & 공전 광구
+            for (let i = 0; i < 3; i++) {
+              const baseAng = -Math.PI / 2 + (i * Math.PI * 2) / 3 + cPhase * 0.45;
+              const beamOuter = T * (0.43 - pulse * 0.08);
+              const beamInner = T * 0.08;
+              const bx1 = cx + Math.cos(baseAng) * beamOuter;
+              const by1 = cy + Math.sin(baseAng) * beamOuter;
+              const bx2 = cx + Math.cos(baseAng) * beamInner;
+              const by2 = cy + Math.sin(baseAng) * beamInner;
+
+              const bGrad = c.createLinearGradient(bx1, by1, bx2, by2);
+              bGrad.addColorStop(0, rgbPalette[i].col);
+              bGrad.addColorStop(1, '#ffffff');
+              c.strokeStyle = bGrad;
+              c.lineWidth = 2.1;
+              c.beginPath();
+              c.moveTo(bx1, by1);
+              c.lineTo(bx2, by2);
+              c.stroke();
+
+              // 삼원색 광구 노드
+              c.beginPath();
+              c.arc(bx1, by1, 2.5 + pulse * 0.7, 0, Math.PI * 2);
+              c.fillStyle = rgbPalette[i].col;
+              c.fill();
+              c.strokeStyle = '#ffffff';
+              c.lineWidth = 0.9;
+              c.stroke();
+            }
+
+            // 12방향 찬란한 백색광·광채 스파크
+            for (let k = 0; k < 12; k++) {
+              const isMajor = k % 3 === 0;
+              const ra = cPhase * 0.28 + (Math.PI / 6) * k;
+              const rStart = T * 0.11;
+              const rEnd = T * ((isMajor ? 0.42 : 0.30) + pulse * 0.08);
+              c.strokeStyle = isMajor
+                ? `rgba(255, 255, 255, ${0.72 + pulse * 0.28})`
+                : `rgba(255, 255, 255, ${0.38 + pulse * 0.32})`;
+              c.lineWidth = isMajor ? 1.5 : 0.9;
+              c.beginPath();
+              c.moveTo(cx + Math.cos(ra) * rStart, cy + Math.sin(ra) * rStart);
+              c.lineTo(cx + Math.cos(ra) * rEnd, cy + Math.sin(ra) * rEnd);
+              c.stroke();
+            }
           } else {
             c.strokeStyle = `rgba(253, 224, 71, ${0.42 + pulse * 0.42})`;
             c.lineWidth = 1.2;
@@ -5781,22 +6307,42 @@
           c.stroke();
         }
 
-        // 3) 중앙 발광 룬 서클 & 심볼
-        c.beginPath();
-        c.arc(cx, cy, T * (def.isCombo ? 0.34 : 0.31), 0, Math.PI * 2);
-        c.fillStyle = def.isCombo ? (def.runeColor + '44') : (def.runeColor + '22');
-        c.fill();
-        c.strokeStyle = def.isCombo ? '#fde047' : def.runeColor;
-        c.globalAlpha = def.isCombo ? (0.7 + pulse * 0.3) : (0.5 + pulse * 0.4);
-        c.lineWidth = def.isCombo ? 1.8 : 1.2;
-        c.stroke();
-        c.globalAlpha = 1;
+        // 3) 중앙 발광 룬 서클 & 심볼 (루미너스는 RGB 삼원광이 합쳐진 순백 코어)
+        if (def.isLuminous) {
+          const coreGlow = c.createRadialGradient(cx, cy, 1, cx, cy, T * 0.24);
+          coreGlow.addColorStop(0, '#ffffff');
+          coreGlow.addColorStop(0.55, 'rgba(255, 255, 255, 0.92)');
+          coreGlow.addColorStop(1, 'rgba(186, 230, 253, 0.25)');
+          c.beginPath();
+          c.arc(cx, cy, T * (0.20 + pulse * 0.05), 0, Math.PI * 2);
+          c.fillStyle = coreGlow;
+          c.fill();
+          c.strokeStyle = '#ffffff';
+          c.lineWidth = 1.6;
+          c.stroke();
 
-        c.fillStyle = def.runeColor;
-        c.font = def.isCombo ? '800 15px "Inter", "Noto Sans KR", sans-serif' : '800 13px "Inter", "Noto Sans KR", sans-serif';
-        c.textAlign = 'center';
-        c.textBaseline = 'middle';
-        c.fillText(def.rune, cx, cy + 0.5);
+          c.fillStyle = '#0f172a';
+          c.font = '800 14px "Inter", "Noto Sans KR", sans-serif';
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          c.fillText(def.rune, cx, cy + 0.5);
+        } else {
+          c.beginPath();
+          c.arc(cx, cy, T * (def.isCombo ? 0.34 : 0.31), 0, Math.PI * 2);
+          c.fillStyle = def.isCombo ? (def.runeColor + '44') : (def.runeColor + '22');
+          c.fill();
+          c.strokeStyle = def.isCombo ? '#fde047' : def.runeColor;
+          c.globalAlpha = def.isCombo ? (0.7 + pulse * 0.3) : (0.5 + pulse * 0.4);
+          c.lineWidth = def.isCombo ? 1.8 : 1.2;
+          c.stroke();
+          c.globalAlpha = 1;
+
+          c.fillStyle = def.runeColor;
+          c.font = def.isCombo ? '800 15px "Inter", "Noto Sans KR", sans-serif' : '800 13px "Inter", "Noto Sans KR", sans-serif';
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          c.fillText(def.rune, cx, cy + 0.5);
+        }
 
         // 조합 슬레이트 하단 왕관/별 엠블럼 배지
         if (def.isCombo && showBottomStar) {
@@ -6401,6 +6947,405 @@
             break;
           }
 
+          case 'prism_sovereign': {
+            // 프리즘 소버린: 회전하는 6각 프리즘 다이아몬드 + 분광 빔 궤도 + 황금 코어 맥동
+            c.save();
+            const rot = phase * 0.45;
+            const breath = 0.94 + pulse * 0.12;
+            const prismColors = ['#38bdf8', '#fde047', '#f472b6', '#34d399', '#c084fc', '#fb923c'];
+
+            c.beginPath();
+            c.arc(cx, cy, r * (1.02 + pulse * 0.12), 0, Math.PI * 2);
+            c.strokeStyle = `rgba(253, 224, 71, ${0.42 + pulse * 0.45})`;
+            c.lineWidth = 1.4;
+            c.stroke();
+
+            for (let i = 0; i < 6; i++) {
+              const a = rot + (Math.PI / 3) * i;
+              const rx = cx + Math.cos(a) * r * 0.72;
+              const ry = cy + Math.sin(a) * r * 0.72;
+              c.beginPath();
+              c.moveTo(cx, cy);
+              c.lineTo(rx, ry);
+              c.strokeStyle = prismColors[i];
+              c.globalAlpha = 0.55 + pulse * 0.35;
+              c.lineWidth = 1.3;
+              c.stroke();
+
+              c.globalAlpha = 1;
+              drawGemShape(c, 'diamond', rx, ry, r * 0.24);
+              c.fillStyle = prismColors[i];
+              c.fill();
+              c.strokeStyle = '#ffffff';
+              c.lineWidth = 1.0;
+              c.stroke();
+            }
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 0.8);
+            drawGemShape(c, 'star4', 0, 0, r * 0.64 * breath);
+            c.fillStyle = '#e0f2fe';
+            c.fill();
+            c.strokeStyle = '#fde047';
+            c.lineWidth = 1.8;
+            c.stroke();
+            c.restore();
+            c.restore();
+            break;
+          }
+
+          case 'frost_venom': {
+            // 프로스트 베놈: 빙하 결정 링과 독성 궤도 입자 역회전 + 코어 호흡
+            c.save();
+            const rot = phase * 0.38;
+            c.beginPath();
+            c.arc(cx, cy, r * 0.92, 0, Math.PI * 2);
+            c.fillStyle = '#0f2936';
+            c.fill();
+            c.strokeStyle = '#2dd4bf';
+            c.lineWidth = 1.8;
+            c.stroke();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(rot);
+            drawGemShape(c, 'hexagon', 0, 0, r * 0.74);
+            c.strokeStyle = '#60a5fa';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 1.2);
+            drawGemShape(c, 'octagon', 0, 0, r * 0.52);
+            c.fillStyle = 'rgba(20, 184, 166, 0.35)';
+            c.fill();
+            c.strokeStyle = '#4ade80';
+            c.lineWidth = 1.4;
+            c.stroke();
+            c.restore();
+
+            for (let i = 0; i < 4; i++) {
+              const a = rot * 1.5 + (Math.PI / 2) * i;
+              const px = cx + Math.cos(a) * r * 0.78;
+              const py = cy + Math.sin(a) * r * 0.78;
+              c.beginPath();
+              c.arc(px, py, r * (0.11 + pulse * 0.04), 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#93c5fd' : '#4ade80';
+              c.fill();
+            }
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.22 + pulse * 0.06), 0, Math.PI * 2);
+            c.fillStyle = '#a7f3d0';
+            c.fill();
+            c.restore();
+            break;
+          }
+
+          case 'flare_nova': {
+            // 플레어 노바: 초신성 방사 광선 8줄 확장 + 회전 화염 코어
+            c.save();
+            const rot = phase * 0.5;
+            const novaR = r * (0.85 + pulse * 0.25);
+
+            const nGrad = c.createRadialGradient(cx, cy, r * 0.1, cx, cy, novaR);
+            nGrad.addColorStop(0, '#fef9c3');
+            nGrad.addColorStop(0.45, '#fb923c');
+            nGrad.addColorStop(0.85, '#e11d48');
+            nGrad.addColorStop(1, 'rgba(225, 29, 72, 0)');
+            c.fillStyle = nGrad;
+            c.beginPath();
+            c.arc(cx, cy, novaR, 0, Math.PI * 2);
+            c.fill();
+
+            for (let i = 0; i < 8; i++) {
+              const a = rot + (Math.PI / 4) * i;
+              const rayStart = r * 0.35;
+              const rayEnd = r * (0.95 + pulse * 0.18);
+              c.beginPath();
+              c.moveTo(cx + Math.cos(a) * rayStart, cy + Math.sin(a) * rayStart);
+              c.lineTo(cx + Math.cos(a) * rayEnd, cy + Math.sin(a) * rayEnd);
+              c.strokeStyle = i % 2 === 0 ? '#fde047' : '#fb7185';
+              c.lineWidth = i % 2 === 0 ? 1.8 : 1.3;
+              c.stroke();
+            }
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 0.9);
+            drawGemShape(c, 'diamond', 0, 0, r * 0.58 * (0.94 + pulse * 0.1));
+            c.fillStyle = '#f43f5e';
+            c.fill();
+            c.strokeStyle = '#fde047';
+            c.lineWidth = 1.7;
+            c.stroke();
+            c.restore();
+            c.restore();
+            break;
+          }
+
+          case 'aether_pulse': {
+            // 에테르 펄스: 동심 템포 파동 링 맥동 + 공전 에테르 구체 4개
+            c.save();
+            const rot = phase * 0.7;
+
+            c.beginPath();
+            c.arc(cx, cy, r * 0.90, 0, Math.PI * 2);
+            c.fillStyle = '#1e1b4b';
+            c.fill();
+            c.strokeStyle = '#67e8f9';
+            c.lineWidth = 1.7;
+            c.stroke();
+
+            const pulseRingR = r * (0.35 + pulse * 0.58);
+            c.beginPath();
+            c.arc(cx, cy, pulseRingR, 0, Math.PI * 2);
+            c.strokeStyle = `rgba(103, 232, 249, ${(1 - pulse * 0.65) * 0.85})`;
+            c.lineWidth = 1.6;
+            c.stroke();
+
+            for (let i = 0; i < 4; i++) {
+              const a = rot + (Math.PI / 2) * i;
+              const ox = cx + Math.cos(a) * r * 0.66;
+              const oy = cy + Math.sin(a) * r * 0.66;
+              c.beginPath();
+              c.arc(ox, oy, r * 0.15, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#c084fc' : '#67e8f9';
+              c.fill();
+              c.strokeStyle = '#ffffff';
+              c.lineWidth = 1.0;
+              c.stroke();
+            }
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.26 + pulse * 0.08), 0, Math.PI * 2);
+            c.fillStyle = '#fde047';
+            c.fill();
+            c.restore();
+            break;
+          }
+
+          case 'celestial_eclipse': {
+            c.save();
+            const rot = phase * 0.42;
+            const haloR = r * (1.10 + pulse * 0.14);
+            const eGrad = c.createRadialGradient(cx, cy, r * 0.1, cx, cy, haloR);
+            eGrad.addColorStop(0, 'rgba(240, 171, 252, 0.65)');
+            eGrad.addColorStop(0.55, 'rgba(56, 189, 248, 0.35)');
+            eGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            c.fillStyle = eGrad;
+            c.beginPath();
+            c.arc(cx, cy, haloR, 0, Math.PI * 2);
+            c.fill();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(rot);
+            drawGemShape(c, 'hexagon', 0, 0, r * 0.86);
+            c.strokeStyle = '#38bdf8';
+            c.lineWidth = 1.6;
+            c.stroke();
+            c.restore();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 1.15);
+            drawGemShape(c, 'star4', 0, 0, r * 0.78);
+            c.fillStyle = 'rgba(129, 140, 248, 0.45)';
+            c.fill();
+            c.strokeStyle = '#f0abfc';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.34 + pulse * 0.06), 0, Math.PI * 2);
+            c.fillStyle = '#090d16';
+            c.fill();
+            c.strokeStyle = '#fde047';
+            c.lineWidth = 1.8;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'cosmic_heart': {
+            c.save();
+            const rot = phase * 0.65;
+            const beat = 0.94 + Math.pow(pulse, 2) * 0.14;
+
+            const cGrad = c.createRadialGradient(cx, cy, r * 0.08, cx, cy, r * 1.12);
+            cGrad.addColorStop(0, '#ffffff');
+            cGrad.addColorStop(0.35, '#fde047');
+            cGrad.addColorStop(0.70, '#f472b6');
+            cGrad.addColorStop(1, 'rgba(34, 211, 238, 0)');
+            c.fillStyle = cGrad;
+            c.beginPath();
+            c.arc(cx, cy, r * 1.12, 0, Math.PI * 2);
+            c.fill();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(rot);
+            drawGemShape(c, 'octagon', 0, 0, r * 0.84);
+            c.strokeStyle = '#22d3ee';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+
+            for (let i = 0; i < 6; i++) {
+              const a = -rot * 1.1 + (Math.PI / 3) * i;
+              const ox = cx + Math.cos(a) * r * 0.72;
+              const oy = cy + Math.sin(a) * r * 0.72;
+              c.beginPath();
+              c.arc(ox, oy, r * 0.12, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#fde047' : '#22d3ee';
+              c.fill();
+            }
+
+            drawGemShape(c, 'diamond', cx, cy, r * 0.56 * beat);
+            c.fillStyle = '#ec4899';
+            c.fill();
+            c.strokeStyle = '#ffffff';
+            c.lineWidth = 1.6;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'omega_cosmos': {
+            // 오메가 코스모스: 다중 성운 후광 + 역회전 성좌 링 + 프리즘 코어 맥동
+            c.save();
+            const rot = phase * 0.55;
+            const beat = 0.94 + Math.pow(pulse, 2) * 0.14;
+            const haloR = r * (1.18 + pulse * 0.14);
+
+            const oGrad = c.createRadialGradient(cx, cy, r * 0.08, cx, cy, haloR);
+            oGrad.addColorStop(0, '#ffffff');
+            oGrad.addColorStop(0.32, 'rgba(250, 204, 21, 0.85)');
+            oGrad.addColorStop(0.65, 'rgba(168, 85, 247, 0.45)');
+            oGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            c.fillStyle = oGrad;
+            c.beginPath();
+            c.arc(cx, cy, haloR, 0, Math.PI * 2);
+            c.fill();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(rot);
+            drawGemShape(c, 'octagon', 0, 0, r * 0.92);
+            c.strokeStyle = '#fde047';
+            c.lineWidth = 1.8;
+            c.stroke();
+            c.restore();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 1.25);
+            drawGemShape(c, 'star4', 0, 0, r * 0.82);
+            c.strokeStyle = '#67e8f9';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+
+            for (let i = 0; i < 6; i++) {
+              const a = rot * 0.9 + (Math.PI / 3) * i;
+              const ox = cx + Math.cos(a) * r * 0.74;
+              const oy = cy + Math.sin(a) * r * 0.74;
+              c.beginPath();
+              c.arc(ox, oy, r * 0.12, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#f472b6' : '#fde047';
+              c.fill();
+            }
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.30 + pulse * 0.07) * beat, 0, Math.PI * 2);
+            c.fillStyle = '#0f172a';
+            c.fill();
+            c.strokeStyle = '#ffffff';
+            c.lineWidth = 1.8;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
+          case 'the_end_of_bryvx': {
+            // 디 엔드 오브 브릭스: 108 컬러 디자인 + 암전(Blackout) 후 점등(Lit) 모션
+            c.save();
+            const rot = phase * 0.62;
+            const beat = 0.94 + Math.pow(pulse, 2) * 0.14;
+            const haloR = r * (1.22 + pulse * 0.15);
+
+            // 암전 -> 점등 사이클 (0.0: 암전 직전/직후, 1.0: 완전 점등)
+            const litWave = Math.sin(pulse * Math.PI);
+            const litFactor = Math.pow(Math.max(0, Math.min(1, litWave)), 0.65);
+
+            const endGrad = c.createRadialGradient(cx, cy, r * 0.08, cx, cy, haloR);
+            endGrad.addColorStop(0, '#ffffff');
+            endGrad.addColorStop(0.28, 'rgba(253, 224, 71, 0.92)');
+            endGrad.addColorStop(0.60, 'rgba(232, 121, 249, 0.55)');
+            endGrad.addColorStop(0.85, 'rgba(52, 211, 153, 0.28)');
+            endGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            c.fillStyle = endGrad;
+            c.beginPath();
+            c.arc(cx, cy, haloR, 0, Math.PI * 2);
+            c.fill();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(rot);
+            drawGemShape(c, 'bryvx', 0, 0, r * 0.96 * beat);
+            c.fillStyle = 'rgba(88, 28, 135, 0.45)';
+            c.fill();
+            c.strokeStyle = '#fde047';
+            c.lineWidth = 1.7;
+            c.stroke();
+            c.restore();
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 1.3);
+            drawGemShape(c, 'star4', 0, 0, r * 0.74);
+            c.fillStyle = 'rgba(52, 211, 153, 0.35)';
+            c.fill();
+            c.strokeStyle = '#67e8f9';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+
+            for (let i = 0; i < 6; i++) {
+              const a = rot * 1.1 + (Math.PI / 3) * i;
+              const ox = cx + Math.cos(a) * r * 0.78;
+              const oy = cy + Math.sin(a) * r * 0.78;
+              c.beginPath();
+              c.arc(ox, oy, r * 0.12, 0, Math.PI * 2);
+              c.fillStyle = i % 2 === 0 ? '#fde047' : '#f472b6';
+              c.fill();
+            }
+
+            c.beginPath();
+            c.arc(cx, cy, r * (0.26 + pulse * 0.07) * beat, 0, Math.PI * 2);
+            c.fillStyle = '#ffffff';
+            c.fill();
+            c.strokeStyle = '#c026d3';
+            c.lineWidth = 1.5;
+            c.stroke();
+
+            // 암전(Blackout) 오버레이: litFactor가 낮을 때 칠흑 암전이 덮였다가 점등되며 밝아짐
+            const blackoutAlpha = Math.max(0, Math.min(0.92, (1 - litFactor) * 0.92));
+            if (blackoutAlpha > 0.01) {
+              c.beginPath();
+              c.arc(cx, cy, r * 1.16, 0, Math.PI * 2);
+              c.fillStyle = `rgba(3, 7, 18, ${blackoutAlpha})`;
+              c.fill();
+            }
+            c.restore();
+            break;
+          }
+
           case 'paraiba':
           default: {
             // 파라이바 토르말린 / 패싯: 네온 시안 파셋 회전 + 전기 스파크 맥동
@@ -6722,6 +7667,148 @@
         }
       }
 
+      const rockCheatModal = document.getElementById('rockCheatModal');
+      const btnCloseRockCheat = document.getElementById('btnCloseRockCheat');
+      const btnCancelRockCheat = document.getElementById('btnCancelRockCheat');
+      const btnConfirmRockCheat = document.getElementById('btnConfirmRockCheat');
+      const rcGemGrid = document.getElementById('rcGemGrid');
+      const rcGradeGrid = document.getElementById('rcGradeGrid');
+      const rcPreviewCanvas = document.getElementById('rcPreviewCanvas');
+      const rcSelectedName = document.getElementById('rcSelectedName');
+      const rcSelectedDesc = document.getElementById('rcSelectedDesc');
+      const rcTargetInfo = document.getElementById('rcTargetInfo');
+
+      function openRockCheatModal(targetRock) {
+        if (!rockCheatModal || !targetRock || !state.rocks.includes(targetRock)) return;
+        state.rockCheatTargetRock = targetRock;
+        if (!GEMS_DB[state.rockCheatGemId] || state.rockCheatGemId === 'bryvx') {
+          state.rockCheatGemId = 'ruby';
+        }
+        state.rockCheatGrade = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
+        if (rcTargetInfo) {
+          rcTargetInfo.textContent = `대상 바위 (${formatTilesFromSub(targetRock.sx)}, ${formatTilesFromSub(targetRock.sy)}) · 다른 정보창으로 넘어가지 않고 변환됩니다.`;
+        }
+        renderRockCheatModal();
+        rockCheatModal.classList.remove('hidden');
+        rockCheatModal.classList.add('flex');
+      }
+
+      function closeRockCheatModal() {
+        if (!rockCheatModal) return;
+        rockCheatModal.classList.add('hidden');
+        rockCheatModal.classList.remove('flex');
+        state.rockCheatTargetRock = null;
+      }
+
+      function renderRockCheatModal() {
+        if (!rcGemGrid || !rcGradeGrid) return;
+        const selGemId = state.rockCheatGemId || 'ruby';
+        const selGrade = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
+
+        rcGemGrid.innerHTML = '';
+        for (const gKey of BASIC_GEM_KEYS) {
+          const spec = GEMS_DB[gKey];
+          const active = gKey === selGemId;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `px-2 py-1.5 rounded-xl border text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer ${
+            active
+              ? 'bg-indigo-600 text-white border-indigo-700 shadow'
+              : 'bg-white text-slate-800 border-slate-200 hover:bg-indigo-50'
+          }`;
+          btn.innerHTML = `<span class="w-2.5 h-2.5 rounded-full shrink-0 border border-black/20" style="background:${spec.color}"></span><span class="truncate">${spec.name}</span>`;
+          btn.addEventListener('click', () => {
+            state.rockCheatGemId = gKey;
+            renderRockCheatModal();
+          });
+          rcGemGrid.appendChild(btn);
+        }
+
+        rcGradeGrid.innerHTML = '';
+        for (let gr = 0; gr < GRADES_DB.length; gr++) {
+          const gInfo = GRADES_DB[gr];
+          const active = gr === selGrade;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `px-2 py-1.5 rounded-xl border text-[11px] font-extrabold flex items-center justify-center gap-1 transition cursor-pointer ${
+            active
+              ? 'bg-amber-400 text-slate-950 border-amber-500 shadow'
+              : 'bg-white text-slate-800 border-slate-200 hover:bg-amber-50'
+          }`;
+          btn.innerHTML = `<span class="px-1 rounded text-[10px] font-extrabold text-slate-950" style="background:${gInfo.color}">${gInfo.short}</span><span>${gInfo.name}</span>`;
+          btn.addEventListener('click', () => {
+            state.rockCheatGrade = gr;
+            renderRockCheatModal();
+          });
+          rcGradeGrid.appendChild(btn);
+        }
+
+        const spec = GEMS_DB[selGemId];
+        const gInfo = GRADES_DB[selGrade];
+        if (rcSelectedName) rcSelectedName.textContent = `${gInfo.name} ${spec.name}`;
+        if (rcSelectedDesc) rcSelectedDesc.textContent = `공격력 ${spec.damage[selGrade]} · 사거리 ${spec.range[selGrade]} · ${spec.getDesc(selGrade)}`;
+        if (rcPreviewCanvas) {
+          drawTempTrayGemCanvas(rcPreviewCanvas, { type: 'gem', gemId: selGemId, grade: selGrade }, false);
+        }
+      }
+
+      function confirmRockCheatConversion() {
+        const rock = state.rockCheatTargetRock;
+        if (!rock || !state.rocks.includes(rock)) {
+          closeRockCheatModal();
+          return;
+        }
+        const gId = state.rockCheatGemId || 'ruby';
+        const gr = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
+        const spec = GEMS_DB[gId];
+        const gInfo = GRADES_DB[gr];
+
+        const rIdx = state.rocks.indexOf(rock);
+        if (rIdx !== -1) state.rocks.splice(rIdx, 1);
+        setEntityOccupancy(rock, false);
+
+        const newGem = {
+          type: 'gem',
+          gemId: gId,
+          grade: gr,
+          sx: rock.sx,
+          sy: rock.sy,
+          temp: false,
+          cooldown: 0,
+          kills: 0,
+          dmgMult: 1.0,
+          dmgBonusTotal: 0,
+          speedBonusTotal: 0,
+        };
+        setEntityOccupancy(newGem, true);
+        state.keptGems.push(newGem);
+
+        const pathRes = computeFullPathSub();
+        if (pathRes.valid) state.currentPath = pathRes.path;
+
+        const S = GAME_CONFIG.SUB_TILE_SIZE;
+        state.effects.push({
+          type: 'ring',
+          x: (newGem.sx + 1) * S,
+          y: (newGem.sy + 1) * S,
+          radius: 46,
+          color: spec.stroke || '#fde047',
+          life: 0.5,
+          maxLife: 0.5,
+        });
+
+        closeRockCheatModal();
+        recalculateAuras();
+        refreshCraftableCache();
+        updateAllUI();
+        saveGame(false);
+        showToast(`🛠️ 치트 완료! 바위가 [${gInfo.name} ${spec.name}]으로 변환되었습니다.`);
+      }
+
+      if (btnCloseRockCheat) btnCloseRockCheat.addEventListener('click', closeRockCheatModal);
+      if (btnCancelRockCheat) btnCancelRockCheat.addEventListener('click', closeRockCheatModal);
+      if (btnConfirmRockCheat) btnConfirmRockCheat.addEventListener('click', confirmRockCheatConversion);
+
       function renderMainCanvas(now) {
         const S = GAME_CONFIG.SUB_TILE_SIZE;
         const T = GAME_CONFIG.MAJOR_TILE_SIZE;
@@ -6821,6 +7908,65 @@
         }
         for (const sItem of state.slateCraftableList) {
           sItem.ingredients.forEach((g) => slateAnchors.add(g));
+        }
+
+        // 4.8) 신격(디 엔드 오브 브릭스) 주변 반경 3칸 흑백(회색조) 영역 및 8색 회전 경계
+        const divinityTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_end_of_bryvx');
+        if (divinityTowers.length > 0) {
+          const eightGemColors = BASIC_GEM_KEYS.map((k) => GEMS_DB[k].color);
+          const rotAngle = now * 0.0018;
+
+          for (const dtower of divinityTowers) {
+            const dcx = (dtower.sx + 1) * S;
+            const dcy = (dtower.sy + 1) * S;
+            const r3Px = 3 * T;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(dcx, dcy, r3Px, 0, Math.PI * 2);
+            ctx.clip();
+
+            // 반경 3칸 내부를 흑백(회색조) 톤으로 덮음
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.42)';
+            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
+
+            // 기존 바위·타워·슬레이트 위에도 회색조 베일을 입혀 반경 3칸 내 흑백 체감 강화
+            for (const sl of state.slates) {
+              if (Math.hypot((sl.sx + 1) * S - dcx, (sl.sy + 1) * S - dcy) <= r3Px + T) {
+                ctx.fillStyle = 'rgba(100, 116, 139, 0.52)';
+                ctx.fillRect(sl.sx * S, sl.sy * S, T, T);
+              }
+            }
+            for (const rock of state.rocks) {
+              if (Math.hypot((rock.sx + 1) * S - dcx, (rock.sy + 1) * S - dcy) <= r3Px + T) {
+                ctx.fillStyle = 'rgba(100, 116, 139, 0.55)';
+                ctx.fillRect(rock.sx * S, rock.sy * S, T, T);
+              }
+            }
+            for (const ent of state.keptGems) {
+              if (ent === dtower) continue;
+              if (Math.hypot((ent.sx + 1) * S - dcx, (ent.sy + 1) * S - dcy) <= r3Px + T) {
+                ctx.fillStyle = 'rgba(100, 116, 139, 0.55)';
+                ctx.fillRect(ent.sx * S, ent.sy * S, T, T);
+              }
+            }
+            ctx.restore();
+
+            // 반경 3칸 끝 테두리: 8개 기본 보석 색으로 나뉜 8분할 호가 회전
+            ctx.save();
+            const segArc = (Math.PI * 2) / 8;
+            for (let i = 0; i < 8; i++) {
+              const startA = rotAngle + i * segArc;
+              const endA = startA + segArc;
+              ctx.beginPath();
+              ctx.arc(dcx, dcy, r3Px, startA, endA);
+              ctx.strokeStyle = eightGemColors[i];
+              ctx.lineWidth = 3.2;
+              ctx.lineCap = 'butt';
+              ctx.stroke();
+            }
+            ctx.restore();
+          }
         }
 
         // 5) 바위, 보석, 스페셜 타워
@@ -7048,16 +8194,24 @@
           }
         }
 
-        // 6.5) 최종 진화 스페셜 바위 이동 후보 하이라이트 (슬레이트는 화살표 이동 사용)
+        // 6.5) 최종 진화 스페셜 바위/타워 이동 후보 하이라이트
         if (state.moveMode && state.moveMode.kind === 'special') {
           for (const c of state.moveMode.candidates) {
             const cpx = c.sx * S;
             const cpy = c.sy * S;
-            ctx.fillStyle = `rgba(251, 191, 36, ${0.18 + pulse * 0.14})`;
-            ctx.fillRect(cpx + 1, cpy + 1, T - 2, T - 2);
-            ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 1.6;
-            ctx.strokeRect(cpx + 1.5, cpy + 1.5, T - 3, T - 3);
+            if (c.kind === 'tower') {
+              ctx.fillStyle = `rgba(56, 189, 248, ${0.20 + pulse * 0.16})`;
+              ctx.fillRect(cpx + 1, cpy + 1, T - 2, T - 2);
+              ctx.strokeStyle = '#38bdf8';
+              ctx.lineWidth = 1.8;
+              ctx.strokeRect(cpx + 1.5, cpy + 1.5, T - 3, T - 3);
+            } else {
+              ctx.fillStyle = `rgba(251, 191, 36, ${0.18 + pulse * 0.14})`;
+              ctx.fillRect(cpx + 1, cpy + 1, T - 2, T - 2);
+              ctx.strokeStyle = '#fbbf24';
+              ctx.lineWidth = 1.6;
+              ctx.strokeRect(cpx + 1.5, cpy + 1.5, T - 3, T - 3);
+            }
           }
         }
 
@@ -7591,7 +8745,14 @@
         dynamicActionsWrap.appendChild(btn);
       }
 
+      let lastInspectedRock = null;
       function updateAllUI() {
+        const currSel = state.selectedEntity;
+        const currRock = (currSel && currSel.type === 'rock') ? currSel : null;
+        if (currRock !== lastInspectedRock) {
+          state.rockInspectorTapCount = 0;
+          lastInspectedRock = currRock;
+        }
         if (inspectorDescPopover && !inspectorDescPopover.classList.contains('hidden')) {
           if (state.selectedEntity !== descPopupAnchorEntity) {
             closeInspectorDescPopover();
@@ -7625,14 +8786,27 @@
         let cls = 'relative bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm flex flex-col gap-2 transition-colors';
         if (sel && sel.type === 'gem' && sel.gemId === 'bryvx') {
           cls = 'relative bg-gradient-to-br from-purple-100/95 via-emerald-50/95 to-amber-100/90 rounded-2xl p-2.5 border-2 border-purple-400 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isDivinity) {
+          cls = 'relative bg-gradient-to-br from-zinc-950 via-neutral-950 to-black text-zinc-100 rounded-2xl p-2.5 border-2 border-zinc-700 shadow-2xl flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isPrism) {
+          cls = 'relative bg-gradient-to-r from-sky-100/95 via-fuchsia-100/90 to-amber-100/95 rounded-2xl p-2.5 border-2 border-fuchsia-400 shadow-md flex flex-col gap-2 transition-colors';
         } else if (sel && sel.type === 'special') {
           cls = 'relative bg-gradient-to-br from-amber-50/90 to-violet-50/80 rounded-2xl p-2.5 border border-amber-300/90 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'slate' && COMBINED_SLATES_DB[sel.slateId] && COMBINED_SLATES_DB[sel.slateId].isLuminous) {
+          cls = 'relative rounded-2xl p-2.5 border-2 border-white ring-2 ring-sky-300 shadow-[0_0_24px_rgba(56,189,248,0.65),0_0_12px_rgba(16,185,129,0.28)] flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'slate' && COMBINED_SLATES_DB[sel.slateId] && COMBINED_SLATES_DB[sel.slateId].isMix) {
+          cls = 'relative bg-gradient-to-r from-fuchsia-100/95 via-amber-100/90 to-sky-100/95 rounded-2xl p-2.5 border-2 border-fuchsia-400 shadow-md flex flex-col gap-2 transition-colors';
         } else if (sel && sel.type === 'slate') {
           cls = 'relative bg-gradient-to-br from-teal-50/90 to-emerald-50/80 rounded-2xl p-2.5 border border-teal-300/90 shadow-sm flex flex-col gap-2 transition-colors';
         } else if (sel && sel.type === 'rock') {
           cls = 'relative bg-slate-100/95 rounded-2xl p-2.5 border border-slate-300 shadow-sm flex flex-col gap-2 transition-colors';
         }
         panel.className = cls;
+        if (sel && sel.type === 'slate' && COMBINED_SLATES_DB[sel.slateId] && COMBINED_SLATES_DB[sel.slateId].isLuminous) {
+          panel.style.backgroundImage = 'linear-gradient(115deg, rgba(255,228,230,0.92) 0%, rgba(255,255,255,0.99) 34%, rgba(255,255,255,1) 52%, rgba(209,250,229,0.88) 76%, rgba(224,242,254,0.95) 100%)';
+        } else {
+          panel.style.backgroundImage = '';
+        }
       }
 
       function _updateAllUIInner() {
@@ -7698,7 +8872,7 @@
             phaseBadge.className = 'shrink-0 px-2 py-0.5 rounded-md text-[11px] font-extrabold tracking-wide bg-amber-100 text-amber-800 border border-amber-300';
             phaseHint.textContent = isSlateMove
               ? `[${mName}] 화살표로 반칸씩 정밀 이동 후 [이동 완료]를 누르세요 (1회 가능).`
-              : `[${mName}] 이동할 바위를 탭하세요 (100G · ${state.moveMode.candidates.length}개 바위 가능).`;
+              : `[${mName}] 이동할 바위 또는 교환할 타워를 탭하세요 (100G · 총 ${state.moveMode.candidates.length}곳 가능).`;
           }
         }
 
@@ -7759,7 +8933,8 @@
               const stats = getTowerEffectiveStats(cell);
               const def = stats.def;
               const tLabel = getTargetLabel(stats.targetType);
-              inspectorIcon.style.borderColor = def.borderColor;
+              inspectorIcon.style.borderColor = def.isLuminous ? '#38bdf8' : def.borderColor;
+              inspectorIcon.style.boxShadow = def.isLuminous ? '0 0 14px rgba(56, 189, 248, 0.55), inset 0 0 8px rgba(255, 255, 255, 0.95)' : '';
               inspectorIcon.innerHTML = '';
               const _ic1 = document.createElement('canvas'); _ic1.width = 32; _ic1.height = 32; _ic1.className = 'w-8 h-8 block';
               drawTempTrayGemCanvas(_ic1, cell, true); inspectorIcon.appendChild(_ic1);
@@ -7786,9 +8961,18 @@
             inspectorIcon.innerHTML = '';
             const _ic2 = document.createElement('canvas'); _ic2.width = 32; _ic2.height = 32; _ic2.className = 'w-8 h-8 block';
             drawTempTrayGemCanvas(_ic2, cell, true); inspectorIcon.appendChild(_ic2);
+            inspectorTitle.className = 'text-xs sm:text-sm font-extrabold text-slate-900 truncate';
+            inspectorStats.className = 'hidden text-[11px] text-slate-700 truncate mt-0.5 font-bold';
+            inspectorSub.className = 'text-[11px] text-slate-700 font-medium truncate mt-0.5';
             inspectorTitle.textContent = def.name;
 
-            if (def.isCombo) {
+            if (def.isLuminous) {
+              inspectorBadge.textContent = '✺ 루미너스 등급';
+              inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-rose-500 via-emerald-500 to-sky-500 text-white shadow-sm border border-white/80';
+            } else if (def.isMix) {
+              inspectorBadge.textContent = '✦ 믹스 슬레이트';
+              inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-fuchsia-600 via-amber-500 to-sky-600 text-white shadow-sm';
+            } else if (def.isCombo) {
               inspectorBadge.textContent = '★ 조합 슬레이트';
               inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-900 text-amber-100 border border-amber-700';
             } else {
@@ -7877,9 +9061,36 @@
             const _ic3 = document.createElement('canvas'); _ic3.width = 32; _ic3.height = 32; _ic3.className = 'w-8 h-8 block';
             drawTempTrayGemCanvas(_ic3, cell, true); inspectorIcon.appendChild(_ic3);
             inspectorTitle.textContent = stats.name;
-            inspectorBadge.textContent = tLabel.text;
-            inspectorBadge.className = `px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}`;
-            inspectorBadge.classList.remove('hidden');
+            const isDiv = !!def.isDivinity;
+            inspectorTitle.className = isDiv
+              ? 'text-xs sm:text-sm font-extrabold text-zinc-100 truncate'
+              : 'text-xs sm:text-sm font-extrabold text-slate-900 truncate';
+            inspectorStats.className = isDiv
+              ? 'hidden text-[11px] text-zinc-300 truncate mt-0.5 font-bold'
+              : 'hidden text-[11px] text-slate-700 truncate mt-0.5 font-bold';
+            inspectorSub.className = isDiv
+              ? 'text-[11px] text-zinc-400 font-medium truncate mt-0.5'
+              : 'text-[11px] text-slate-700 font-medium truncate mt-0.5';
+
+            if (isDiv) {
+              inspectorBadge.textContent = '🌑 신격 등급';
+              inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-zinc-800 text-zinc-100 border border-zinc-500 shadow-sm';
+              inspectorBadge.classList.remove('hidden');
+              inspectorBadge2.textContent = tLabel.text;
+              inspectorBadge2.className = `px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}`;
+              inspectorBadge2.classList.remove('hidden');
+            } else if (def.isPrism) {
+              inspectorBadge.textContent = `🌈 프리즘 ${def.prismRank || 'I'}`;
+              inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-sky-500 via-fuchsia-500 to-amber-500 text-white shadow-sm';
+              inspectorBadge.classList.remove('hidden');
+              inspectorBadge2.textContent = tLabel.text;
+              inspectorBadge2.className = `px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}`;
+              inspectorBadge2.classList.remove('hidden');
+            } else {
+              inspectorBadge.textContent = tLabel.text;
+              inspectorBadge.className = `px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}`;
+              inspectorBadge.classList.remove('hidden');
+            }
 
             const dmgText = stats.tSpec.noProjectile
               ? `오라 ${Math.round(stats.tSpec.immolationDps * stats.dmgMult)}/s`
@@ -7903,6 +9114,7 @@
             inspectorGrowthBar.className = 'h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-200';
             inspectorGrowthWrap.classList.remove('hidden');
 
+            const spComboOpts = getSpecialOptionsForSpecial(cell);
             if (cell.tier < def.tiers.length - 1) {
               const nextTier = def.tiers[cell.tier + 1];
               const evoCost = getEffectiveEvolutionCost(nextTier.cost);
@@ -7918,6 +9130,14 @@
             } else {
               const isMovingThisSpecial = !!(state.moveMode && state.moveMode.kind === 'special' && state.moveMode.entity === cell);
               dynamicActionsWrap.classList.remove('hidden');
+              for (const opt of spComboOpts) {
+                const targetDef = SPECIALS_DB[opt.specialId];
+                addActionBtn(
+                  `🌈 프리즘 궁극 조합: ${targetDef.name}`,
+                  'bg-gradient-to-r from-sky-500 via-fuchsia-500 to-amber-500 text-white',
+                  () => executeSpecialCombine(opt)
+                );
+              }
               if (isMovingThisSpecial) {
                 addActionBtn(
                   '✖ 이동 취소',
@@ -7927,7 +9147,7 @@
               } else {
                 const canAffordMove = state.gold >= MAX_SPECIAL_MOVE_COST;
                 addActionBtn(
-                  `🪨 바위로 이동 (${MAX_SPECIAL_MOVE_COST} G)`,
+                  `🔄 위치 이동/교환 (${MAX_SPECIAL_MOVE_COST} G)`,
                   canAffordMove
                     ? 'bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950'
                     : 'bg-slate-700 text-slate-300',
@@ -7951,6 +9171,9 @@
             inspectorIcon.innerHTML = '';
             const _ic4 = document.createElement('canvas'); _ic4.width = 32; _ic4.height = 32; _ic4.className = 'w-8 h-8 block';
             drawTempTrayGemCanvas(_ic4, cell, true); inspectorIcon.appendChild(_ic4);
+            inspectorTitle.className = 'text-xs sm:text-sm font-extrabold text-slate-900 truncate';
+            inspectorStats.className = 'hidden text-[11px] text-slate-700 truncate mt-0.5 font-bold';
+            inspectorSub.className = 'text-[11px] text-slate-700 font-medium truncate mt-0.5';
             inspectorTitle.textContent = stats.name;
             inspectorBadge.textContent = tLabel.text;
             inspectorBadge.className = `px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}`;
@@ -8049,6 +9272,15 @@
                     () => downgradeRoundGem(cell)
                   );
                 }
+                const bryvxComboOpts = getSpecialOptionsForEntity(cell);
+                for (const opt of bryvxComboOpts) {
+                  const targetDef = SPECIALS_DB[opt.specialId];
+                  addActionBtn(
+                    `🌌 궁극 융합: ${targetDef.name}`,
+                    'bg-gradient-to-r from-fuchsia-500 via-amber-400 to-emerald-500 text-slate-950',
+                    () => executeSpecialCombine(opt)
+                  );
+                }
                 if (canMoveBryvx) {
                   const isMovingThisBryvx = !!(state.moveMode && state.moveMode.kind === 'special' && state.moveMode.entity === cell);
                   if (isMovingThisBryvx) {
@@ -8060,7 +9292,7 @@
                   } else {
                     const canAffordMove = state.gold >= MAX_SPECIAL_MOVE_COST;
                     addActionBtn(
-                      `🪨 바위로 이동 (${MAX_SPECIAL_MOVE_COST} G)`,
+                      `🔄 위치 이동/교환 (${MAX_SPECIAL_MOVE_COST} G)`,
                       canAffordMove
                         ? 'bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950'
                         : 'bg-slate-700 text-slate-300',
@@ -8084,7 +9316,27 @@
           // D. 바위 인스펙터 + (건설 단계 시 보석 교체) + 바위 파괴 버튼
           if (cell.type === 'rock') {
             inspectorIcon.style.borderColor = '#64748b';
-            inspectorIcon.textContent = '🪨';
+            inspectorIcon.innerHTML = '';
+            const _rCanvas = document.createElement('canvas');
+            _rCanvas.width = 32;
+            _rCanvas.height = 32;
+            _rCanvas.className = 'w-8 h-8 block cursor-pointer';
+            drawTempTrayGemCanvas(_rCanvas, cell, false);
+            _rCanvas.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              if (state.selectedEntity !== cell || state.phase === 'GAMEOVER') return;
+              state.rockInspectorTapCount = (state.rockInspectorTapCount || 0) + 1;
+              if (state.rockInspectorTapCount >= 20) {
+                state.rockInspectorTapCount = 0;
+                openRockCheatModal(cell);
+              } else if (state.rockInspectorTapCount >= 10) {
+                showToast(`🛠️ 치트 트리거: ${20 - state.rockInspectorTapCount}번 더 탭하세요.`);
+              }
+            });
+            inspectorIcon.appendChild(_rCanvas);
+            inspectorTitle.className = 'text-xs sm:text-sm font-extrabold text-slate-900 truncate';
+            inspectorStats.className = 'hidden text-[11px] text-slate-700 truncate mt-0.5 font-bold';
+            inspectorSub.className = 'text-[11px] text-slate-700 font-medium truncate mt-0.5';
             inspectorTitle.textContent = `바위 (${formatTilesFromSub(cell.sx)}, ${formatTilesFromSub(cell.sy)})`;
             inspectorBadge.textContent = '2×2 미로 벽';
             inspectorBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700 border border-slate-300';
@@ -8117,6 +9369,9 @@
         // 3) 기본 빈 상태
         inspectorIcon.style.borderColor = 'rgba(255,255,255,0.1)';
         inspectorIcon.textContent = state.phase === 'SELECT' ? '👆' : '💎';
+        inspectorTitle.className = 'text-xs sm:text-sm font-extrabold text-slate-900 truncate';
+        inspectorStats.className = 'hidden text-[11px] text-slate-700 truncate mt-0.5 font-bold';
+        inspectorSub.className = 'text-[11px] text-slate-700 font-medium truncate mt-0.5';
         inspectorTitle.textContent = state.phase === 'SELECT' ? '유지/조합할 보석을 탭하세요' : '빈 공간을 탭해 반칸 배치';
         inspectorSub.textContent = state.phase === 'SELECT'
           ? '선택하지 않은 4개 보석은 바위가 됩니다. 원힛·석판·2합 배지를 확인하세요.'
@@ -8359,6 +9614,7 @@
         closeQualityPopover();
         refreshCraftableCache();
         renderCodexModal();
+        if (codexList) codexList.scrollTop = 0;
         codexModal.classList.remove('hidden');
         codexModal.classList.add('flex');
       }
@@ -8771,6 +10027,7 @@
 
         const filteredKeys = SPECIAL_KEYS.filter((k) => {
           const def = SPECIALS_DB[k];
+          if (def.isPrism || def.isDivinity) return state.codexFilter === 'craftable' && craftMap.has(k);
           if (state.codexFilter === 'craftable') return craftMap.has(k);
           if (state.codexFilter === 'all') return true;
           return def.category === state.codexFilter;
@@ -8823,6 +10080,76 @@
           const evoTree = def.tiers.map((t, idx) =>
             idx === 0 ? `<span class="text-slate-700 font-bold">${t.name}</span>` : `<span class="text-amber-700 font-bold">${t.name}(${t.cost}G)</span>`
           ).join(' <span class="text-slate-400">→</span> ');
+
+          if (def.isDivinity) {
+            const dCard = document.createElement('div');
+            dCard.className = 'rounded-xl p-3 border-2 border-zinc-700 bg-gradient-to-br from-zinc-950 via-neutral-950 to-black text-zinc-100 shadow-xl';
+            dCard.innerHTML = `
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 min-w-0 flex-wrap mb-1.5">
+                    <span class="w-4 h-4 rounded-full shrink-0 border-2 border-zinc-500 bg-black"></span>
+                    <span class="text-sm font-extrabold text-zinc-100 truncate">${def.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-zinc-800 text-zinc-100 border border-zinc-500">🌑 신격 등급</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✨ 조합 가능!</span>
+                  </div>
+                  <div class="text-[11px] font-bold text-zinc-300">🔒 조합식 및 상세 정보: 비공개 (???)</div>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-1.5">
+                  <canvas data-art-type="special" data-art-id="${key}" data-art-tier="${def.tiers.length - 1}" width="36" height="36" class="codex-art-canvas w-9 h-9 block rounded-lg border border-zinc-700 bg-black"></canvas>
+                  <button type="button" class="jump-btn px-2 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-extrabold transition">타워로 이동</button>
+                </div>
+              </div>
+            `;
+            const jumpBtn = dCard.querySelector('.jump-btn');
+            if (jumpBtn && craftInfo) {
+              jumpBtn.addEventListener('click', () => {
+                closeCodexModal();
+                state.preview = null;
+                state.selectedEntity = craftInfo.anchor;
+                focusCameraOnEntity(craftInfo.anchor);
+                updateAllUI();
+                showToast(`[${def.name}] 재료 타워로 이동했습니다!`);
+              });
+            }
+            codexList.appendChild(dCard);
+            continue;
+          }
+
+          if (def.isPrism) {
+            const pCard = document.createElement('div');
+            pCard.className = 'rounded-xl p-3 border-2 border-fuchsia-400 bg-gradient-to-r from-sky-100/95 via-fuchsia-100/90 to-amber-100/95 shadow-md';
+            pCard.innerHTML = `
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 min-w-0 flex-wrap mb-1.5">
+                    <span class="w-4 h-4 rounded-full shrink-0 border-2 border-white shadow-sm" style="background:linear-gradient(135deg,#38bdf8,#e879f9,#facc15)"></span>
+                    <span class="text-sm font-extrabold text-slate-900 truncate">${def.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-sky-500 via-fuchsia-500 to-amber-500 text-white">🌈 프리즘 ${def.prismRank || 'I'}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✨ 조합 가능!</span>
+                  </div>
+                  <div class="text-[11px] font-bold text-fuchsia-950">🔒 조합식 및 상세 정보: 비공개 (???)</div>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-1.5">
+                  <canvas data-art-type="special" data-art-id="${key}" data-art-tier="${def.tiers.length - 1}" width="36" height="36" class="codex-art-canvas w-9 h-9 block"></canvas>
+                  <button type="button" class="jump-btn px-2 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-extrabold transition">타워로 이동</button>
+                </div>
+              </div>
+            `;
+            const jumpBtn = pCard.querySelector('.jump-btn');
+            if (jumpBtn && craftInfo) {
+              jumpBtn.addEventListener('click', () => {
+                closeCodexModal();
+                state.preview = null;
+                state.selectedEntity = craftInfo.anchor;
+                focusCameraOnEntity(craftInfo.anchor);
+                updateAllUI();
+                showToast(`[${def.name}] 재료 타워로 이동했습니다!`);
+              });
+            }
+            codexList.appendChild(pCard);
+            continue;
+          }
 
           const card = document.createElement('div');
           card.className = `rounded-xl p-3 border ${
@@ -8909,6 +10236,98 @@
             });
           }
           codexList.appendChild(bryvxCard);
+
+          // 스톤 오브 브릭스 아래: 프리즘 등급 6종 (조합식 및 정보 비공개 + 프리즘 홀로그램 카드 배경)
+          const prismKeys = SPECIAL_KEYS.filter((k) => SPECIALS_DB[k] && SPECIALS_DB[k].isPrism);
+          for (const pKey of prismKeys) {
+            const pDef = SPECIALS_DB[pKey];
+            const pCraft = craftMap.get(pKey);
+            const pCard = document.createElement('div');
+            pCard.className = 'rounded-xl p-3 border-2 border-fuchsia-300/90 bg-gradient-to-r from-sky-100/90 via-fuchsia-100/85 to-amber-100/90 shadow-sm';
+            pCard.innerHTML = `
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 min-w-0 flex-wrap mb-1.5">
+                    <span class="w-4 h-4 rounded-full shrink-0 border-2 border-white shadow-sm" style="background:linear-gradient(135deg,#38bdf8,#e879f9,#facc15)"></span>
+                    <span class="text-sm font-extrabold text-slate-900 truncate">${pDef.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-sky-500 via-fuchsia-500 to-amber-500 text-white shadow-sm">🌈 프리즘 ${pDef.prismRank || 'I'}</span>
+                    ${pCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✨ 조합 가능!</span>' : ''}
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border bg-white/80 border-fuchsia-300/80 text-fuchsia-950">
+                      <span>🔒 조합식: 비공개 (???)</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-1.5">
+                  <canvas data-art-type="special" data-art-id="${pKey}" data-art-tier="${pDef.tiers.length - 1}" width="36" height="36" class="codex-art-canvas w-9 h-9 block"></canvas>
+                  ${pCraft ? '<button type="button" class="jump-prism-btn px-2 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-extrabold transition">타워로 이동</button>' : ''}
+                </div>
+              </div>
+              <div class="text-[11px] font-semibold text-slate-800 mb-1 leading-relaxed">🔒 타워 정보 및 능력치: 비공개 (???)</div>
+              <div class="text-[10px] text-fuchsia-900/85 font-semibold pt-1 border-t border-fuchsia-300/60">🌈 프리즘 등급 히든 타워 · 직접 조합해 해금하세요.</div>
+            `;
+            if (pCraft) {
+              const jBtn = pCard.querySelector('.jump-prism-btn');
+              if (jBtn) {
+                jBtn.addEventListener('click', () => {
+                  closeCodexModal();
+                  state.preview = null;
+                  state.selectedEntity = pCraft.anchor;
+                  focusCameraOnEntity(pCraft.anchor);
+                  updateAllUI();
+                  showToast(`[${pDef.name}] 재료 타워로 이동했습니다!`);
+                });
+              }
+            }
+            codexList.appendChild(pCard);
+          }
+
+          // 프리즘 등급 아래: 신격 등급 '디 엔드 오브 브릭스' (모든 빛을 흡수한 암흑 콘셉트 + 조합식/정보 비공개)
+          const divKeys = SPECIAL_KEYS.filter((k) => SPECIALS_DB[k] && SPECIALS_DB[k].isDivinity);
+          for (const dKey of divKeys) {
+            const dDef = SPECIALS_DB[dKey];
+            const dCraft = craftMap.get(dKey);
+            const dCard = document.createElement('div');
+            dCard.className = 'rounded-xl p-3 border-2 border-zinc-700 bg-gradient-to-br from-zinc-950 via-neutral-950 to-black text-zinc-100 shadow-xl';
+            dCard.innerHTML = `
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 min-w-0 flex-wrap mb-1.5">
+                    <span class="w-4 h-4 rounded-full shrink-0 border-2 border-zinc-500 bg-black shadow-inner"></span>
+                    <span class="text-sm font-extrabold text-zinc-100 truncate">${dDef.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-zinc-800 text-zinc-100 border border-zinc-500">🌑 신격 등급</span>
+                    ${dCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✨ 조합 가능!</span>' : ''}
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border bg-zinc-900/95 border-zinc-700 text-zinc-300">
+                      <span>🔒 조합식: 비공개 (???)</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-1.5">
+                  <canvas data-art-type="special" data-art-id="${dKey}" data-art-tier="${dDef.tiers.length - 1}" width="36" height="36" class="codex-art-canvas w-9 h-9 block rounded-lg border border-zinc-700 bg-black"></canvas>
+                  ${dCraft ? '<button type="button" class="jump-div-btn px-2 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-extrabold transition">타워로 이동</button>' : ''}
+                </div>
+              </div>
+              <div class="text-[11px] font-semibold text-zinc-300 mb-1 leading-relaxed">🔒 타워 정보 및 능력치: 비공개 (???)</div>
+              <div class="text-[10px] text-zinc-400 font-semibold pt-1 border-t border-zinc-800">🌑 신격 등급 · 모든 빛을 삼킨 암흑 성물</div>
+            `;
+            if (dCraft) {
+              const jBtn = dCard.querySelector('.jump-div-btn');
+              if (jBtn) {
+                jBtn.addEventListener('click', () => {
+                  closeCodexModal();
+                  state.preview = null;
+                  state.selectedEntity = dCraft.anchor;
+                  focusCameraOnEntity(dCraft.anchor);
+                  updateAllUI();
+                  showToast(`[${dDef.name}] 재료 타워로 이동했습니다!`);
+                });
+              }
+            }
+            codexList.appendChild(dCard);
+          }
         }
 
         renderCodexArtworkCanvases();
@@ -8922,9 +10341,11 @@
         for (const item of state.slateCraftableList) slateCraftMap.set(item.slateId, item);
 
         // 1) 조합 슬레이트 4종 섹션
+        const mixSlateKeys = COMBINED_SLATE_KEYS.filter((k) => COMBINED_SLATES_DB[k] && COMBINED_SLATES_DB[k].isMix);
+        const stdComboKeys = COMBINED_SLATE_KEYS.filter((k) => !(COMBINED_SLATES_DB[k] && COMBINED_SLATES_DB[k].isMix));
         const comboKeys = onlyCraftable
-          ? COMBINED_SLATE_KEYS.filter((k) => comboCraftMap.has(k))
-          : COMBINED_SLATE_KEYS;
+          ? stdComboKeys.filter((k) => comboCraftMap.has(k))
+          : stdComboKeys;
 
         if (comboKeys.length > 0) {
           if (!onlyCraftable) {
@@ -9077,6 +10498,103 @@
             }
           }
           codexList.appendChild(card);
+        }
+      
+        // 3) 믹스 슬레이트 3종 섹션 (히든: 조합식 및 정보 비공개)
+        const baseMixKeys = mixSlateKeys.filter((k) => !(COMBINED_SLATES_DB[k] && COMBINED_SLATES_DB[k].isTrinityDoom));
+        const visibleMixKeys = onlyCraftable ? baseMixKeys.filter((k) => comboCraftMap.has(k)) : baseMixKeys;
+        if (visibleMixKeys.length > 0) {
+          if (!onlyCraftable) {
+            const mixBanner = document.createElement('div');
+            mixBanner.className = 'rounded-xl p-2.5 mt-1.5 bg-gradient-to-r from-fuchsia-100 via-amber-100 to-sky-100 border-2 border-fuchsia-300 text-[11px] text-slate-900 leading-relaxed font-semibold';
+            mixBanner.innerHTML = '<strong>✦ 믹스 (3종):</strong> 히든 레시피입니다. 재료와 상세 정보는 비공개(???)로 유지됩니다.';
+            codexList.appendChild(mixBanner);
+          }
+
+          for (const mKey of visibleMixKeys) {
+            const mDef = COMBINED_SLATES_DB[mKey];
+            const mCraft = comboCraftMap.get(mKey);
+
+            const mCard = document.createElement('div');
+            mCard.className = 'rounded-xl p-3 border-2 border-fuchsia-300/90 bg-gradient-to-r from-fuchsia-100/95 via-amber-100/90 to-sky-100/95 shadow-md';
+            mCard.innerHTML = `
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 min-w-0 flex-wrap mb-1.5">
+                    <span class="w-5 h-5 rounded flex items-center justify-center text-xs font-extrabold border" style="background:${mDef.slabColor};border-color:${mDef.borderColor};color:${mDef.runeColor}">${mDef.rune}</span>
+                    <span class="text-sm font-extrabold text-slate-900 truncate">${mDef.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-fuchsia-600 via-amber-500 to-sky-600 text-white shadow-sm">✦ 믹스</span>
+                    ${mCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✦ 조합 가능!</span>' : ''}
+                  </div>
+                  <div class="text-[11px] font-bold text-slate-800">🔒 재료: 비공개 (???)</div>
+                </div>
+                <div class="shrink-0 flex flex-col items-end gap-1.5">
+                  <canvas data-art-type="slate" data-art-id="${mKey}" width="36" height="36" class="codex-art-canvas w-9 h-9 block"></canvas>
+                  ${mCraft ? '<button type="button" class="jump-mix-slate-btn px-2 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-extrabold transition">슬레이트로 이동</button>' : ''}
+                </div>
+              </div>
+              <div class="text-[11px] text-slate-800 font-semibold leading-relaxed">🔒 정보: 비공개 (???)</div>
+            `;
+
+            if (mCraft) {
+              const mjBtn = mCard.querySelector('.jump-mix-slate-btn');
+              if (mjBtn) {
+                mjBtn.addEventListener('click', () => {
+                  closeCodexModal();
+                  state.preview = null;
+                  state.selectedEntity = mCraft.anchor;
+                  focusCameraOnEntity(mCraft.anchor);
+                  updateAllUI();
+                  showToast(`✦ [${mDef.name}] 재료 슬레이트로 이동했습니다.`);
+                });
+              }
+            }
+            codexList.appendChild(mCard);
+          }
+        }
+
+        // 4) 트리니티 둠 슬레이트 (슬레이트 도감 제일 아래 출력 · 히든 비공개)
+        const trinityKeys = mixSlateKeys.filter((k) => COMBINED_SLATES_DB[k] && COMBINED_SLATES_DB[k].isTrinityDoom);
+        const visibleTrinityKeys = onlyCraftable ? trinityKeys.filter((k) => comboCraftMap.has(k)) : trinityKeys;
+        for (const tKey of visibleTrinityKeys) {
+          const tDef = COMBINED_SLATES_DB[tKey];
+          const tCraft = comboCraftMap.get(tKey);
+
+          const tCard = document.createElement('div');
+          tCard.className = 'rounded-xl p-3 border-2 border-sky-300 bg-gradient-to-r from-rose-50 via-white to-sky-50 shadow-[0_0_18px_rgba(56,189,248,0.45)] ring-2 ring-emerald-200/80';
+          tCard.innerHTML = `
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 min-w-0 flex-wrap mb-1.5">
+                  <span class="w-5 h-5 rounded flex items-center justify-center text-xs font-extrabold border border-sky-300 text-slate-900" style="background:linear-gradient(135deg,#ffe4e6 0%,#ffffff 50%,#e0f2fe 100%)">${tDef.rune}</span>
+                  <span class="text-sm font-extrabold text-slate-900 truncate">${tDef.name}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-rose-500 via-emerald-500 to-sky-500 text-white shadow-sm border border-white">✺ 루미너스</span>
+                  ${tCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-300 text-slate-950 border border-amber-400">✺ 조합 가능!</span>' : ''}
+                </div>
+                <div class="text-[11px] font-bold text-slate-800">🔒 재료: 비공개 (???)</div>
+              </div>
+              <div class="shrink-0 flex flex-col items-end gap-1.5">
+                <canvas data-art-type="slate" data-art-id="${tKey}" width="36" height="36" class="codex-art-canvas w-9 h-9 block rounded-lg border border-sky-200 bg-slate-950"></canvas>
+                ${tCraft ? '<button type="button" class="jump-trinity-slate-btn px-2 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-[10px] font-extrabold transition">슬레이트로 이동</button>' : ''}
+              </div>
+            </div>
+            <div class="text-[11px] text-slate-800 font-semibold leading-relaxed">🔒 정보: 비공개 (???)</div>
+          `;
+
+          if (tCraft) {
+            const tjBtn = tCard.querySelector('.jump-trinity-slate-btn');
+            if (tjBtn) {
+              tjBtn.addEventListener('click', () => {
+                closeCodexModal();
+                state.preview = null;
+                state.selectedEntity = tCraft.anchor;
+                focusCameraOnEntity(tCraft.anchor);
+                updateAllUI();
+                showToast(`✦ [${tDef.name}] 재료 슬레이트로 이동했습니다.`);
+              });
+            }
+          }
+          codexList.appendChild(tCard);
         }
       }
 
@@ -9402,6 +10920,7 @@
         if (!btn) return;
         state.codexFilter = btn.dataset.tab;
         renderCodexModal();
+        if (codexList) codexList.scrollTop = 0;
       });
 
       btnZoomToggle.addEventListener('click', () => {
