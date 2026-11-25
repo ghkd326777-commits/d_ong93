@@ -275,7 +275,7 @@ main.home-screen{
 .dialog:has(#results:not([hidden])) #dialogTitle{margin:2px 0 9px;font-size:20px;color:#fff2d7}
 .dialog:has(#results:not([hidden])) #dialogBody{order:1;margin:9px 3px 10px;font-size:12px;color:#dcc9d6}
 .dialog:has(#results:not([hidden])) :is(#dialogAction,#resultHome){order:2}
-#results{
+.result-card{
   overflow:hidden;border:2px solid #f1c779;border-radius:15px;padding:9px;
   background:linear-gradient(145deg,#643356,#36213f 50%,#352541);
   box-shadow:inset 0 0 0 2px #f6cb8438,0 3px 0 #1b1222;
@@ -314,6 +314,35 @@ main.home-screen{
 .result-crew li[data-role="chef"] small{color:#ffe8a8}
 .result-wallet{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:6px 1px 0;color:#ead5e3;font-size:11px}
 .result-wallet b{color:#fff0c7;font-size:12px;overflow-wrap:anywhere;text-align:right}
+.dialog:has(#recordsPanel:not([hidden])){
+  width:min(100%,440px);padding:clamp(10px,3vw,17px);
+  border-color:#a47793;background:linear-gradient(150deg,#38263e,#211926 72%);
+}
+.dialog:has(#recordsPanel:not([hidden])) #dialogTitle{padding-inline:44px;margin:4px 0 15px;color:#fff1ca}
+#recordsPanel:not([hidden]){display:grid;gap:14px}
+.record-heading{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:0 0 6px;color:#f3ddeb;font-size:14px;letter-spacing:.04em;
+}
+.record-heading::before,.record-heading::after{content:"";height:1px;flex:1;background:currentColor;opacity:.36}
+.record-best .record-heading{color:#ffe1a0;font-size:17px}
+.record-best .result-card{
+  border-color:#ffdc86;background:linear-gradient(150deg,#654035,#452940 52%,#302239);
+  box-shadow:inset 0 0 0 2px #ffdf884f,0 3px 0 #150e19,0 0 14px #f4ca6b2a;
+}
+.record-best .result-score{
+  background:radial-gradient(ellipse at 50% 16%,#fffbd6,#ffdc78 55%,#d78e3f);
+  box-shadow:inset 0 0 0 2px #fff4bd90;
+}
+.record-recent .result-card{border-color:#c397bb;box-shadow:inset 0 0 0 1px #e1b9d82f}
+.record-recent .result-score{
+  border-color:#efc7e1;background:radial-gradient(ellipse at 50% 18%,#fae3f1,#e5b1db 70%,#c381be);
+}
+.record-recent .result-score strong{font-size:clamp(31px,9.5vw,46px);text-shadow:0 2px #fae5ef}
+.dialog .record-empty{
+  margin:0;padding:14px;border:1px dashed #af819f;border-radius:10px;color:#ead5e3;font-size:13px;
+}
+.home-screen .menu-actions #openRecords{background:#fff2cc;color:#524020;border-color:#bca269}
 .menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
 .menu-actions .wide{grid-column:1/-1}
 .dialog [hidden],.cook-actions [hidden]{display:none}
@@ -409,6 +438,10 @@ main.home-screen{
   #prepPanel:not([hidden]),.crew-detail{gap:5px}
   .crew-ability{min-height:36px;grid-template-columns:54px minmax(0,1fr);padding-block:4px}
   .dialog .crew-ability p{line-height:1.35}
+}
+@media(orientation:portrait){
+  .dialog:has(#prepPanel:not([hidden])){min-height:0}
+  .crew-ability{flex:0 0 auto;min-height:clamp(28px,6.8dvh,46px);padding-block:clamp(3px,.62dvh,5px)}
 }
 #catalogItems .character-card[data-state="locked"] .card-art img{filter:brightness(0);opacity:.76}
 .guest .avatar img{width:clamp(26px,8.5vw,34px);height:clamp(26px,8.5vw,34px);object-fit:contain;image-rendering:pixelated;display:block}
@@ -710,10 +743,10 @@ main.home-screen{
 }
 .dialog .film-countdown{
   position:relative;isolation:isolate;display:grid;place-items:center;
-  width:clamp(128px,42vw,196px);max-width:70dvh;aspect-ratio:1;margin:0;
-  overflow:hidden;border:3px solid #fff;border-radius:50%;
-  background:#fff;color:#242320;box-shadow:0 0 0 5px #fff3,0 8px 30px #0006;
-  font:800 clamp(62px,19vw,94px)/1 "Courier New",monospace;letter-spacing:0;
+  width:clamp(85px,28vw,131px);max-width:47dvh;aspect-ratio:1;margin:0;
+  overflow:hidden;border:2px solid #fff;border-radius:50%;
+  background:#fff;color:#242320;box-shadow:0 0 0 3px #fff3,0 5px 20px #0006;
+  font:800 clamp(41px,12.67vw,63px)/1 "Courier New",monospace;letter-spacing:0;
 }
 .film-countdown::before,.film-countdown::after{
   content:"";position:absolute;pointer-events:none;border-radius:50%;
@@ -726,7 +759,7 @@ main.home-screen{
     conic-gradient(#c9c7c2 0 var(--film-angle,0deg),#fff var(--film-angle,0deg));
 }
 .film-countdown::after{
-  inset:9%;z-index:-1;border:1px solid #85827c;box-shadow:0 0 0 4px #fff8;
+  inset:9%;z-index:-1;border:1px solid #85827c;box-shadow:0 0 0 3px #fff8;
 }
 @media(prefers-reduced-motion:reduce){
   .film-countdown::before{--film-angle:0deg}
@@ -750,7 +783,8 @@ main.home-screen{
         <button type="button" class="quiet wide" id="openPrep">오픈 준비</button>
         <button type="button" class="quiet" id="openCatalog"><span aria-hidden="true">📚</span> 도감</button>
         <button type="button" class="quiet" id="openShop"><span aria-hidden="true">🛍️</span> 상점</button>
-        <button type="button" class="quiet wide" id="openGuide">게임설명</button>
+        <button type="button" class="quiet" id="openGuide"><span aria-hidden="true">📃</span> 게임설명</button>
+        <button type="button" class="quiet" id="openRecords"><span aria-hidden="true">🏆</span> 기록</button>
       </div>
     </nav>
   </div>
@@ -857,19 +891,29 @@ main.home-screen{
     <section id="packPanel" hidden aria-label="카드 개봉">
       <div class="card-grid pack-grid" id="packCards"></div>
     </section>
-    <section id="results" aria-label="이번 영업 기록" hidden>
-      <div class="result-score"><span>✦ 최종 매출 ✦</span><strong id="resultSales"></strong></div>
-      <dl class="result-stats">
-        <div class="result-combo"><dt>최대 콤보</dt><dd id="resultCombo"></dd></div>
-        <div class="result-level"><dt>도달 레벨</dt><dd id="resultLevel"></dd></div>
-        <div><dt>성공 주문</dt><dd id="resultOrders"></dd></div>
-      </dl>
-      <section class="result-crew" aria-labelledby="resultCrewTitle">
-        <h3 id="resultCrewTitle">출근 직원</h3>
-        <ul id="resultCrew" role="list"></ul>
+    <section id="recordsPanel" aria-label="영업 기록" hidden>
+      <section class="record-best" aria-labelledby="bestRecordTitle">
+        <h3 class="record-heading" id="bestRecordTitle"><span aria-hidden="true">🏆</span> 최고 기록</h3>
+        <div id="bestRecord"></div>
       </section>
-      <div class="result-wallet"><span>영업 후 보유금</span><b id="resultWallet"></b></div>
+      <section class="record-recent" aria-labelledby="recentRecordTitle">
+        <h3 class="record-heading" id="recentRecordTitle">최근 기록</h3>
+        <div id="recentRecord"></div>
+      </section>
     </section>
+    <section id="results" class="result-card" aria-label="이번 영업 기록" hidden></section>
+    <template id="resultCardTemplate">
+      <div class="result-score"><span>✦ 최종 매출 ✦</span><strong data-result="sales"></strong></div>
+      <dl class="result-stats">
+        <div class="result-combo"><dt>최대 콤보</dt><dd data-result="combo"></dd></div>
+        <div class="result-level"><dt>도달 레벨</dt><dd data-result="level"></dd></div>
+        <div><dt>성공 주문</dt><dd data-result="orders"></dd></div>
+      </dl>
+      <section class="result-crew" aria-label="출근 직원">
+        <h3>출근 직원</h3>
+        <ul data-result="crew" role="list"></ul>
+      </section>
+    </template>
     <button type="button" class="action" id="dialogAction" hidden>게임 시작</button>
     <button type="button" class="quiet" id="pauseSound" aria-label="효과음" aria-pressed="true" hidden><span aria-hidden="true">🔊</span></button>
     <button type="button" class="quiet" id="endRound" hidden>영업 마감 (매출 적립)</button>
@@ -1266,8 +1310,22 @@ function loadProfile(){
     packProgress:positiveInt(saved?.packProgress),skins,
     skinExperience:Object.fromEntries(skins.map(id=>[id,Math.min(SKIN_EXPERIENCE[2],positiveInt(saved?.skinExperience?.[id]))])),
     seen:valid(saved?.seen,Object.keys(VISITORS)),
-    cards:valid(saved?.cards,CARDS)
+    cards:valid(saved?.cards,CARDS),
+    bestRecord:loadRecord(saved?.bestRecord),
+    recentRecord:loadRecord(saved?.recentRecord)
   };
+}
+
+function loadRecord(record){
+  if(!Number.isSafeInteger(record?.level)||record.level<1||
+    !['sales','combo','orders'].every(key=>Number.isSafeInteger(record[key])&&record[key]>=0)) return null;
+  const chef=CREW.some(({id})=>id===record.lineup?.chef)?record.lineup.chef:CREW[0].id;
+  const skins=Object.fromEntries(CREW.map(({id})=>{
+    const key=id+'Skin';
+    const skin=record.lineup?.[key];
+    return [key,Object.hasOwn(SKINS[id],skin)?skin:'regular'];
+  }));
+  return {sales:record.sales,combo:record.combo,level:record.level,orders:record.orders,lineup:{chef,...skins}};
 }
 
 function saveProfile(){
@@ -1988,7 +2046,7 @@ function resetRound(){
     firstEscapeShield:'pajamaHachi' in helperLevels,firstBurnRepair:3,strongCookRepair:3,
     rawShields:3,comboShields:2,lowReputationUsed:false,nextGuestBonus:0,bonusSales:0,
     freezeCookUntil:0,protectCookUntil:0,delayGuestsUntil:0,reputationGuardUntil:0,
-    mode:'countdown',elapsed:0,last:performance.now(),count:RULES.count,gas:RULES.initialGas,gasPending:0,heatTime:0,
+    elapsed:0,roundStarted:false,gas:RULES.initialGas,gasPending:0,heatTime:0,
     chefSkin:lineup[lineup.chef+'Skin']||'regular',
     chefSkillName:SKINS[lineup.chef][lineup[lineup.chef+'Skin']]?.skill,
     settled:false,heatHoldUntil:0,pickUntil:0,rescueUntil:0,rescuesLeft:0,autoCookUntil:0,frontBonusHeat:0,
@@ -1999,9 +2057,8 @@ function resetRound(){
     level:1,levelStartOrders:0,combo:0,comboDeadline:0,maxCombo:0,charge:0,message:'손님을 고르고 서빙 수량을 누르세요.',tone:''
   });
   state.cells=GRILL_RATES.map((_,index)=>newGrillCell(index));
+  startCountdown();
   render();
-  showCountdown();
-  schedule();
 }
 
 function showGuide(){
@@ -2012,13 +2069,24 @@ function showGuide(){
   $('dialogTitle').focus({preventScroll:true});
 }
 
+function showRecords(){
+  state.mode='records';
+  showDialog('🏆 기록','',null,null);
+  renderSavedRecord($('bestRecord'),profile.bestRecord);
+  renderSavedRecord($('recentRecord'),profile.recentRecord);
+  $('recordsPanel').hidden=false;
+  $('infoCloseBar').hidden=false;
+  $('overlay').scrollTop=0;
+  $('dialogTitle').focus({preventScroll:true});
+}
+
 function showDialog(title,body,action,handler){
   $('homeScreen').hidden=true;
   const countdown=state.mode==='countdown';
   $('overlay').toggleAttribute('data-countdown',countdown);
   $('overlay').hidden=false;
-  $('game').hidden=['prep','info','pack','guide'].includes(state.mode);
-  for(const id of ['prepPanel','infoPanel','packPanel','guidePanel','infoCloseBar']) $(id).hidden=true;
+  $('game').hidden=['prep','info','pack','guide','records'].includes(state.mode);
+  for(const id of ['prepPanel','infoPanel','packPanel','guidePanel','recordsPanel','infoCloseBar']) $(id).hidden=true;
   $('resultHome').hidden=state.mode!=='result';
   $('endRound').hidden=true;
   $('pauseSound').hidden=true;
@@ -2034,10 +2102,14 @@ function showDialog(title,body,action,handler){
   if(action) $('dialogAction').focus({preventScroll:state.mode==='result'});
 }
 
-function showCountdown(){
+function startCountdown(){
+  state.mode='countdown';
+  state.count=RULES.count;
+  state.last=performance.now();
   showDialog('','',null,null);
   paintCountdown();
   $('dialogTitle').focus({preventScroll:true});
+  schedule();
 }
 
 function paintCountdown(){
@@ -2085,8 +2157,10 @@ function advance(now){
       paintCountdown();
     } else {
       state.mode='play';
-      state.elapsed=0;
-      addGuest(0);
+      if(!state.roundStarted){
+        state.roundStarted=true;
+        addGuest(0);
+      }
       hideDialog();
       $('pause').focus({preventScroll:true});
     }
@@ -2195,7 +2269,8 @@ function guestTimerSpeed(guest){
   if(guest.pauseUntil>state.elapsed) return 0;
   const shisa=guest.kind!=='shisa'&&state.guests.some(visitor=>isWaitingGuest(visitor)&&visitor.kind==='shisa');
   const modifier=shisa||state.delayGuestsUntil>state.elapsed ? .5 : 1;
-  return modifier*(state.level>=11 ? 2 : 1);
+  const duration=state.level>=21?.2:state.level>=16?.35:state.level>=11?.5:1;
+  return modifier/duration;
 }
 
 function guestRemaining(guest){
@@ -2811,11 +2886,18 @@ function loseLife(message,guestLine=''){
   } else finish('가게 평판이 모두 떨어졌어요.',guestLine);
 }
 
-function renderResultCrew(){
-  const orderedCrew=[CREW.find(person=>person.id===state.roundLineup.chef),...CREW.filter(person=>person.id!==state.roundLineup.chef)];
-  $('resultCrew').replaceChildren(...orderedCrew.map(({id,name})=>{
-    const isChef=id===state.roundLineup.chef;
-    const skinId=state.roundLineup[id+'Skin'];
+function renderResultCard(container,record,wallet){
+  const card=$('resultCardTemplate').content.cloneNode(true);
+  const result=field=>card.querySelector('[data-result="'+field+'"]');
+  result('sales').textContent=number.format(record.sales)+'원';
+  result('combo').textContent=number.format(record.combo);
+  result('level').textContent='Lv. '+number.format(record.level);
+  result('orders').textContent=number.format(record.orders)+'건';
+  const {chef}=record.lineup;
+  const orderedCrew=[CREW.find(person=>person.id===chef),...CREW.filter(person=>person.id!==chef)];
+  result('crew').replaceChildren(...orderedCrew.map(({id,name})=>{
+    const isChef=id===chef;
+    const skinId=record.lineup[id+'Skin'];
     const item=document.createElement('li');
     item.dataset.role=isChef?'chef':'helper';
     const sprite=document.createElement('img');
@@ -2828,6 +2910,39 @@ function renderResultCrew(){
     item.append(sprite,label,detail);
     return item;
   }));
+  if(wallet!==undefined){
+    const balance=document.createElement('div');
+    balance.className='result-wallet';
+    const caption=document.createElement('span');
+    caption.textContent='영업 후 보유금';
+    const amount=document.createElement('b');
+    amount.textContent=number.format(wallet)+'원';
+    balance.append(caption,amount);
+    card.append(balance);
+  }
+  container.replaceChildren(card);
+}
+
+function renderSavedRecord(container,record){
+  if(record){
+    const card=document.createElement('div');
+    card.className='result-card';
+    renderResultCard(card,record);
+    container.replaceChildren(card);
+  } else {
+    const empty=document.createElement('p');
+    empty.className='record-empty';
+    empty.textContent='아직 기록이 없어요.';
+    container.replaceChildren(empty);
+  }
+}
+
+function isBetterRecord(record,previous){
+  if(!previous) return true;
+  for(const field of ['sales','combo','level','orders']){
+    if(record[field]!==previous[field]) return record[field]>previous[field];
+  }
+  return false;
 }
 
 function finish(reason='',guestLine=''){
@@ -2838,17 +2953,15 @@ function finish(reason='',guestLine=''){
   profile.coins+=state.sales;
   const previousBest=profile.bestLevel;
   profile.bestLevel=Math.max(previousBest,state.level);
+  const record={sales:state.sales,combo:state.maxCombo,level:state.level,orders:state.served,lineup:{...state.roundLineup}};
+  profile.recentRecord=record;
+  if(isBetterRecord(record,profile.bestRecord)) profile.bestRecord=record;
   const newTiers=Object.entries(SKIN_LEVELS).filter(([,level])=>previousBest<level&&level<=profile.bestLevel).map(([name])=>name);
   const saved=saveProfile();
   const summary=[reason,guestLine,newTiers.length?'상점에서 '+newTiers.join('·')+' 스킨을 구매할 수 있어요.':'',
-    saved?'':'보유금과 수집 기록은 이번 접속에만 유지돼요.'].filter(Boolean).join(' ');
+    saved?'':'보유금과 영업 기록은 이번 접속에만 유지돼요.'].filter(Boolean).join(' ');
   render();
-  $('resultCombo').textContent=number.format(state.maxCombo);
-  $('resultLevel').textContent='Lv. '+number.format(state.level);
-  $('resultOrders').textContent=number.format(state.served)+'건';
-  $('resultSales').textContent=number.format(state.sales)+'원';
-  $('resultWallet').textContent=number.format(profile.coins)+'원';
-  renderResultCrew();
+  renderResultCard($('results'),record,profile.coins);
   showDialog('영업 마감',summary,'다시 시작',resetRound);
   $('overlay').scrollTop=0;
 }
@@ -2857,18 +2970,15 @@ function pause(){
   if(state.mode!=='play'&&state.mode!=='countdown') return;
   advance(performance.now());
   if(state.mode!=='play'&&state.mode!=='countdown') return;
-  const previous=state.mode;
   state.mode='paused';
   sound.fire();
   if(frame!==null){cancelAnimationFrame(frame);frame=null;}
+  render();
   showDialog('잠시 멈춤','조리와 손님 대기 시간이 모두 멈췄어요.','이어하기',()=>{
     sound.unlock();
-    state.mode=previous; state.last=performance.now();
-    if(previous==='countdown') showCountdown();
-    else {hideDialog();$('pause').focus({preventScroll:true});}
-    schedule();
+    startCountdown();
   });
-  $('endRound').hidden=previous!=='play';
+  $('endRound').hidden=!state.roundStarted;
   $('pauseSound').hidden=false;
 }
 
@@ -3027,6 +3137,7 @@ $('openPrep').addEventListener('click',showPrep);
 $('openCatalog').addEventListener('click',()=>showInfo(true));
 $('openShop').addEventListener('click',()=>showInfo(false));
 $('openGuide').addEventListener('click',showGuide);
+$('openRecords').addEventListener('click',showRecords);
 $('closeGuide').addEventListener('click',()=>{
   showHome();
   $('openGuide').focus({preventScroll:true});
@@ -3039,7 +3150,7 @@ document.querySelectorAll('#infoNav button').forEach(button=>{
 });
 $('savePrep').addEventListener('click',persistLineup);
 $('closeInfo').addEventListener('click',()=>{
-  const opener=state.mode==='prep'?'openPrep':$('infoNav').hidden?'openShop':'openCatalog';
+  const opener=state.mode==='records'?'openRecords':state.mode==='prep'?'openPrep':$('infoNav').hidden?'openShop':'openCatalog';
   showHome();
   $(opener).focus({preventScroll:true});
 });
