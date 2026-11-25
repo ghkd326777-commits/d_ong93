@@ -361,6 +361,9 @@ main.home-screen{
 #infoNav button[aria-pressed="true"]{color:#392319;background:var(--gold);border-color:var(--gold)}
 #catalogItems{display:grid;gap:13px;margin-bottom:15px;text-align:left}
 .card-section h3{font-size:14px;color:var(--gold);margin:0 0 7px}
+.dialog .collection-summary{margin:0;color:#f1ddc5;font-weight:750}
+.card-section:has(.collection-grid) h3{display:flex;justify-content:space-between;gap:8px;padding:5px 2px;border-bottom:1px solid #7a5b49}
+.card-section:has(.collection-grid) h3 small{font-size:11px;font-variant-numeric:tabular-nums;color:#ead2b5}
 .card-grid{--card-gap:clamp(4px,2vw,8px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--card-gap)}
 .collection-grid{container-type:inline-size}
 .collection-grid>:is(.character-card,.card-back){
@@ -426,7 +429,12 @@ main.home-screen{
 .character-card .quiet:enabled{background:var(--gold);border-color:#f0b766;color:#38251b;font-weight:800}
 .character-card .quiet:enabled:active{background:#edb965}
 .character-card .quiet:disabled{opacity:.68}
-.dialog .wallet{margin:0 0 8px;color:var(--gold);font-weight:750}
+.shop-wallet{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin:0 0 14px;
+  padding:8px 13px;border:1px solid #ffe2a6;border-radius:10px;background:linear-gradient(110deg,#ffdb8c,#fff1bc);
+  color:#5c3624;text-align:left;font-weight:800
+}
+.shop-wallet strong{font-size:clamp(20px,5.5vw,27px);color:#41271d;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .dialog .shop-status{text-align:left;min-height:1.4em;margin:0 0 6px}
 #cardPackShelf:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:8px}
 .pack-goal{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px;border:1px solid #835d3c;border-radius:10px;background:#2a1b15}
@@ -617,6 +625,7 @@ main.home-screen{
       <button type="button" class="action" id="savePrep">저장하고 돌아가기</button>
     </div>
     <div id="infoPanel" hidden>
+      <div class="shop-wallet" id="shopWallet" hidden><span>보유금</span><strong id="shopWalletAmount"></strong></div>
       <p class="shop-status" id="shopStatus" role="status" hidden></p>
       <nav id="infoNav" aria-label="도감 항목" hidden>
         <button type="button" class="quiet" data-catalog="crew">직원·스킨</button>
@@ -680,7 +689,7 @@ const CREW = [
   {id:'hachiware',name:'하치와레'},
   {id:'usagi',name:'우사기'}
 ];
-const SKIN_LEVELS={파자마:3,요정:5,비옷:7,너구리:9,매지컬:11,문어옷:13};
+const SKIN_LEVELS={파자마:5,요정:7,비옷:9,너구리:11,매지컬:13,문어옷:15};
 const SKIN_PRICES={파자마:3000,요정:5000,비옷:5000,너구리:8000,매지컬:8000,문어옷:10000};
 const SKINS = {
   chiikawa:{
@@ -751,9 +760,9 @@ const RESTRICTED_VISITORS=new Set(['kani','dekatsuyo','ode']);
 const CREW_STORAGE='mada-sudako.crew.v1';
 const PROFILE_STORAGE='mada-sudako.profile.v1';
 const CARD_PACKS=[
-  {count:1,price:5000,tone:'pack-green'},
-  {count:5,price:28000,tone:'pack-blue'},
-  {count:10,price:45000,tone:'pack-purple'}
+  {count:1,price:4000,tone:'pack-green'},
+  {count:5,price:18000,tone:'pack-blue'},
+  {count:10,price:33000,tone:'pack-purple'}
 ];
 const PACK_CHEST_TARGET=50;
 const PREVIOUS_FREE_SKINS=['octopus','tanuki','raincoat'];
@@ -865,7 +874,7 @@ const CARD_RARITY=Object.fromEntries(CARD_RARITIES.flatMap(
 ));
 const CARD_RARITY_NAMES=Object.fromEntries(CARD_RARITIES.map(({rarity,name})=>[rarity,name]));
 const CARD_TOTAL_WEIGHT=CARD_RARITIES.reduce((total,{weight})=>total+weight,0);
-const CATALOG_CARDS=[...CARD_RARITIES].reverse().flatMap(({cards})=>cards);
+const CATALOG_RARITIES=[...CARD_RARITIES].reverse();
 
 let profile=loadProfile();
 const state = {mode:'home', elapsed:0, last:0, count:RULES.count};
@@ -1328,13 +1337,22 @@ function renderCatalog(){
     }
     return;
   }
-  const grid=cardSection('카드 '+CARDS.filter(card=>profile.cards.includes(card)).length+'/'+CARDS.length);
-  grid.classList.add('collection-grid');
-  for(const card of CATALOG_CARDS){
-    const owned=profile.cards.includes(card);
-    if(owned){
-      characterCard(grid,{label:card,status:'수집 완료',tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity:CARD_RARITY[card]});
-    } else grid.append(createCardBack());
+  const owned=new Set(profile.cards);
+  const summary=document.createElement('p');
+  summary.className='collection-summary';
+  summary.textContent='전체 카드 '+CARDS.filter(card=>owned.has(card)).length+'/'+CARDS.length;
+  $('catalogItems').append(summary);
+  for(const {rarity,name,cards} of CATALOG_RARITIES){
+    const grid=cardSection(rarity+' · '+name);
+    grid.classList.add('collection-grid');
+    const count=document.createElement('small');
+    count.textContent=cards.filter(card=>owned.has(card)).length+'/'+cards.length;
+    grid.previousElementSibling.append(count);
+    for(const card of cards){
+      if(owned.has(card)){
+        characterCard(grid,{label:card,status:'수집 완료',tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity});
+      } else grid.append(createCardBack());
+    }
   }
 }
 
@@ -1524,7 +1542,9 @@ function renderShop(){
 
 function showInfo(catalog,message=''){
   state.mode='info';
-  showDialog(catalog?'도감':'상점',catalog?'':'보유금 '+number.format(profile.coins)+'원',null,null);
+  showDialog(catalog?'도감':'상점','',null,null);
+  $('shopWallet').hidden=catalog;
+  if(!catalog) $('shopWalletAmount').textContent=number.format(profile.coins)+'원';
   const status=$('shopStatus');
   status.textContent=message;
   status.hidden=!message;
