@@ -478,7 +478,9 @@ main.home-screen{
 #skillButton strong{font-size:13px;line-height:1.12}
 #skillButton small{font-size:10px;line-height:1.14;overflow-wrap:anywhere}
 #skillButton #skillStatus{color:#d7e7ff}
-#skillButton:disabled{opacity:.65}
+#skillButton #skillStatus:empty{display:none}
+#skillButton:disabled{background:#302f37;border-color:#635d6c;color:#a9a4b0;box-shadow:inset 0 1px 3px #16141b;filter:saturate(.45)}
+#skillButton:disabled #skillStatus{color:inherit}
 .countdown{font-size:64px!important;font-variant-numeric:tabular-nums}
 @media(max-height:690px){main{padding-top:6px}.guest{min-height:60px}.cell{height:49px}.grill{--grill-pad:6px;--grill-gap:4px}.line-head{margin-top:5px}}
 </style>
@@ -1725,9 +1727,13 @@ function chooseGuest(){
   const restrictedPresent=state.guests.some(guest=>guest&&RESTRICTED_VISITORS.has(guest.kind));
   if(!restrictedPresent&&state.level>=VISITORS.ode.level&&!profile.seen.includes('ode')) return 'ode';
 
-  const eligible=Object.entries(VISITORS).filter(([kind,visitor])=>
+  let eligible=Object.entries(VISITORS).filter(([kind,visitor])=>
     visitor.level<=state.level&&!(restrictedPresent&&RESTRICTED_VISITORS.has(kind))
   );
+  if(state.level>=7){
+    const regularVisit=Math.random()<.4;
+    eligible=eligible.filter(([kind])=>Object.hasOwn(REGULAR_GUESTS,kind)===regularVisit);
+  }
   const totalWeight=eligible.reduce((total,[,visitor])=>total+visitor.weight,0);
   let roll=Math.random()*totalWeight;
   const [kind]=eligible.find(([,visitor])=>(roll-=visitor.weight)<0);
@@ -2308,7 +2314,7 @@ function render(){
     const count=state.picksLeft||state.guestShields||state.bonusSales;
     const label=count?count+'회 남음'
       :hold>0?hold+'초 유지':timed>0?timed+'초 유지':state.charge<100?state.charge+'%'
-      :skill.disabled?'대기':'사용 가능';
+      :'';
     if($('skillName').textContent!==skillName) $('skillName').textContent=skillName;
     if($('skillStatus').textContent!==label) $('skillStatus').textContent=label;
   }
