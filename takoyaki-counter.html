@@ -258,7 +258,6 @@ main.home-screen{
   box-shadow:inset 0 0 0 2px #f6cb8438,0 3px 0 #1b1222;
   font-variant-numeric:tabular-nums;
 }
-.result-brand{display:block;margin:0 0 7px;font-size:13px;font-weight:850;color:#fff2d7}
 .result-score{
   position:relative;isolation:isolate;overflow:hidden;padding:9px 7px 8px;border:1px solid #ffedaa;border-radius:11px;
   background:radial-gradient(ellipse at 50% 22%,#fff4bd,#ffce71 67%,#f59567);
@@ -274,13 +273,22 @@ main.home-screen{
   font-weight:950;letter-spacing:-.045em;line-height:1.04;color:#4e2541;
   text-shadow:0 2px #fff6d2;
 }
-.result-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:7px 0 0}
+.result-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:7px 0 0}
 .result-stats div{min-width:0;padding:5px 3px;border:1px solid #866586;border-radius:8px;background:#241b30;color:#e9d8e5}
 .result-stats .result-combo{background:#632f55;border-color:#e398c9;color:#ffe0f0}
 .result-stats .result-level{background:#243e5d;border-color:#90bbdf;color:#e0f3ff}
 .result-stats dt{font-size:11px;font-weight:700}
 .result-stats dd{margin:0;font-size:clamp(15px,4.8vw,21px);font-weight:850;line-height:1.18;overflow-wrap:anywhere}
 .result-stats :is(.result-combo,.result-level) dd{font-size:clamp(22px,6vw,29px)}
+.result-crew{margin:7px 0 0;padding:6px;border:1px solid #866586;border-radius:8px;background:#241b30}
+.result-crew h3{margin:0 0 5px;font-size:11px;color:#f4e2ef}
+.result-crew ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:0;margin:0;list-style:none}
+.result-crew li{display:grid;justify-items:center;align-content:start;gap:2px;min-width:0;padding:3px 2px;border:1px solid #765979;border-radius:7px;background:#382b46;color:#f6e7f3;line-height:1.15}
+.result-crew li[data-role="chef"]{border-color:#efc779;background:#4b3248}
+.result-crew img{width:clamp(24px,8vw,32px);height:clamp(24px,8vw,32px);object-fit:contain;image-rendering:pixelated}
+.result-crew strong{font-size:11px;overflow-wrap:anywhere}
+.result-crew small{font-size:10px;color:#ddc6db;overflow-wrap:anywhere}
+.result-crew li[data-role="chef"] small{color:#ffe8a8}
 .result-wallet{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:6px 1px 0;color:#ead5e3;font-size:11px}
 .result-wallet b{color:#fff0c7;font-size:12px;overflow-wrap:anywhere;text-align:right}
 .menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
@@ -466,6 +474,10 @@ main.home-screen{
 .cook-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
 .cook-actions:has(#skillButton:not([hidden])){grid-template-columns:minmax(0,1fr) auto}
 #skillButton{margin-top:9px;min-height:54px;max-width:130px;white-space:normal;background:#2d4870;border-color:#82b5e5;color:#edf7ff}
+#skillButton>:is(strong,small){display:block}
+#skillButton strong{font-size:13px;line-height:1.12}
+#skillButton small{font-size:10px;line-height:1.14;overflow-wrap:anywhere}
+#skillButton #skillStatus{color:#d7e7ff}
 #skillButton:disabled{opacity:.65}
 .countdown{font-size:64px!important;font-variant-numeric:tabular-nums}
 @media(max-height:690px){main{padding-top:6px}.guest{min-height:60px}.cell{height:49px}.grill{--grill-pad:6px;--grill-gap:4px}.line-head{margin-top:5px}}
@@ -503,7 +515,7 @@ main.home-screen{
     <strong id="levelNumber">Lv. 1</strong>
     <div class="level-progress"><progress id="levelExperience" aria-label="다음 레벨 경험치 진행도" max="4" value="0"></progress><span id="levelOrders">0/4</span></div>
   </div>
-  <div><span>생명</span><strong id="hearts" aria-label="생명 5칸">♥♥♥♥♥</strong></div>
+  <div><span>가게 평판</span><strong id="hearts" aria-label="가게 평판 5칸">♥♥♥♥♥</strong></div>
   <div><span>매출</span><strong id="sales">0원</strong></div>
   <button class="quiet" id="pause" type="button" aria-label="일시정지"><span aria-hidden="true">⏸️</span></button>
 </section>
@@ -546,7 +558,7 @@ main.home-screen{
     <span class="pump-graphic" aria-hidden="true"><span class="pump-stem" id="pumpStem"></span><span class="pump-hose"></span><span class="pump-tank"></span></span>
     <span>PUMP!</span>
   </button>
-  <button type="button" id="skillButton" class="quiet" hidden>즉석 조리</button>
+  <button type="button" id="skillButton" class="quiet" hidden><strong>🔮 SKILL</strong><small id="skillName"></small><small id="skillStatus"></small></button>
 </div>
 </main>
 <section class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
@@ -586,7 +598,7 @@ main.home-screen{
           <div class="guide-flow"><span class="guide-step">손님 선택</span><span aria-hidden="true">→</span><span class="guide-step guide-serve">수량 선택</span></div>
           <p>손님을 고르고 수량을 누르세요. 진열대에 먼저 올린 것부터 나가고, 황금 타코야키 1알은 2개로 계산돼요. 손님마다 주문 조건이 달라요.</p></li>
         <li><strong>콤보와 스킬</strong><p>주문보다 더 많이, 모두 잘 익은 타코야키로 서빙하면 덤 콤보가 이어져요. 스킬 게이지가 가득 차면 주방장 스킬을 쓸 수 있어요.</p></li>
-        <li><strong>레벨과 영업 마감</strong><p>주문에 성공하면 경험치가 차요. 레벨이 오르면 하트가 1칸 회복되고 새로운 손님이 찾아와요. 영업을 마치면 매출이 보유금에 적립돼요.</p></li>
+        <li><strong>레벨과 영업 마감</strong><p>주문에 성공하면 경험치가 차요. 레벨이 오르면 가게 평판이 1칸 회복되고 새로운 손님이 찾아와요. 영업을 마치면 매출이 보유금에 적립돼요.</p></li>
       </ol>
       <button type="button" class="action" id="closeGuide">메인으로</button>
     </section>
@@ -595,14 +607,16 @@ main.home-screen{
       <div class="card-grid pack-grid" id="packCards" hidden></div>
     </section>
     <section id="results" aria-label="이번 영업 기록" hidden>
-      <b class="result-brand">치이카와 : 마다 스다코</b>
-      <div class="result-score"><span>✦ 최종 점수 ✦</span><strong id="resultScore"></strong></div>
+      <div class="result-score"><span>✦ 최종 매출 ✦</span><strong id="resultSales"></strong></div>
       <dl class="result-stats">
         <div class="result-combo"><dt>최대 콤보</dt><dd id="resultCombo"></dd></div>
         <div class="result-level"><dt>도달 레벨</dt><dd id="resultLevel"></dd></div>
         <div><dt>성공 주문</dt><dd id="resultOrders"></dd></div>
-        <div><dt>적립 매출</dt><dd id="resultSales"></dd></div>
       </dl>
+      <section class="result-crew" aria-labelledby="resultCrewTitle">
+        <h3 id="resultCrewTitle">출근 직원</h3>
+        <ul id="resultCrew" role="list"></ul>
+      </section>
       <div class="result-wallet"><span>영업 후 보유금</span><b id="resultWallet"></b></div>
     </section>
     <button type="button" class="action" id="dialogAction" hidden>게임 시작</button>
@@ -634,7 +648,7 @@ const SKIN_LEVELS={파자마:3,요정:5,비옷:7,너구리:9,매지컬:11,문어
 const SKIN_PRICES={파자마:3000,요정:5000,비옷:5000,너구리:8000,매지컬:8000,문어옷:10000};
 const SKINS = {
   chiikawa:{
-    pajama:{name:'파자마',skill:'생명 회복',chef:'생명 1칸을 회복해요. 생명이 1칸이면 2칸 회복해요.',helper:'생명 · 한 판 첫 서빙 실패로 인한 생명 손실을 막아요.'},
+    pajama:{name:'파자마',skill:'가게 평판 회복',chef:'가게 평판 1칸을 회복해요. 가게 평판이 1칸이면 2칸 회복해요.',helper:'가게 평판 · 한 판 첫 서빙 실패로 인한 가게 평판 손실을 막아요.'},
     octopus:{name:'문어옷',skill:'즉석 조리',chef:'반죽 최대 3칸을 바로 뒤집을 수 있고, 뒤집는 즉시 완성돼요.',helper:'속도 · 뒤집기 적정 상태까지의 시간이 8% 줄어요.'},
     tanukiChii:{name:'너구리',skill:'진열대 정리',chef:'진열대 앞 6칸에서 불량품을 최대 4알 없애요.',helper:'보정 · 타기 시작한 직후 꺼내면 정상 품질로 살릴 수 있어요.'},
     fairyChii:{name:'요정',skill:'대기 멈춤',chef:'현재 손님의 대기 시간을 12초 동안 멈춰요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
@@ -642,7 +656,7 @@ const SKINS = {
     rainChii:{name:'비옷',skill:'불판 보호',chef:'12초간 적정 상태인 칸이 타지 않아요. 덜 익은 칸은 계속 익어요.',helper:'여유 · 앞면을 뒤집을 수 있는 시간이 8% 늘어요.'}
   },
   hachiware:{
-    pajamaHachi:{name:'파자마',skill:'실수 대비',chef:'다음 주문 실패나 손님 이탈의 생명 손실을 최대 2회 막아요.',helper:'생명 · 한 판 첫 손님 이탈의 생명 손실을 막아요.'},
+    pajamaHachi:{name:'파자마',skill:'실수 대비',chef:'다음 주문 실패나 손님 이탈의 가게 평판 손실을 최대 2회 막아요.',helper:'가게 평판 · 한 판 첫 손님 이탈의 가게 평판 손실을 막아요.'},
     octopusHachi:{name:'문어옷',skill:'마무리 조리',chef:'뒤집었지만 아직 덜 익은 정상 타코야키 최대 5알을 즉시 꺼낼 수 있게 해요.',helper:'속도 · 뒤집고 나서 꺼내기 적정 상태까지의 시간이 8% 줄어요.'},
     tanukiHachi:{name:'너구리',skill:'품질 보정',chef:'진열대 앞 4칸의 불량품 최대 2알을 정상으로 바꿔요.',helper:'보정 · 한 판에 처음 꺼낸 탄 타코야키 1알을 정상으로 바꿔요.'},
     fairy:{name:'요정',skill:'급한 주문 구제',chef:'급한 손님 최대 2명의 대기 시간을 20초씩 늘려요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
@@ -1486,7 +1500,7 @@ function resetRound(){
   sound.unlock();
   const helpers=new Set(CREW.filter(person=>person.id!==lineup.chef).map(person=>lineup[person.id+'Skin']));
   Object.assign(state,{
-    helpers,guestShields:0,firstOrderShield:helpers.has('pajama'),firstEscapeShield:helpers.has('pajamaHachi'),firstBurnRepair:helpers.has('tanukiHachi'),
+    roundLineup:{...lineup},helpers,guestShields:0,firstOrderShield:helpers.has('pajama'),firstEscapeShield:helpers.has('pajamaHachi'),firstBurnRepair:helpers.has('tanukiHachi'),
     strongCookRepair:helpers.has('rainHachi'),nextGuestBonus:0,bonusSales:0,
     freezeCookUntil:0,protectCookUntil:0,delayGuestsUntil:0,
     mode:'countdown',elapsed:0,last:performance.now(),count:RULES.count,gas:RULES.initialGas,gasPending:0,heatTime:0,
@@ -1585,7 +1599,7 @@ function advance(now){
   } else if(state.mode==='closing'){
     state.elapsed+=delta*gameSpeed(state.level);
     removeDepartedGuests();
-    if(!state.guests.some(guest=>guest?.leavesAt)) finish('생명을 모두 사용했어요.',state.closingLine);
+    if(!state.guests.some(guest=>guest?.leavesAt)) finish('가게 평판이 모두 떨어졌어요.',state.closingLine);
   }
   state.last=now;
 }
@@ -1770,7 +1784,7 @@ function failGuest(slot,message,departed=false){
   if(state[firstShield]||state.guestShields){
     if(state[firstShield]) state[firstShield]=false;
     else state.guestShields--;
-    notify(message+' · 생명 보호','good');
+    notify(message+' · 가게 평판 보호','good');
   } else loseLife(message,VISITORS[kind].name+' · “'+GUEST_SPEECH[kind].failure+'”');
 }
 
@@ -1862,7 +1876,7 @@ function useChefSkill(){
     case 'tanuki': state.picksLeft=RULES.pickServings;detail='다음 3회 서빙';break;
     case 'pajama': {
       const heal=state.lives===1?2:1;
-      state.lives+=heal;detail='생명 +'+heal+'칸';break;
+      state.lives+=heal;detail='가게 평판 +'+heal+'칸';break;
     }
     case 'fairy':
       for(const guest of plan) guest.deadline+=20000;
@@ -1880,7 +1894,7 @@ function useChefSkill(){
       for(const index of plan) state.stock[index]='gold';
       detail=plan.length+'알이 황금으로 변했어요.';break;
     case 'rainChii': state.protectCookUntil=state.elapsed+12000;detail='12초 불판 보호';break;
-    case 'pajamaHachi': state.guestShields=2;detail='다음 생명 손실 최대 2회 보호';break;
+    case 'pajamaHachi': state.guestShields=2;detail='다음 가게 평판 손실 최대 2회 보호';break;
     case 'octopusHachi':
       for(const cell of plan) setCellAge(cell,backReadyTime());
       detail=plan.length+'알 완성';break;
@@ -2145,7 +2159,7 @@ function serve(amount){
   const sale=Math.round(paid*RULES.price*(100+state.combo)/100*(specialSale?1.5:1));
   state.sales+=sale;
   state.score+=guest.order*RULES.points;
-  const earned=' · +'+number.format(sale)+'원'+(leveled?' · Lv. '+state.level+' 달성!':'')+(restoredHeart?' · 생명 +1':'');
+  const earned=' · +'+number.format(sale)+'원'+(leveled?' · Lv. '+state.level+' 달성!':'')+(restoredHeart?' · 가게 평판 +1':'');
   if(comboHit) notify('덤 서빙 · '+state.combo+' 콤보'+earned+bonus,'good');
   else notify('주문 성공'+earned,'good');
   if(guest.kind!=='kani') checkGuestPriority();
@@ -2158,15 +2172,34 @@ function notify(message,tone=''){
 
 function loseLife(message,guestLine=''){
   state.lives--;
-  notify(message+' · 생명 −1','bad');
+  notify(message+' · 가게 평판 −1','bad');
   if(state.lives!==0) return;
   if(state.guests.some(guest=>guest?.leavesAt)){
     state.mode='closing';
     state.closingLine=guestLine;
-  } else finish('생명을 모두 사용했어요.',guestLine);
+  } else finish('가게 평판이 모두 떨어졌어요.',guestLine);
 }
 
-function finish(reason,guestLine=''){
+function renderResultCrew(){
+  const orderedCrew=[CREW.find(person=>person.id===state.roundLineup.chef),...CREW.filter(person=>person.id!==state.roundLineup.chef)];
+  $('resultCrew').replaceChildren(...orderedCrew.map(({id,name})=>{
+    const isChef=id===state.roundLineup.chef;
+    const skinId=state.roundLineup[id+'Skin'];
+    const item=document.createElement('li');
+    item.dataset.role=isChef?'chef':'helper';
+    const sprite=document.createElement('img');
+    sprite.src=SPRITES[skinId==='regular'?id:skinId]||SPRITES[id];
+    sprite.alt='';
+    const label=document.createElement('strong');
+    label.textContent=name;
+    const detail=document.createElement('small');
+    detail.textContent=(isChef?'주방장':'보조')+' · '+(SKINS[id][skinId]?.name??'기본');
+    item.append(sprite,label,detail);
+    return item;
+  }));
+}
+
+function finish(reason='',guestLine=''){
   if(state.settled) return;
   state.settled=true;
   state.mode='result';
@@ -2179,12 +2212,12 @@ function finish(reason,guestLine=''){
   const summary=[reason,guestLine,newTiers.length?'상점에서 '+newTiers.join('·')+' 스킨을 구매할 수 있어요.':'',
     saved?'':'보유금과 수집 기록은 이번 접속에만 유지돼요.'].filter(Boolean).join(' ');
   render();
-  $('resultScore').textContent=number.format(state.score);
   $('resultCombo').textContent=number.format(state.maxCombo);
   $('resultLevel').textContent='Lv. '+number.format(state.level);
   $('resultOrders').textContent=number.format(state.served)+'건';
   $('resultSales').textContent=number.format(state.sales)+'원';
   $('resultWallet').textContent=number.format(profile.coins)+'원';
+  renderResultCrew();
   showDialog('영업 마감',summary,'다시 시작',resetRound);
   $('overlay').scrollTop=0;
 }
@@ -2246,7 +2279,7 @@ function render(){
   const ready=state.mode==='play';
   const stock=stockUnits(state.stock);
   $('hearts').textContent='♥'.repeat(state.lives)+'♡'.repeat(RULES.lives-state.lives);
-  $('hearts').setAttribute('aria-label','생명 '+state.lives+'칸');
+  $('hearts').setAttribute('aria-label','가게 평판 '+state.lives+'칸');
   $('sales').textContent=number.format(state.sales)+'원';
   const goal=ordersToNextLevel(state.level);
   const earned=state.served-state.levelStartOrders;
@@ -2276,7 +2309,8 @@ function render(){
     const label=count?count+'회 남음'
       :hold>0?hold+'초 유지':timed>0?timed+'초 유지':state.charge<100?state.charge+'%'
       :skill.disabled?'대기':'사용 가능';
-    skill.textContent=skillName+' · '+label;
+    if($('skillName').textContent!==skillName) $('skillName').textContent=skillName;
+    if($('skillStatus').textContent!==label) $('skillStatus').textContent=label;
   }
   renderTray(stock);
   const notice=$('notice');
@@ -2376,7 +2410,7 @@ $('closeInfo').addEventListener('click',()=>{
 });
 $('resultHome').addEventListener('click',()=>showHome());
 $('pause').addEventListener('click',pause);
-$('endRound').addEventListener('click',()=>{if(state.mode==='paused'&&!$('endRound').hidden) finish('영업을 마쳤어요.');});
+$('endRound').addEventListener('click',()=>{if(state.mode==='paused'&&!$('endRound').hidden) finish();});
 $('pump').addEventListener('click',pumpGas);
 $('skillButton').addEventListener('click',useChefSkill);
 $('pauseSound').addEventListener('click',sound.toggle);
