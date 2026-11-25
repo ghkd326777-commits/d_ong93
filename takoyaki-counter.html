@@ -318,15 +318,15 @@ main.home-screen{
 .menu-actions .wide{grid-column:1/-1}
 .dialog [hidden],.cook-actions [hidden]{display:none}
 .dialog:has(#prepPanel:not([hidden])){
-  width:min(100%,560px);height:min(740px,calc(100dvh - 24px));
-  padding:14px clamp(10px,3vw,22px);display:flex;flex-direction:column;
+  width:min(100%,560px);min-height:min(680px,calc(100dvh - 24px));
+  padding:clamp(8px,1.8dvh,14px) clamp(8px,2vw,14px);display:flex;flex-direction:column;
   color:#39251b;background:#fff8ed;border-color:#cdb399;color-scheme:light;
 }
-.overlay:has(#prepPanel:not([hidden])){padding:12px 8px}
+.overlay:has(#prepPanel:not([hidden])){padding:6px}
 .dialog:has(#prepPanel:not([hidden])) #dialogTitle{padding-inline:43px;font-size:clamp(20px,6vw,27px)}
 .dialog:has(#prepPanel:not([hidden])) #dialogTitle::after{content:"";display:block;width:44px;height:2px;margin:5px auto 0;border-radius:2px;background:#b85e51}
 #prepPanel:not([hidden]){
-  display:grid;flex:1;min-height:0;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
+  display:grid;flex:1;min-height:0;grid-template-rows:auto minmax(min-content,1fr) auto;gap:9px;
 }
 #prepPanel button:focus-visible{outline-color:#245976}
 .crew-list,.crew-skin-set{display:grid;gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -344,12 +344,9 @@ main.home-screen{
 .crew-portrait{width:100%;height:clamp(40px,13vw,72px);padding:4px;border-radius:7px;background:radial-gradient(ellipse,#fffdf5,var(--crew-color))}
 .crew-role-badge{font-size:10px;line-height:1.4;padding:1px 6px;border-radius:20px;background:#e9ded1;color:#523f32}
 .crew-card[data-chef] .crew-role-badge{background:#f9d17d;color:#553410;font-weight:800}
-#prepPanel:not([hidden]){grid-template-rows:auto 1fr auto;gap:7px}
-.dialog:has(#prepPanel:not([hidden])){height:auto;max-height:calc(100dvh - 12px);padding:8px clamp(8px,2vw,14px)}
-.overlay:has(#prepPanel:not([hidden])){padding:6px}
 .crew-card{gap:2px;padding:4px}
 .crew-portrait{height:clamp(27px,6dvh,52px)}
-.crew-detail{min-width:0;min-height:0;text-align:left;display:grid;align-content:start;gap:4px}
+.crew-detail{min-width:0;min-height:0;text-align:left;display:flex;flex-direction:column;gap:7px}
 .crew-detail-head{display:flex;align-items:center;justify-content:space-between;gap:5px}
 .crew-detail h3{font-size:13px;margin:0}
 .crew-skin-set{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
@@ -370,9 +367,14 @@ main.home-screen{
 .skin-stars span{color:#874319}
 .crew-growth progress{display:block;width:100%;height:3px;accent-color:#a63c31}
 .crew-growth small{font-size:8px;font-variant-numeric:tabular-nums}
-.crew-ability{display:grid;grid-template-columns:69px minmax(0,1fr);align-items:center;gap:4px;padding:4px;border:1px solid #d8c4b1;border-radius:6px;background:#f4ecdf}
+.crew-ability{
+  display:grid;flex:1 0 auto;min-height:clamp(42px,8dvh,60px);
+  grid-template-columns:clamp(58px,16vw,76px) minmax(0,1fr);align-items:center;gap:6px;
+  padding:clamp(5px,1.2dvh,10px) clamp(6px,2vw,10px);
+  border:1px solid #d8c4b1;border-radius:8px;background:#f4ecdf;
+}
 .crew-ability strong{font-size:10px;color:#5d4939}
-.dialog .crew-ability p{margin:0;color:#5a4637;font-size:11px;line-height:1.24;overflow-wrap:anywhere}
+.dialog .crew-ability p{margin:0;color:#5a4637;font-size:clamp(11px,3.1vw,13px);line-height:1.43;overflow-wrap:anywhere}
 .crew-ability[aria-current="true"]{background:#f1e4ef;border-color:#8a6287}
 .crew-ability[data-locked]{background:#ebe8e4;border-color:#d2cbc3}
 .crew-ability[data-locked] strong,.dialog .crew-ability[data-locked] p,.crew-ability[data-locked] .crew-ability-name{color:#706962}
@@ -383,11 +385,30 @@ main.home-screen{
 #savePrep{min-height:36px;background:#a63c31;color:#fffaf6}
 @media(max-height:460px) and (min-width:540px){
   .dialog:has(#prepPanel:not([hidden])){width:min(100%,740px)}
-  #prepPanel:not([hidden]){grid-template-columns:140px minmax(0,1fr);grid-template-rows:1fr auto}
+  #prepPanel:not([hidden]){grid-template-columns:140px minmax(0,1fr);grid-template-rows:1fr auto;gap:6px}
   .crew-list{grid-template-columns:1fr;gap:3px}
   .crew-card{grid-template-columns:32px 1fr;align-items:center;column-gap:3px}
   .crew-portrait{height:30px;grid-row:span 2}
+  .crew-detail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:5px}
+  .crew-detail-head,#crewSkins{grid-column:1/-1}
+  .crew-ability{min-height:42px;grid-template-columns:1fr;gap:2px;padding:4px 6px}
+  .dialog .crew-ability p{font-size:11px;line-height:1.35}
   #savePrep{grid-column:1/-1}
+}
+@media(max-height:355px) and (min-width:540px){
+  .dialog:has(#prepPanel:not([hidden])){padding-block:6px}
+  .dialog:has(#prepPanel:not([hidden])) #dialogTitle{font-size:18px;line-height:1.2;margin-block:3px 5px}
+  .dialog:has(#prepPanel:not([hidden])) #dialogTitle::after{display:none}
+  .crew-role{min-height:25px}
+  .crew-skin{min-height:50px}
+  .crew-ability{padding-block:3px}
+  #savePrep{min-height:31px;padding-block:3px}
+}
+@media(max-height:510px) and (max-width:539px){
+  .dialog:has(#prepPanel:not([hidden])) #dialogTitle{margin-block:3px 6px}
+  #prepPanel:not([hidden]),.crew-detail{gap:5px}
+  .crew-ability{min-height:36px;grid-template-columns:54px minmax(0,1fr);padding-block:4px}
+  .dialog .crew-ability p{line-height:1.35}
 }
 #catalogItems .character-card[data-state="locked"] .card-art img{filter:brightness(0);opacity:.76}
 .guest .avatar img{width:clamp(26px,8.5vw,34px);height:clamp(26px,8.5vw,34px);object-fit:contain;image-rendering:pixelated;display:block}
