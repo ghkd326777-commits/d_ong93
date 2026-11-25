@@ -456,7 +456,7 @@ main.home-screen{
 .pack-grid .card-back{aspect-ratio:.84;animation:pack-spread .28s ease-out both;animation-delay:var(--spread-delay,0ms)}
 .pack-grid .card-back:disabled{cursor:default}
 @keyframes pack-spread{from{opacity:0;transform:translateY(11px) scale(.8)}to{opacity:1;transform:none}}
-.pack-grid .card-back[data-preview]{animation:none;box-shadow:inset 0 0 0 3px #251a34a0,0 0 13px var(--preview-color);border-color:var(--preview-color)}
+.card-back[data-preview]{animation:none;box-shadow:inset 0 0 0 3px #251a34a0,0 0 13px var(--preview-color);border-color:var(--preview-color)}
 .card-back[data-preview="C"]{--preview-color:#fff0d4;--preview-symbol:"✦";--preview-size:20px}
 .card-back[data-preview="UC"]{--preview-color:#a9efb0;--preview-symbol:"◆";--preview-size:23px}
 .card-back[data-preview="R"]{--preview-color:#ffb988;--preview-symbol:"✧ ◆ ✧";--preview-size:22px}
@@ -469,54 +469,171 @@ main.home-screen{
   background:radial-gradient(ellipse,var(--preview-color),transparent 72%);
   animation:pack-preview var(--preview-duration) ease-out both;pointer-events:none;
 }
-.card-back[data-preview="LR"]::after{background:conic-gradient(from 25deg,#8df4e9,#bda6fa,#ffa6e6,#8df4e9)}
+
+.card-back:is([data-preview="SR"],[data-preview="UR"],[data-preview="LR"]){
+  z-index:2;animation:pack-charge var(--preview-duration) ease-in-out both
+}
+.card-back[data-preview="SR"]::after{
+  background:linear-gradient(125deg,transparent 32%,#aeecffbb 49%,transparent 66%);
+  background-size:300% 100%;
+  animation:pack-charge-silver var(--preview-duration) ease-in-out both
+}
+.card-back[data-preview="UR"]::after{
+  background:
+    repeating-conic-gradient(from 12deg,#ffd37788 0deg,transparent 15deg 30deg),
+    radial-gradient(ellipse,#fff5b5 1%,#ea90558a 34%,transparent 69%);
+  animation:pack-charge-rays var(--preview-duration) ease-in-out both
+}
+.card-back[data-preview="LR"]::before{
+  inset:10%;border:2px solid #f8efff;border-radius:42%;box-shadow:0 0 16px #b9fffa,inset 0 0 12px #dea2ff;
+  animation:pack-charge-ring var(--preview-duration) ease-in-out both
+}
+.card-back[data-preview="LR"]::after{
+  background:conic-gradient(from var(--lr-sweep-angle),#67eae477,#c295faed,#ffc1eb5c,#bafff5e6,#67eae477);
+  animation:pack-charge-prism var(--preview-duration) ease-in-out both
+}
+@keyframes pack-charge{
+  0%,100%{transform:none}
+  36%{transform:translateY(-3px) scale(1.018)}
+  76%{transform:translateY(-2px) scale(1.035)}
+  94%{transform:translateY(-4px) scale(1.05)}
+}
+@keyframes pack-charge-silver{
+  0%{opacity:0;background-position:100% 0}
+  35%,75%{opacity:.9}
+  100%{opacity:1;background-position:0 0}
+}
+@keyframes pack-charge-rays{
+  0%{opacity:0;transform:rotate(-24deg) scale(.48)}
+  28%{opacity:.57}
+  61%{opacity:.77;transform:rotate(8deg) scale(1.06)}
+  76%{opacity:.54}
+  100%{opacity:1;transform:rotate(26deg) scale(1.28)}
+}
+@keyframes pack-charge-ring{
+  0%{opacity:0;transform:scale(.5) rotate(-20deg)}
+  30%{opacity:1}
+  68%{opacity:.55;transform:scale(1.08) rotate(15deg)}
+  100%{opacity:.9;transform:scale(1.3) rotate(45deg)}
+}
+@keyframes pack-charge-prism{
+  0%{--lr-sweep-angle:0deg;opacity:0;transform:scale(.6)}
+  28%{opacity:.58}
+  54%{opacity:.78}
+  74%{opacity:.61}
+  100%{--lr-sweep-angle:460deg;opacity:.94;transform:scale(1.24)}
+}
 @keyframes pack-preview{from{opacity:.15;transform:scale(.65)}55%{opacity:.88;transform:scale(1.05)}to{opacity:.52;transform:scale(1.2)}}
-.pack-grid .character-card{animation:pack-reveal .38s ease-out both}
+.character-card[data-revealing]{animation:pack-reveal .38s ease-out both}
 @keyframes pack-reveal{from{opacity:0;transform:perspective(480px) rotateY(-86deg)}to{opacity:1;transform:none}}
-.pack-grid .character-card[data-rarity]:not([data-duplicate])::after{
+.character-card[data-revealing][data-rarity]:not([data-duplicate])::after{
   content:"";position:absolute;z-index:3;inset:0;border-radius:inherit;pointer-events:none;
   animation-delay:.16s
 }
-.pack-grid .character-card[data-rarity="C"]::after{
+.character-card[data-revealing][data-rarity="C"]::after{
   background:radial-gradient(ellipse,#fff2c58c,transparent 67%);
   animation-name:pack-corner;animation-duration:.35s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-rarity="UC"]::after{
+.character-card[data-revealing][data-rarity="UC"]::after{
   background:radial-gradient(circle at right bottom,#e0ffe1,transparent 32%);
   background-color:transparent;animation-name:pack-corner;animation-duration:.42s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-rarity="R"]::after{
+.character-card[data-revealing][data-rarity="R"]::after{
   padding:2px;background:linear-gradient(115deg,transparent 37%,#ffc18f 49%,transparent 61%);background-size:240% 100%;
   mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
   animation-name:pack-silver;animation-duration:.48s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-rarity="SR"]::after{
-  background:linear-gradient(115deg,transparent 39%,#e9f7ffd9 49%,transparent 59%);
-  background-size:240% 100%;animation-name:pack-silver;animation-duration:.48s;animation-fill-mode:both
+
+.character-card[data-revealing][data-rarity="SR"]::after{
+  background:linear-gradient(115deg,transparent 31%,#caeeff6e 42%,#f4fbffef 48%,transparent 62%);
+  background-size:270% 100%;animation-name:pack-silver;animation-duration:.65s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-rarity="UR"]::after{
-  content:"✦  ·  ✧" / "";display:grid;place-items:center;color:#fff5b7;font-size:29px;
-  text-shadow:0 0 7px #ffd069;background:radial-gradient(ellipse,#fff5b7af,transparent 67%);
-  animation-name:pack-gold;animation-duration:.6s;animation-fill-mode:both
+.character-card[data-revealing][data-rarity="UR"]::after{
+  content:"✧   ✷   ✦" / "";display:grid;place-items:center;color:#fff5b7;font-size:clamp(18px,6vw,32px);
+  text-shadow:0 0 8px #ffd069;
+  background:repeating-conic-gradient(from 15deg,#ffce6766 0deg,transparent 13deg 30deg),
+    radial-gradient(ellipse,#fff5b7bc,transparent 67%);
+  animation-name:pack-gold;animation-duration:.86s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-rarity="LR"]::after{
-  padding:3px;background:conic-gradient(from var(--lr-sweep-angle),transparent 60%,#c8a0ff 78%,#88fff3 93%,#f1ffff 99%,transparent);
+.character-card[data-revealing][data-rarity="LR"]::after{
+  padding:5px;background:conic-gradient(from var(--lr-sweep-angle),#8cfaf6,transparent 24%,#8eaced 40%,#e3a5ff 58%,transparent 74%,#86ffe9 91%,#f1ffff);
   mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
-  animation-name:pack-aurora;animation-duration:.75s;animation-fill-mode:both
+  animation-name:pack-aurora;animation-duration:1.12s;animation-fill-mode:both
 }
-.pack-grid .character-card[data-duplicate]::after{display:none}
+.character-card[data-revealing][data-duplicate]::after{display:none}
 .duplicate-stamp{
-  position:absolute;z-index:4;top:24px;right:4px;transform:rotate(-10deg);pointer-events:none;
-  padding:2px 6px;border:2px solid var(--rarity-frame);border-radius:5px;
-  background:#42243d;color:#fff1d3;box-shadow:0 2px 6px #20132180;
-  font-size:clamp(11px,3.6vw,15px);font-weight:950;line-height:1.2;white-space:nowrap
+  position:absolute;z-index:4;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;
+  padding:3px 10px;border:2px solid #ffead3;border-radius:5px;
+  background:#632a44e8;color:#fff5e7;box-shadow:0 0 0 1px #632a44,0 2px 6px #20132180;
+  font-size:clamp(12px,3.6vw,17px);font-weight:950;line-height:1.2;white-space:nowrap;
+  animation:pack-stamp .19s cubic-bezier(.16,.83,.39,1.2) both
+}
+@keyframes pack-stamp{
+  from{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1.48)}
+  to{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+}
+.character-card[data-foil]{isolation:isolate;overflow:hidden}
+.character-card[data-foil] .card-rarity{z-index:5}
+.character-card[data-foil="SR"]{
+  --foil-band:transparent 32%,#8cd7ff50 41%,#f3fcffcb 48%,#7bc5ec66 54%,transparent 64%;
+  --foil-speed:4.8s
+}
+.character-card[data-foil="UR"]{
+  --foil-band:transparent 26%,#f5b65402 33%,#ffca716b 40%,#fff7ccda 47%,#ffffffdc 49%,#ffcc6272 54%,transparent 68%;
+  --foil-speed:4.1s
+}
+.character-card[data-foil="LR"]{
+  --foil-band:transparent 21%,#a79cff42 32%,#e6a5ff9c 39%,#fef5ffed 45%,#b9fff4d8 49%,#8de4ff77 56%,#fac5ff61 61%,transparent 72%;
+  --foil-speed:3.7s
+}
+.pack-foil{
+  position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(119deg,var(--foil-band)) 100% 50% / 335% 100% no-repeat;
+  animation:pack-foil-sweep var(--foil-speed) ease-in-out var(--foil-delay,0ms) infinite
+}
+@keyframes pack-foil-sweep{
+  0%,9%,91%,100%{background-position:100% 50%}
+  45%,55%{background-position:0 50%}
 }
 @property --lr-sweep-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
 @keyframes pack-aurora{0%{--lr-sweep-angle:0deg;opacity:0}18%{opacity:1}70%{opacity:1}100%{--lr-sweep-angle:360deg;opacity:0}}
 @keyframes pack-corner{0%{opacity:0}32%{opacity:.9}100%{opacity:0}}
 @keyframes pack-silver{0%{opacity:0;background-position:100% 0}30%{opacity:.85}100%{opacity:0;background-position:0 0}}
 @keyframes pack-gold{0%{opacity:0;transform:scale(.72)}27%{opacity:.9}100%{opacity:0;transform:scale(1.18)}}
-@media(prefers-reduced-motion:reduce){.pack-grid :is(.character-card,.card-back){animation:none}.pack-grid .character-card::after{display:none}}
+
+@media(prefers-reduced-motion:reduce){
+  :is(.pack-grid,.collection-grid) :is(.character-card,.card-back,.duplicate-stamp,.pack-foil){animation:none}
+  .character-card[data-revealing]::after{display:none}
+  .pack-foil{background-position:48% 50%;opacity:.35}
+}
+
+.collection-grid .character-card{position:relative}
+.collection-flip{
+  position:absolute;inset:0;z-index:6;width:100%;height:100%;padding:0;min-height:0;
+  border:0;border-radius:inherit;background:transparent;box-shadow:none;cursor:pointer
+}
+.collection-flip:active{background:transparent;transform:none}
+.collection-flip:focus-visible{outline:2px solid #b3ffde;outline-offset:-3px}
+.collection-grid .card-back[data-owned]{
+  --owned-edge:#9de6c0;
+  border-color:var(--preview-color,var(--owned-edge));
+  box-shadow:inset 0 0 0 3px #123c39c2,0 0 7px #9de6c04a,var(--owned-preview-glow,0 0 0 transparent)
+}
+.collection-grid .card-back[data-owned][data-preview]{--owned-preview-glow:0 0 13px var(--preview-color)}
+.collection-grid .card-back[data-owned]:not([data-preview]){animation:catalog-back-turn .3s ease-out both}
+.collection-grid .card-back[data-owned] .card-back-mark{border-color:var(--owned-edge);color:#c7ffe1}
+.collection-grid .card-back[data-owned]:focus-visible{outline:2px solid #dcffef;outline-offset:-5px}
+.collection-back-status{
+  position:absolute;bottom:10px;padding:2px 5px;border-radius:4px;
+  background:#203d36;color:#c7ffe1;font-size:10px;font-weight:800
+}
+@keyframes catalog-back-turn{
+  from{opacity:0;transform:perspective(480px) rotateY(86deg)}
+  to{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .collection-grid .card-back[data-owned]:not([data-preview]){animation:none}
+}
 #endRound{margin-top:8px;width:100%}
 #resultHome{margin-top:8px;width:100%}
 .cook-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
@@ -929,7 +1046,7 @@ const sound=(()=>{
         flame.connect(fireFilter).connect(fireGain).connect(mix);
         flame.start();
       }
-      if(audio.state!=='running') audio.resume().catch(()=>{});
+      if(audio.state!=='running') return audio.resume().catch(()=>{});
     }catch{}
   }
 
@@ -978,6 +1095,30 @@ const sound=(()=>{
     level:()=>{tone(523,523,.15,.079);tone(659,659,.17,.08,.09);tone(880,880,.26,.078,.18);}
   };
 
+  const cardNotes={
+    C: {preview:[[294,0,.15]],reveal:[[523,0,.15]]},
+    UC:{preview:[[330,0,.18],[440,.13,.16]],reveal:[[587,0,.18],[784,.07,.21]]},
+    R: {preview:[[392,0,.21],[587,.19,.19]],reveal:[[659,0,.22],[880,.08,.25],[1175,.16,.25]]},
+    SR:{preview:[[440,0,.38],[659,.26,.29],[880,.59,.28]],reveal:[[784,0,.32],[988,.09,.29],[1319,.19,.39]]},
+    UR:{preview:[[262,0,.47],[392,.24,.43],[523,.60,.43],[784,1,.33]],reveal:[[523,0,.4],[659,.03,.38],[784,.06,.38],[1047,.19,.48]]},
+    LR:{preview:[[196,0,.65],[294,.25,.6],[440,.66,.53],[659,1.06,.52],[988,1.57,.37]],reveal:[[587,0,.53],[740,.035,.47],[880,.075,.5],[1175,.2,.54],[1760,.34,.43]]}
+  };
+
+  function cardCue(rarity,phase,isCurrent){
+    if(!enabled||document.hidden) return;
+    const play=()=>{
+      if(!enabled||document.hidden||audio?.state!=='running'||!isCurrent()) return;
+      const opening=phase==='reveal';
+      if(opening) texture(1900,.065,.062);
+      for(const [pitch,offset,length] of cardNotes[rarity][phase]){
+        tone(pitch,pitch,length,opening ? .049 : .032,offset,opening ? 'sine' : 'triangle');
+      }
+    };
+    const resumed=unlock();
+    if(resumed) void resumed.then(play);
+    else play();
+  }
+
   function cue(name,delay=0){
     if(!enabled||document.hidden||audio?.state!=='running') return;
     const now=audio.currentTime;
@@ -1019,7 +1160,7 @@ const sound=(()=>{
     updateButton();
   }
 
-  return {unlock,cue,fire,toggle,updateButton};
+  return {unlock,cue,cardCue,fire,toggle,updateButton};
 })();
 
 function loadProfile(){
@@ -1362,11 +1503,49 @@ function renderCatalog(){
     heading.dataset.rarity=rarity;
     heading.append(count);
     for(const card of cards){
-      if(owned.has(card)){
-        characterCard(grid,{label:card,status:'수집 완료',tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity});
-      } else grid.append(createCardBack());
+      if(owned.has(card)) renderOwnedCollectionCard(grid,card,rarity);
+      else grid.append(createCardBack());
     }
   }
+}
+
+function renderOwnedCollectionCard(grid,card,rarity){
+  const copy=characterCard(grid,{label:card,status:'수집 완료',tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity});
+  const front=copy.parentElement;
+  const flip=document.createElement('button');
+  flip.type='button';
+  flip.className='collection-flip';
+  flip.setAttribute('aria-label',card+' 뒷면 보기');
+  front.append(flip);
+  addCardFoil(front);
+  flip.addEventListener('click',()=>{
+    if(front.hasAttribute('data-revealing')) return;
+    const back=createCardBack(card+' 앞면 보기');
+    back.dataset.owned='';
+    const status=document.createElement('span');
+    status.className='collection-back-status';
+    status.textContent='보유 중';
+    back.append(status);
+    front.querySelector('.pack-foil')?.remove();
+    const hadFocus=document.activeElement===flip;
+    front.replaceWith(back);
+    if(hadFocus) back.focus({preventScroll:true});
+    back.addEventListener('click',()=>{
+      if(back.hasAttribute('aria-disabled')) return;
+      back.setAttribute('aria-disabled','true');
+      revealCardBack(back,rarity,()=>{
+        const hadFocus=document.activeElement===back;
+        front.dataset.revealing='';
+        flip.setAttribute('aria-disabled','true');
+        back.replaceWith(front);
+        if(hadFocus) flip.focus({preventScroll:true});
+        afterCardFlip(front,()=>{
+          flip.removeAttribute('aria-disabled');
+          addCardFoil(front);
+        });
+      });
+    });
+  });
 }
 
 function shopButton(entry,label,id,disabled,action){
@@ -1427,11 +1606,11 @@ function claimPackChest(){
   showPackOpening([{card,refund:0}],{chest:true});
 }
 
-function createCardBack(index){
-  const back=document.createElement(index==null?'article':'button');
+function createCardBack(label){
+  const back=document.createElement(label?'button':'article');
   back.className='card-back';
-  if(index!=null) back.type='button';
-  back.setAttribute('aria-label',index==null?'미보유 카드':(index+1)+'번 카드 뒤집기');
+  if(label) back.type='button';
+  back.setAttribute('aria-label',label||'미보유 카드');
   const mark=document.createElement('span');
   mark.className='card-back-mark';
   mark.textContent='✦';
@@ -1440,7 +1619,48 @@ function createCardBack(index){
   return back;
 }
 
-const PACK_PREVIEW_TIMES={C:320,UC:400,R:480,SR:580,UR:690,LR:830};
+const PACK_PREVIEW_TIMES={C:320,UC:400,R:480,SR:950,UR:1450,LR:2050};
+const FOIL_RARITIES=new Set(['SR','UR','LR']);
+
+function revealCardBack(back,rarity,reveal,{skipPreview=false}={}){
+  const openingMode=state.mode;
+  const isCurrent=()=>state.mode===openingMode;
+  const open=()=>{
+    if(!back.isConnected||!isCurrent()) return;
+    reveal();
+    sound.cardCue(rarity,'reveal',isCurrent);
+  };
+  if(skipPreview||matchMedia('(prefers-reduced-motion: reduce)').matches){
+    open();
+    return;
+  }
+  const duration=PACK_PREVIEW_TIMES[rarity];
+  back.dataset.preview=rarity;
+  back.style.setProperty('--preview-duration',duration+'ms');
+  sound.cardCue(rarity,'preview',()=>back.isConnected&&isCurrent());
+  window.setTimeout(open,duration);
+}
+
+function afterCardFlip(front,complete){
+  // Only the entrance animations are present here. The looping foil starts afterwards.
+  const animations=front.getAnimations?.({subtree:true})??[];
+  Promise.allSettled(animations.map(animation=>animation.finished)).then(()=>{
+    if(!front.isConnected) return;
+    delete front.dataset.revealing;
+    complete();
+  });
+}
+
+function addCardFoil(front,index=0){
+  const rarity=front.dataset.rarity;
+  if(!FOIL_RARITIES.has(rarity)) return;
+  front.dataset.foil=rarity;
+  const foil=document.createElement('span');
+  foil.className='pack-foil';
+  foil.setAttribute('aria-hidden','true');
+  foil.style.setProperty('--foil-delay',index*100+'ms');
+  front.append(foil);
+}
 
 function showPackOpening(draws,{chest=false,tone='reward'}={}){
   const saved=saveProfile();
@@ -1454,57 +1674,47 @@ function showPackOpening(draws,{chest=false,tone='reward'}={}){
   $('overlay').scrollTop=0;
   let remaining=draws.length;
   for(const [index,{card,refund}] of draws.entries()){
-    const back=createCardBack(index);
+    const back=createCardBack((index+1)+'번 카드 뒤집기');
     back.style.setProperty('--spread-delay',index*32+'ms');
     cards.append(back);
     back.addEventListener('click',()=>{
       if(back.disabled) return;
       back.disabled=true;
       const rarity=CARD_RARITY[card];
-      const reveal=()=>{
-        if(!back.isConnected||state.mode!=='pack') return;
+      revealCardBack(back,rarity,()=>{
+        if(state.mode!=='pack') return;
         const copy=characterCard(cards,{
           label:card,status:refund?'':'새 카드',
           tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity
         });
         const front=copy.parentElement;
-        if(refund){
-          front.dataset.duplicate='';
-          const stamp=document.createElement('span');
-          stamp.className='duplicate-stamp';
-          stamp.textContent='중복';
-          stamp.hidden=true;
-          const refundNote=document.createElement('span');
-          refundNote.className='card-status';
-          refundNote.dataset.duplicateNote='';
-          refundNote.textContent=number.format(refund)+'원 환급';
-          refundNote.hidden=true;
-          front.append(stamp);
-          copy.append(refundNote);
-        }
+        front.dataset.revealing='';
+        if(refund) front.dataset.duplicate='';
         back.replaceWith(front);
         cards.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
-        const animations=front.getAnimations?.({subtree:true})??[];
-        Promise.allSettled(animations.map(animation=>animation.finished)).then(()=>{
-          if(!front.isConnected||state.mode!=='pack') return;
+        afterCardFlip(front,()=>{
+          if(state.mode!=='pack') return;
+          if(refund){
+            const stamp=document.createElement('span');
+            stamp.className='duplicate-stamp';
+            stamp.textContent='중복';
+            front.querySelector('.card-art').append(stamp);
+            const refundNote=document.createElement('span');
+            refundNote.className='card-status';
+            refundNote.textContent='중복 · '+number.format(refund)+'원 환급';
+            copy.append(refundNote);
+          }
           remaining--;
           if(!remaining) finishPackReveal(draws,saved);
         });
-      };
-      if(refund||matchMedia('(prefers-reduced-motion: reduce)').matches) reveal();
-      else {
-        const duration=PACK_PREVIEW_TIMES[rarity];
-        back.dataset.preview=rarity;
-        back.style.setProperty('--preview-duration',duration+'ms');
-        window.setTimeout(reveal,duration);
-      }
+      },{skipPreview:Boolean(refund)});
     });
   }
   cards.firstElementChild?.focus({preventScroll:true});
 }
 
 function finishPackReveal(draws,saved){
-  $('packCards').querySelectorAll('.duplicate-stamp,[data-duplicate-note]').forEach(label=>label.hidden=false);
+  $('packCards').querySelectorAll('.character-card').forEach((front,index)=>addCardFoil(front,index));
   const fresh=draws.filter(draw=>!draw.refund).length;
   const refund=draws.reduce((total,draw)=>total+draw.refund,0);
   $('dialogBody').textContent='새 카드 '+fresh+'장'+(refund?' · 중복 환급 '+number.format(refund)+'원':'')+
