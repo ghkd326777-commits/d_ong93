@@ -873,9 +873,14 @@
           <div id="rcGemGrid" class="grid grid-cols-4 gap-1.5"></div>
         </div>
 
-        <div>
+        <div id="rcGradeSection">
           <div class="text-[11px] font-extrabold text-slate-700 mb-1.5">2️⃣ 등급 선택 (최하급 ~ 그레이트)</div>
           <div id="rcGradeGrid" class="grid grid-cols-3 gap-1.5"></div>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-extrabold text-teal-800 mb-1.5">3️⃣ 기본 슬레이트 선택 (6종)</div>
+          <div id="rcSlateGrid" class="grid grid-cols-3 gap-1.5"></div>
         </div>
 
         <div id="rcPreviewBox" class="rounded-xl bg-white border border-indigo-200 p-2.5 flex items-center gap-2.5">
@@ -1387,6 +1392,49 @@
           tiers: [
             { name: '디 엔드 오브 브릭스', cost: 0, damage: 6400, range: 15.0, cooldown: 0.18, multiTargets: 14, splashRadius: 4.2, slowPct: 0.75, slowDuration: 6.0, poisonDps: 1800, poisonDuration: 7.0, armorShred: 35, shredDuration: 7.0, critChance: 0.65, critMult: 7.5, bonusArmorIgnorePct: 0.80, flameStrikeChance: 0.48, flameStrikeDmg: 3800, flameStrikeRadius: 4.5, dmgAuraRange: 12.0, dmgAuraBonus: 1.25, pearlAuraRange: 12.0, pearlSpeedAura: 1.25, desc: '신격 등급 · 반경 3칸 암흑/회색조 영역 & 8색 회전 경계 · 사거리 15.0칸 · 0.18s 14타겟 폭격 + 65% 7.5배 치명타(방어 무시 80%) + 반경 12.0칸 아군 공속 +125% & 공격력 +125% 오라' }
           ]
+        },
+        the_chaos_of_bryvx: {
+          id: 'the_chaos_of_bryvx', name: '더 카오스 오브 브릭스', category: 'late',
+          color: '#f43f5e', stroke: '#ffffff', accent: '#38bdf8',
+          targetType: 'both',
+          isChaos: true,
+          excludeFromCodex: true,
+          specialRecipe: [{ specialId: 'the_end_of_bryvx', tier: 0 }, { slateId: 'trinity_doom_slate' }],
+          recipe: [],
+          tiers: [
+            {
+              name: '더 카오스 오브 브릭스',
+              cost: 0,
+              damage: 12800,
+              range: 16.0,
+              cooldown: 0.15,
+              multiTargets: 16,
+              splashRadius: 4.5,
+              slowPct: 0.80,
+              slowDuration: 6.5,
+              rootDuration: 2.5,
+              poisonDps: 2600,
+              poisonDuration: 7.5,
+              burnDps: 2400,
+              burnDuration: 7.0,
+              armorShred: 45,
+              shredDuration: 6.5,
+              critChance: 0.70,
+              critMult: 8.5,
+              bonusArmorIgnorePct: 0.85,
+              flameStrikeChance: 0.52,
+              flameStrikeDmg: 5600,
+              flameStrikeRadius: 4.8,
+              goldChance: 0.05,
+              goldMin: 20,
+              goldMax: 35,
+              dmgAuraRange: 13.0,
+              dmgAuraBonus: 1.50,
+              pearlAuraRange: 13.0,
+              pearlSpeedAura: 1.50,
+              desc: '카오스 등급 · 빛과 어둠의 최종 수렴 · 사거리 16.0칸 · 0.15s 16타겟 폭격 · 4.5칸 광역 · 70% 8.5배 치명타(방어 무시 85%) · 2.5초 속박 & 80% 둔화 · 방깎 -45 · 중독(2600/s)/화상(2400/s) · 52% 카오스 폭발(5600) · 5% 골드(+20~35G) · 반경 13칸 아군 공 +150% & 공속 +150% 오라'
+            }
+          ]
         }
       };
 
@@ -1686,7 +1734,8 @@
           critChance: 0.50, critMult: 4.2,
           splashRadius: 3.0,
           burnDps: 175, burnDuration: 5.5, magmaBurstChance: 0.38, magmaBurstDmg: 720, magmaBurstRadius: 3.4,
-          desc: '루미너스 등급 · 🔒 비공개 (???)'
+          codexDesc: '루미너스 등급 · 🔒 비공개 (???)',
+          desc: '루미너스 등급 · 사거리 내 전적 동시 공격(0.38s) · 2.5초 속박/어그로 · 50% 방깎(-34) · 4% 골드(+15~25G) · 반경 6칸 아군 공 +42% & 공속 +48% 오라 · 30% 둔화 오라 · 75% 중독(190/s) · 인시너레이트 연쇄폭발(타격 65/처치 380+12%HP) · 50% 4.2배 치명타 · 3.0칸 용암(화상 175/s · 38% 용암폭발 720)'
         }
       };
 
@@ -2261,6 +2310,9 @@
         if (req.specialId) {
           return ent.type === 'special' && ent.specialId === req.specialId && (ent.tier || 0) >= (req.tier || 0);
         }
+        if (req.slateId) {
+          return ent.type === 'slate' && !ent.temp && ent.slateId === req.slateId;
+        }
         if (req.gemId) {
           return ent.type === 'gem' && !ent.temp && ent.gemId === req.gemId && (ent.grade || 0) >= (req.grade || 0);
         }
@@ -2290,7 +2342,10 @@
       function getSpecialOptionsForEntity(entity) {
         if (!entity) return [];
         const results = [];
-        const permPool = state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx')));
+        const permPool = [
+          ...state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx'))),
+          ...state.slates.filter((s) => !s.temp),
+        ];
         for (const key of SPECIAL_KEYS) {
           const def = SPECIALS_DB[key];
           if (!def.specialRecipe) continue;
@@ -2401,7 +2456,10 @@
         const list = [];
         const permBasicGems = state.keptGems.filter((g) => g.type === 'gem' && g.gemId !== 'bryvx');
 
-        const permSpecialPool = state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx')));
+        const permSpecialPool = [
+          ...state.keptGems.filter((g) => !g.temp && (g.type === 'special' || (g.type === 'gem' && g.gemId === 'bryvx'))),
+          ...state.slates.filter((s) => !s.temp),
+        ];
         for (const key of SPECIAL_KEYS) {
           const def = SPECIALS_DB[key];
           if (def.specialRecipe) {
@@ -4592,11 +4650,16 @@
         for (const ing of ingredients) {
           if (ing === anchor) continue;
           if (!ing.temp) {
-            const idx = state.keptGems.indexOf(ing);
-            if (idx !== -1) state.keptGems.splice(idx, 1);
-            const rock = { type: 'rock', sx: ing.sx, sy: ing.sy };
-            setEntityOccupancy(rock, true);
-            state.rocks.push(rock);
+            if (ing.type === 'slate') {
+              const sIdx = state.slates.indexOf(ing);
+              if (sIdx !== -1) state.slates.splice(sIdx, 1);
+            } else {
+              const idx = state.keptGems.indexOf(ing);
+              if (idx !== -1) state.keptGems.splice(idx, 1);
+              const rock = { type: 'rock', sx: ing.sx, sy: ing.sy };
+              setEntityOccupancy(rock, true);
+              state.rocks.push(rock);
+            }
           }
         }
 
@@ -5368,22 +5431,6 @@
           const def = getSlateDef(tower.slateId);
           if (!def) return;
 
-          if (def.splashRadius) {
-            const rPx = def.splashRadius * T;
-            state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: rPx, color: def.runeColor, life: 0.24, maxLife: 0.24 });
-            for (const m of state.monsters) {
-              if (!m.alive) continue;
-              if (Math.hypot(m.x - target.x, m.y - target.y) <= rPx) {
-                damageMonster(m, dmg, tower, false);
-                if (def.slowPct && def.slowDuration) {
-                  m.slowFactor = Math.min(m.slowFactor, 1 - def.slowPct);
-                  m.slowTimer = Math.max(m.slowTimer, def.slowDuration);
-                }
-              }
-            }
-            return;
-          }
-
           const effStats = getTowerEffectiveStats(tower);
 
           // 생령 슬레이트: 인시너레이트 표식 부여 (죽기 전에 먼저 부여해야 처치 시 폭발 발동)
@@ -5429,8 +5476,8 @@
             }
           }
 
-          // 엘더 슬레이트: 효과별 개별 확률 (방깎 / 골드 / 중독 독립 판정)
-          if (tower.slateId === 'elder_slate') {
+          // 엘더·소울페스트·트리니티둠 슬레이트: 효과별 개별 확률 (방깎 / 골드 / 중독 독립 판정)
+          if (tower.slateId === 'elder_slate' || tower.slateId === 'soul_pest_slate' || tower.slateId === 'trinity_doom_slate') {
             if (def.armorShredChance && target.alive && Math.random() < def.armorShredChance) {
               target.armorShredAmt = Math.max(target.armorShredAmt, def.armorShred);
               target.armorShredTimer = Math.max(target.armorShredTimer, def.shredDuration);
@@ -5636,11 +5683,18 @@
           target.slowTimer = Math.max(target.slowTimer, tSpec.poisonDuration || 3.5);
         }
         if (tSpec.burnDps) {
-          if (tSpec.burnDps >= target.burnDps) {
-            target.burnDps = tSpec.burnDps;
+          const effBurn = Math.round(tSpec.burnDps * getTowerEffectiveStats(tower).dmgMult);
+          if (effBurn >= target.burnDps) {
+            target.burnDps = effBurn;
             target.burnSource = tower;
           }
           target.burnTimer = Math.max(target.burnTimer, tSpec.burnDuration || 4.0);
+        }
+        if (tSpec.rootDuration && target.alive) {
+          const stunImmune = !!(target.isBoss || target.isTester);
+          if (!stunImmune) {
+            target.stunTimer = Math.max(target.stunTimer, tSpec.rootDuration);
+          }
         }
         if (tSpec.armorShred) {
           target.armorShredAmt = Math.max(target.armorShredAmt, tSpec.armorShred);
@@ -7346,6 +7400,55 @@
             break;
           }
 
+          case 'the_chaos_of_bryvx': {
+            // 카오스(빛과 어둠의 최종 수렴): 역회전하는 빛/어둠 이중 링 + 중앙 카오스 코어 섬광
+            c.save();
+            const rot = phase * 0.72;
+            const beat = 0.94 + Math.pow(pulse, 2) * 0.16;
+            const haloR = r * (1.24 + pulse * 0.16);
+
+            const chaosGrad = c.createRadialGradient(cx, cy, r * 0.06, cx, cy, haloR);
+            chaosGrad.addColorStop(0, '#ffffff');
+            chaosGrad.addColorStop(0.26, 'rgba(253, 224, 71, 0.92)');
+            chaosGrad.addColorStop(0.55, 'rgba(244, 63, 94, 0.62)');
+            chaosGrad.addColorStop(0.82, 'rgba(88, 28, 135, 0.52)');
+            chaosGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            c.fillStyle = chaosGrad;
+            c.beginPath();
+            c.arc(cx, cy, haloR, 0, Math.PI * 2);
+            c.fill();
+
+            for (let i = 0; i < 8; i++) {
+              const a = rot + (Math.PI / 4) * i;
+              c.beginPath();
+              c.moveTo(cx + Math.cos(a) * r * 0.30, cy + Math.sin(a) * r * 0.30);
+              c.lineTo(cx + Math.cos(a) * r * (1.06 + pulse * 0.14), cy + Math.sin(a) * r * (1.06 + pulse * 0.14));
+              c.strokeStyle = i % 2 === 0 ? '#ffffff' : '#38bdf8';
+              c.lineWidth = i % 2 === 0 ? 1.8 : 1.2;
+              c.stroke();
+            }
+
+            c.save();
+            c.translate(cx, cy);
+            c.rotate(-rot * 1.15);
+            drawGemShape(c, 'bryvx', 0, 0, r * 0.96 * beat);
+            c.fillStyle = 'rgba(24, 24, 27, 0.78)';
+            c.fill();
+            c.strokeStyle = '#f43f5e';
+            c.lineWidth = 1.8;
+            c.stroke();
+            c.restore();
+
+            drawGemShape(c, 'star4', cx, cy, r * 0.56 * beat);
+            c.fillStyle = '#ffffff';
+            c.fill();
+            c.strokeStyle = '#a855f7';
+            c.lineWidth = 1.5;
+            c.stroke();
+            c.restore();
+            break;
+          }
+
           case 'paraiba':
           default: {
             // 파라이바 토르말린 / 패싯: 네온 시안 파셋 회전 + 전기 스파크 맥동
@@ -7672,17 +7775,24 @@
       const btnCancelRockCheat = document.getElementById('btnCancelRockCheat');
       const btnConfirmRockCheat = document.getElementById('btnConfirmRockCheat');
       const rcGemGrid = document.getElementById('rcGemGrid');
+      const rcGradeSection = document.getElementById('rcGradeSection');
       const rcGradeGrid = document.getElementById('rcGradeGrid');
+      const rcSlateGrid = document.getElementById('rcSlateGrid');
       const rcPreviewCanvas = document.getElementById('rcPreviewCanvas');
       const rcSelectedName = document.getElementById('rcSelectedName');
       const rcSelectedDesc = document.getElementById('rcSelectedDesc');
       const rcTargetInfo = document.getElementById('rcTargetInfo');
+      const ROCK_CHEAT_BASIC_SLATES = ['air_slate', 'hold_slate', 'slow_slate', 'opal_vein_slate', 'spell_slate', 'poison_slate'];
 
       function openRockCheatModal(targetRock) {
         if (!rockCheatModal || !targetRock || !state.rocks.includes(targetRock)) return;
         state.rockCheatTargetRock = targetRock;
+        if (!state.rockCheatMode) state.rockCheatMode = 'gem';
         if (!GEMS_DB[state.rockCheatGemId] || state.rockCheatGemId === 'bryvx') {
           state.rockCheatGemId = 'ruby';
+        }
+        if (!ROCK_CHEAT_BASIC_SLATES.includes(state.rockCheatSlateId)) {
+          state.rockCheatSlateId = ROCK_CHEAT_BASIC_SLATES[0];
         }
         state.rockCheatGrade = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
         if (rcTargetInfo) {
@@ -7701,14 +7811,16 @@
       }
 
       function renderRockCheatModal() {
-        if (!rcGemGrid || !rcGradeGrid) return;
+        if (!rcGemGrid || !rcGradeGrid || !rcSlateGrid) return;
+        const mode = state.rockCheatMode || 'gem';
         const selGemId = state.rockCheatGemId || 'ruby';
+        const selSlateId = state.rockCheatSlateId || ROCK_CHEAT_BASIC_SLATES[0];
         const selGrade = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
 
         rcGemGrid.innerHTML = '';
         for (const gKey of BASIC_GEM_KEYS) {
           const spec = GEMS_DB[gKey];
-          const active = gKey === selGemId;
+          const active = mode === 'gem' && gKey === selGemId;
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = `px-2 py-1.5 rounded-xl border text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer ${
@@ -7718,12 +7830,14 @@
           }`;
           btn.innerHTML = `<span class="w-2.5 h-2.5 rounded-full shrink-0 border border-black/20" style="background:${spec.color}"></span><span class="truncate">${spec.name}</span>`;
           btn.addEventListener('click', () => {
+            state.rockCheatMode = 'gem';
             state.rockCheatGemId = gKey;
             renderRockCheatModal();
           });
           rcGemGrid.appendChild(btn);
         }
 
+        if (rcGradeSection) rcGradeSection.classList.toggle('hidden', mode !== 'gem');
         rcGradeGrid.innerHTML = '';
         for (let gr = 0; gr < GRADES_DB.length; gr++) {
           const gInfo = GRADES_DB[gr];
@@ -7737,18 +7851,49 @@
           }`;
           btn.innerHTML = `<span class="px-1 rounded text-[10px] font-extrabold text-slate-950" style="background:${gInfo.color}">${gInfo.short}</span><span>${gInfo.name}</span>`;
           btn.addEventListener('click', () => {
+            state.rockCheatMode = 'gem';
             state.rockCheatGrade = gr;
             renderRockCheatModal();
           });
           rcGradeGrid.appendChild(btn);
         }
 
-        const spec = GEMS_DB[selGemId];
-        const gInfo = GRADES_DB[selGrade];
-        if (rcSelectedName) rcSelectedName.textContent = `${gInfo.name} ${spec.name}`;
-        if (rcSelectedDesc) rcSelectedDesc.textContent = `공격력 ${spec.damage[selGrade]} · 사거리 ${spec.range[selGrade]} · ${spec.getDesc(selGrade)}`;
-        if (rcPreviewCanvas) {
-          drawTempTrayGemCanvas(rcPreviewCanvas, { type: 'gem', gemId: selGemId, grade: selGrade }, false);
+        rcSlateGrid.innerHTML = '';
+        for (const sKey of ROCK_CHEAT_BASIC_SLATES) {
+          const sDef = SLATES_DB[sKey];
+          if (!sDef) continue;
+          const active = mode === 'slate' && sKey === selSlateId;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `px-2 py-1.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1 transition cursor-pointer ${
+            active
+              ? 'bg-teal-600 text-white border-teal-700 shadow'
+              : 'bg-white text-slate-800 border-teal-200 hover:bg-teal-50'
+          }`;
+          btn.innerHTML = `<span style="color:${active ? '#fde047' : sDef.runeColor}">${sDef.rune}</span><span class="truncate">${sDef.name.replace(' 슬레이트', '')}</span>`;
+          btn.addEventListener('click', () => {
+            state.rockCheatMode = 'slate';
+            state.rockCheatSlateId = sKey;
+            renderRockCheatModal();
+          });
+          rcSlateGrid.appendChild(btn);
+        }
+
+        if (mode === 'slate') {
+          const sDef = SLATES_DB[selSlateId] || SLATES_DB[ROCK_CHEAT_BASIC_SLATES[0]];
+          if (rcSelectedName) rcSelectedName.textContent = sDef.name;
+          if (rcSelectedDesc) rcSelectedDesc.textContent = `공격력 ${sDef.damage} · 사거리 ${sDef.range} · ${sDef.desc}`;
+          if (rcPreviewCanvas) {
+            drawTempTrayGemCanvas(rcPreviewCanvas, { type: 'slate', slateId: sDef.id }, true);
+          }
+        } else {
+          const spec = GEMS_DB[selGemId];
+          const gInfo = GRADES_DB[selGrade];
+          if (rcSelectedName) rcSelectedName.textContent = `${gInfo.name} ${spec.name}`;
+          if (rcSelectedDesc) rcSelectedDesc.textContent = `공격력 ${spec.damage[selGrade]} · 사거리 ${spec.range[selGrade]} · ${spec.getDesc(selGrade)}`;
+          if (rcPreviewCanvas) {
+            drawTempTrayGemCanvas(rcPreviewCanvas, { type: 'gem', gemId: selGemId, grade: selGrade }, false);
+          }
         }
       }
 
@@ -7758,14 +7903,57 @@
           closeRockCheatModal();
           return;
         }
+        const mode = state.rockCheatMode || 'gem';
+        const rIdx = state.rocks.indexOf(rock);
+        if (rIdx !== -1) state.rocks.splice(rIdx, 1);
+        setEntityOccupancy(rock, false);
+
+        const S = GAME_CONFIG.SUB_TILE_SIZE;
+        if (mode === 'slate') {
+          const sId = state.rockCheatSlateId || ROCK_CHEAT_BASIC_SLATES[0];
+          const sDef = SLATES_DB[sId] || SLATES_DB[ROCK_CHEAT_BASIC_SLATES[0]];
+          const newSlate = {
+            type: 'slate',
+            slateId: sDef.id,
+            moveUsed: false,
+            sx: rock.sx,
+            sy: rock.sy,
+            cooldown: 0,
+            kills: 0,
+            dmgMult: 1.0,
+            dmgBonusTotal: 0,
+            speedBonusTotal: 0,
+          };
+          setEntityOccupancy(newSlate, true);
+          state.slates.push(newSlate);
+
+          const pathRes = computeFullPathSub();
+          if (pathRes.valid) state.currentPath = pathRes.path;
+
+          state.effects.push({
+            type: 'ring',
+            x: (newSlate.sx + 1) * S,
+            y: (newSlate.sy + 1) * S,
+            radius: 46,
+            color: sDef.runeColor || '#2dd4bf',
+            life: 0.5,
+            maxLife: 0.5,
+          });
+
+          closeRockCheatModal();
+          reconcileOccGrid();
+          recalculateAuras();
+          refreshCraftableCache();
+          updateAllUI();
+          saveGame(false);
+          showToast(`🛠️ 치트 완료! 바위가 [${sDef.name}]으로 변환되었습니다.`);
+          return;
+        }
+
         const gId = state.rockCheatGemId || 'ruby';
         const gr = Math.max(0, Math.min(5, state.rockCheatGrade || 0));
         const spec = GEMS_DB[gId];
         const gInfo = GRADES_DB[gr];
-
-        const rIdx = state.rocks.indexOf(rock);
-        if (rIdx !== -1) state.rocks.splice(rIdx, 1);
-        setEntityOccupancy(rock, false);
 
         const newGem = {
           type: 'gem',
@@ -7786,7 +7974,6 @@
         const pathRes = computeFullPathSub();
         if (pathRes.valid) state.currentPath = pathRes.path;
 
-        const S = GAME_CONFIG.SUB_TILE_SIZE;
         state.effects.push({
           type: 'ring',
           x: (newGem.sx + 1) * S,
@@ -7910,64 +8097,7 @@
           sItem.ingredients.forEach((g) => slateAnchors.add(g));
         }
 
-        // 4.8) 신격(디 엔드 오브 브릭스) 주변 반경 3칸 흑백(회색조) 영역 및 8색 회전 경계
-        const divinityTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_end_of_bryvx');
-        if (divinityTowers.length > 0) {
-          const eightGemColors = BASIC_GEM_KEYS.map((k) => GEMS_DB[k].color);
-          const rotAngle = now * 0.0018;
 
-          for (const dtower of divinityTowers) {
-            const dcx = (dtower.sx + 1) * S;
-            const dcy = (dtower.sy + 1) * S;
-            const r3Px = 3 * T;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(dcx, dcy, r3Px, 0, Math.PI * 2);
-            ctx.clip();
-
-            // 반경 3칸 내부를 흑백(회색조) 톤으로 덮음
-            ctx.fillStyle = 'rgba(148, 163, 184, 0.42)';
-            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
-
-            // 기존 바위·타워·슬레이트 위에도 회색조 베일을 입혀 반경 3칸 내 흑백 체감 강화
-            for (const sl of state.slates) {
-              if (Math.hypot((sl.sx + 1) * S - dcx, (sl.sy + 1) * S - dcy) <= r3Px + T) {
-                ctx.fillStyle = 'rgba(100, 116, 139, 0.52)';
-                ctx.fillRect(sl.sx * S, sl.sy * S, T, T);
-              }
-            }
-            for (const rock of state.rocks) {
-              if (Math.hypot((rock.sx + 1) * S - dcx, (rock.sy + 1) * S - dcy) <= r3Px + T) {
-                ctx.fillStyle = 'rgba(100, 116, 139, 0.55)';
-                ctx.fillRect(rock.sx * S, rock.sy * S, T, T);
-              }
-            }
-            for (const ent of state.keptGems) {
-              if (ent === dtower) continue;
-              if (Math.hypot((ent.sx + 1) * S - dcx, (ent.sy + 1) * S - dcy) <= r3Px + T) {
-                ctx.fillStyle = 'rgba(100, 116, 139, 0.55)';
-                ctx.fillRect(ent.sx * S, ent.sy * S, T, T);
-              }
-            }
-            ctx.restore();
-
-            // 반경 3칸 끝 테두리: 8개 기본 보석 색으로 나뉜 8분할 호가 회전
-            ctx.save();
-            const segArc = (Math.PI * 2) / 8;
-            for (let i = 0; i < 8; i++) {
-              const startA = rotAngle + i * segArc;
-              const endA = startA + segArc;
-              ctx.beginPath();
-              ctx.arc(dcx, dcy, r3Px, startA, endA);
-              ctx.strokeStyle = eightGemColors[i];
-              ctx.lineWidth = 3.2;
-              ctx.lineCap = 'butt';
-              ctx.stroke();
-            }
-            ctx.restore();
-          }
-        }
 
         // 5) 바위, 보석, 스페셜 타워
         for (const rock of state.rocks) renderRockEntity(rock);
@@ -8252,6 +8382,90 @@
           renderMonster(m);
         }
 
+        // 8.5) 신격(디 엔드 오브 브릭스) 반경 3칸 내부 회색조 흑백화 (디 엔드 오브 브릭스 본체는 제외)
+        // 테두리 안쪽 부분은 회색조 흑백화, 테두리 바깥은 기본색 유지; 걸친 타워·적도 안쪽만 흑백화
+        const divinityTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_end_of_bryvx');
+        if (divinityTowers.length > 0) {
+          const r3Px = 3 * T;
+          for (const dtower of divinityTowers) {
+            const dcx = (dtower.sx + 1) * S;
+            const dcy = (dtower.sy + 1) * S;
+            const dLeft = dtower.sx * S;
+            const dTop = dtower.sy * S;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(dcx, dcy, r3Px, 0, Math.PI * 2);
+            ctx.rect(dLeft + T, dTop, -T, T);
+            ctx.clip('evenodd');
+
+            ctx.fillStyle = 'rgba(120, 128, 138, 0.36)';
+            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
+
+            ctx.globalCompositeOperation = 'saturation';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
+            ctx.restore();
+          }
+        }
+
+        // 8.6) 카오스(더 카오스 오브 브릭스) 반경 4칸 내부 CRT 스캔라인·RGB 서브픽셀·비네트 그래픽 (카오스 본체는 제외)
+        const chaosTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_chaos_of_bryvx');
+        if (chaosTowers.length > 0) {
+          const r4Px = 4 * T;
+          const chaosWave = 0.5 + 0.5 * Math.sin(now * 0.0036);
+          const scanRollY = ((now * 0.045) % 8);
+          for (const ctower of chaosTowers) {
+            const ccx = (ctower.sx + 1) * S;
+            const ccy = (ctower.sy + 1) * S;
+            const cLeft = ctower.sx * S;
+            const cTop = ctower.sy * S;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, r4Px, 0, Math.PI * 2);
+            // 더 카오스 오브 브릭스 본체는 CRT 그래픽에서 제외
+            ctx.rect(cLeft + T, cTop, -T, T);
+            ctx.clip('evenodd');
+
+            // 1) CRT 수평 스캔라인(주사선) 스트라이프 + 롤링 주사 밴드
+            const yStart = Math.floor((ccy - r4Px - 4) / 4) * 4;
+            const yEnd = Math.ceil((ccy + r4Px + 4) / 4) * 4;
+            ctx.fillStyle = 'rgba(9, 13, 22, 0.16)';
+            for (let syLine = yStart; syLine <= yEnd; syLine += 4) {
+              ctx.fillRect(ccx - r4Px - 4, syLine + (scanRollY % 2), r4Px * 2 + 8, 1.35);
+            }
+
+            // 2) 브라운관 RGB 포스퍼 수직 스트라이프 패턴
+            const xStart = Math.floor((ccx - r4Px - 4) / 6) * 6;
+            const xEnd = Math.ceil((ccx + r4Px + 4) / 6) * 6;
+            const rgbStripeAlpha = 0.045 + chaosWave * 0.035;
+            for (let sxCol = xStart; sxCol <= xEnd; sxCol += 6) {
+              ctx.fillStyle = `rgba(244, 63, 94, ${rgbStripeAlpha})`;
+              ctx.fillRect(sxCol, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+              ctx.fillStyle = `rgba(74, 222, 128, ${rgbStripeAlpha * 0.72})`;
+              ctx.fillRect(sxCol + 2, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+              ctx.fillStyle = `rgba(56, 189, 248, ${rgbStripeAlpha * 0.72})`;
+              ctx.fillRect(sxCol + 4, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+            }
+
+            // 3) CRT 화면 곡률 비네트 & 붉은빛/어둠 잔광
+            const crtGrad = ctx.createRadialGradient(ccx, ccy, r4Px * 0.25, ccx, ccy, r4Px);
+            crtGrad.addColorStop(0, `rgba(255, 255, 255, ${0.05 + chaosWave * 0.05})`);
+            crtGrad.addColorStop(0.68, `rgba(225, 29, 72, ${0.06 + (1 - chaosWave) * 0.05})`);
+            crtGrad.addColorStop(1, 'rgba(9, 13, 22, 0.28)');
+            ctx.fillStyle = crtGrad;
+            ctx.fillRect(ccx - r4Px - 4, ccy - r4Px - 4, r4Px * 2 + 8, r4Px * 2 + 8);
+
+            // 4) 수평 리트레이스(귀선) 글로우 라인
+            const retraceY = ccy - r4Px + ((now * 0.09) % (r4Px * 2));
+            ctx.fillStyle = 'rgba(255, 228, 230, 0.16)';
+            ctx.fillRect(ccx - r4Px - 4, retraceY, r4Px * 2 + 8, 2.2);
+
+            ctx.restore();
+          }
+        }
+
         // 9) 투사체
         for (const p of state.projectiles) {
           ctx.beginPath();
@@ -8296,6 +8510,88 @@
           ctx.fillStyle = ft.color;
           ctx.fillText(ft.text, ft.x, ft.y);
           ctx.restore();
+        }
+
+        // 11) 신격(디 엔드 오브 브릭스) 8색 변색 & 고속 회전 테두리 (타워 위에 표시)
+        if (divinityTowers.length > 0) {
+          const baseEightColors = BASIC_GEM_KEYS.map((k) => GEMS_DB[k].color);
+          const fastRotAngle = now * 0.0052;
+          const colorShiftStep = Math.floor(now / 140);
+          const segArc = (Math.PI * 2) / 8;
+
+          for (const dtower of divinityTowers) {
+            const dcx = (dtower.sx + 1) * S;
+            const dcy = (dtower.sy + 1) * S;
+            const r3Px = 3 * T;
+
+            ctx.save();
+            ctx.lineCap = 'butt';
+            for (let i = 0; i < 8; i++) {
+              const startA = fastRotAngle + i * segArc;
+              const endA = startA + segArc;
+              const shiftedColor = baseEightColors[(i + colorShiftStep) % 8];
+
+              ctx.beginPath();
+              ctx.arc(dcx, dcy, r3Px, startA, endA);
+              ctx.strokeStyle = 'rgba(15, 23, 42, 0.55)';
+              ctx.lineWidth = 5.0;
+              ctx.stroke();
+
+              ctx.beginPath();
+              ctx.arc(dcx, dcy, r3Px, startA, endA);
+              ctx.strokeStyle = shiftedColor;
+              ctx.lineWidth = 3.2;
+              ctx.stroke();
+            }
+            ctx.restore();
+          }
+        }
+
+        // 12) 카오스(더 카오스 오브 브릭스) 반경 4칸 카오스 링 (타워의 붉은 빛 & 순백·골드 + 어둠의 혼돈 변색 & 고속 회전)
+        if (chaosTowers.length > 0) {
+          const chaosLightColors = ['#f43f5e', '#ffffff', '#fb7185', '#fde047'];
+          const chaosDarkColors = ['#e11d48', '#a855f7', '#3b0764', '#18181b'];
+          const chaosPalette = [
+            '#f43f5e', '#ffffff', '#e11d48', '#a855f7',
+            '#fb7185', '#18181b', '#fde047', '#7e22ce'
+          ];
+          const chaosRotAngle = -now * 0.0064;
+          const chaosShiftStep = Math.floor(now / 115);
+          const segArc = (Math.PI * 2) / 8;
+
+          for (const ctower of chaosTowers) {
+            const ccx = (ctower.sx + 1) * S;
+            const ccy = (ctower.sy + 1) * S;
+            const r4Px = 4 * T;
+
+            ctx.save();
+            ctx.lineCap = 'butt';
+            for (let i = 0; i < 8; i++) {
+              const startA = chaosRotAngle + i * segArc;
+              const endA = startA + segArc;
+              // 인접 호마다 빛과 어둠의 혼돈이 엇갈리며 주기적으로 색이 요동치듯 변색
+              const isLightSlot = (i + chaosShiftStep) % 2 === 0;
+              const slotPool = isLightSlot ? chaosLightColors : chaosDarkColors;
+              const poolIdx = (i * 3 + chaosShiftStep) % slotPool.length;
+              const ringCol = ((i + chaosShiftStep) % 4 === 0)
+                ? chaosPalette[(i + chaosShiftStep) % chaosPalette.length]
+                : slotPool[poolIdx];
+
+              // 어두운 심연 외곽선과 빛·어둠 혼돈 코어 링
+              ctx.beginPath();
+              ctx.arc(ccx, ccy, r4Px, startA, endA);
+              ctx.strokeStyle = 'rgba(9, 13, 22, 0.72)';
+              ctx.lineWidth = 5.6;
+              ctx.stroke();
+
+              ctx.beginPath();
+              ctx.arc(ccx, ccy, r4Px, startA, endA);
+              ctx.strokeStyle = ringCol;
+              ctx.lineWidth = 3.5;
+              ctx.stroke();
+            }
+            ctx.restore();
+          }
         }
 
         ctx.restore();
@@ -8786,6 +9082,8 @@
         let cls = 'relative bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm flex flex-col gap-2 transition-colors';
         if (sel && sel.type === 'gem' && sel.gemId === 'bryvx') {
           cls = 'relative bg-gradient-to-br from-purple-100/95 via-emerald-50/95 to-amber-100/90 rounded-2xl p-2.5 border-2 border-purple-400 shadow-sm flex flex-col gap-2 transition-colors';
+        } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isChaos) {
+          cls = 'relative rounded-2xl p-2.5 border-2 border-white ring-2 ring-rose-400 shadow-[0_0_24px_rgba(244,63,94,0.55),0_0_16px_rgba(56,189,248,0.55)] flex flex-col gap-2 transition-colors';
         } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isDivinity) {
           cls = 'relative bg-gradient-to-br from-zinc-950 via-neutral-950 to-black text-zinc-100 rounded-2xl p-2.5 border-2 border-zinc-700 shadow-2xl flex flex-col gap-2 transition-colors';
         } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isPrism) {
@@ -8804,8 +9102,12 @@
         panel.className = cls;
         if (sel && sel.type === 'slate' && COMBINED_SLATES_DB[sel.slateId] && COMBINED_SLATES_DB[sel.slateId].isLuminous) {
           panel.style.backgroundImage = 'linear-gradient(115deg, rgba(255,228,230,0.92) 0%, rgba(255,255,255,0.99) 34%, rgba(255,255,255,1) 52%, rgba(209,250,229,0.88) 76%, rgba(224,242,254,0.95) 100%)';
+        } else if (sel && sel.type === 'special' && SPECIALS_DB[sel.specialId] && SPECIALS_DB[sel.specialId].isChaos) {
+          panel.style.backgroundImage = 'linear-gradient(120deg, rgba(24,24,27,0.95) 0%, rgba(88,28,135,0.88) 32%, rgba(255,255,255,0.96) 55%, rgba(224,242,254,0.92) 80%, rgba(255,228,230,0.92) 100%)';
+          panel.style.color = '#0f172a';
         } else {
           panel.style.backgroundImage = '';
+          panel.style.color = '';
         }
       }
 
@@ -10027,6 +10329,7 @@
 
         const filteredKeys = SPECIAL_KEYS.filter((k) => {
           const def = SPECIALS_DB[k];
+          if (def.excludeFromCodex) return state.codexFilter === 'craftable' && craftMap.has(k);
           if (def.isPrism || def.isDivinity) return state.codexFilter === 'craftable' && craftMap.has(k);
           if (state.codexFilter === 'craftable') return craftMap.has(k);
           if (state.codexFilter === 'all') return true;
@@ -10578,7 +10881,7 @@
                 ${tCraft ? '<button type="button" class="jump-trinity-slate-btn px-2 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-[10px] font-extrabold transition">슬레이트로 이동</button>' : ''}
               </div>
             </div>
-            <div class="text-[11px] text-slate-800 font-semibold leading-relaxed">🔒 정보: 비공개 (???)</div>
+            <div class="text-[11px] text-slate-800 font-semibold leading-relaxed">🔒 정보: ${tDef.codexDesc || '비공개 (???)'}</div>
           `;
 
           if (tCraft) {
