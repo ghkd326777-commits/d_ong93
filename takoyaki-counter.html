@@ -344,39 +344,53 @@ main.home-screen{
 .crew-portrait{width:100%;height:clamp(40px,13vw,72px);padding:4px;border-radius:7px;background:radial-gradient(ellipse,#fffdf5,var(--crew-color))}
 .crew-role-badge{font-size:10px;line-height:1.4;padding:1px 6px;border-radius:20px;background:#e9ded1;color:#523f32}
 .crew-card[data-chef] .crew-role-badge{background:#f9d17d;color:#553410;font-weight:800}
-.crew-detail{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;text-align:left}
-.crew-detail h3{font-size:14px;margin:0 0 6px}
-.crew-skin-set{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:10px}
+#prepPanel:not([hidden]){grid-template-rows:auto 1fr auto;gap:7px}
+.dialog:has(#prepPanel:not([hidden])){height:auto;max-height:calc(100dvh - 12px);padding:8px clamp(8px,2vw,14px)}
+.overlay:has(#prepPanel:not([hidden])){padding:6px}
+.crew-card{gap:2px;padding:4px}
+.crew-portrait{height:clamp(27px,6dvh,52px)}
+.crew-detail{min-width:0;min-height:0;text-align:left;display:grid;align-content:start;gap:4px}
+.crew-detail-head{display:flex;align-items:center;justify-content:space-between;gap:5px}
+.crew-detail h3{font-size:13px;margin:0}
+.crew-skin-set{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
 .crew-skin{
-  position:relative;min-width:0;min-height:74px;padding:4px 2px 3px;border:1px solid #d6baa0;
-  border-radius:8px;background:#fffdf7;color:#432e22;display:grid;justify-items:center;align-content:start;gap:2px;
+  position:relative;min-width:0;min-height:60px;padding:2px 0;border:1px solid #d6baa0;
+  border-radius:7px;background:#fffdf7;color:#432e22;display:grid;justify-items:center;align-content:start;gap:1px;
 }
-.crew-skin-preview{display:block;width:calc(100% - 5px);border-radius:5px;background:var(--crew-color)}
-.crew-skin img{width:100%;height:clamp(29px,9vw,46px);padding:2px}
-.crew-skin strong{font-size:11px;line-height:1.2;overflow-wrap:anywhere}
-.crew-skin-lock{font-size:10px;line-height:1.25;color:#654939;white-space:pre-line}
+.crew-skin-preview{display:block;width:calc(100% - 4px);border-radius:4px;background:var(--crew-color)}
+.crew-skin img{width:100%;height:clamp(18px,4.5dvh,37px);padding:1px}
+.crew-skin strong{font-size:clamp(8px,2.4vw,11px);line-height:1.15;white-space:nowrap}
+.crew-skin-lock{font-size:clamp(6px,1.9vw,9px);line-height:1.15;color:#654939;white-space:pre-line}
 .crew-skin[aria-pressed="true"]{background:var(--crew-color);border-color:#6b4940;box-shadow:inset 0 0 0 1px #6b4940}
-.crew-skin[aria-pressed="true"]::after{content:'✓';position:absolute;top:4px;right:5px;color:#fff;background:#6b4940;border-radius:50%;width:15px;line-height:15px;font-size:10px;text-align:center}
 .crew-skin:disabled{background:#eee7dc;color:#645344}
 .crew-skin:disabled .crew-skin-preview img{filter:brightness(0);opacity:.64}
-#catalogItems .character-card[data-state="locked"] .card-art img{filter:brightness(0);opacity:.76}
 .crew-skin:disabled .crew-skin-preview{background:#ded5c9}
-.crew-ability{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:center;min-height:42px;gap:5px;padding:7px;border:1px solid #d8c4b1;border-radius:8px;background:#f4ecdf;margin-bottom:5px}
-.crew-ability strong{font-size:11px;color:#5d4939}
-.dialog .crew-ability p{margin:0;color:#5a4637;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
-.crew-ability[aria-current="true"]{background:#f1e4ef;border-color:#8a6287;border-left-width:3px;padding-left:5px}
-.crew-ability[aria-current="true"] strong,.dialog .crew-ability[aria-current="true"] p{color:#362418}
-.crew-ability-name{font-weight:750}
+.crew-growth{display:grid;justify-items:center;gap:1px;width:85%;color:#553521;line-height:1}
+.skin-stars{font-size:9px;white-space:nowrap;color:#82694d}
+.skin-stars span{color:#874319}
+.crew-growth progress{display:block;width:100%;height:3px;accent-color:#a63c31}
+.crew-growth small{font-size:8px;font-variant-numeric:tabular-nums}
+.crew-ability{display:grid;grid-template-columns:69px minmax(0,1fr);align-items:center;gap:4px;padding:4px;border:1px solid #d8c4b1;border-radius:6px;background:#f4ecdf}
+.crew-ability strong{font-size:10px;color:#5d4939}
+.dialog .crew-ability p{margin:0;color:#5a4637;font-size:11px;line-height:1.24;overflow-wrap:anywhere}
+.crew-ability[aria-current="true"]{background:#f1e4ef;border-color:#8a6287}
+.crew-ability[data-locked]{background:#ebe8e4;border-color:#d2cbc3}
+.crew-ability[data-locked] strong,.dialog .crew-ability[data-locked] p,.crew-ability[data-locked] .crew-ability-name{color:#706962}
+.crew-ability[data-locked] strong::after{content:" 🔒";font-size:8px}
+.crew-ability-name{font-weight:750;color:#225a62}
 #prepChefText .crew-ability-name{color:#873656}
-#prepHelperText .crew-ability-name{color:#225a62}
-.crew-role{width:100%;min-height:44px;margin-top:3px;background:#fff8ed;color:#543623;border-color:#b99170}
-.crew-detail .crew-skin-heading{margin-top:12px}
-#savePrep{background:#a63c31;color:#fffaf6}
-.guest .avatar img{width:clamp(26px,8.5vw,34px);height:clamp(26px,8.5vw,34px);object-fit:contain;image-rendering:pixelated;display:block}
-@media(max-height:550px){
-  #prepPanel:not([hidden]){gap:6px}
-  .crew-portrait{height:36px}
+.crew-role{min-height:29px;padding:2px 8px;background:#fff8ed;color:#543623;border-color:#b99170;font-size:10px}
+#savePrep{min-height:36px;background:#a63c31;color:#fffaf6}
+@media(max-height:460px) and (min-width:540px){
+  .dialog:has(#prepPanel:not([hidden])){width:min(100%,740px)}
+  #prepPanel:not([hidden]){grid-template-columns:140px minmax(0,1fr);grid-template-rows:1fr auto}
+  .crew-list{grid-template-columns:1fr;gap:3px}
+  .crew-card{grid-template-columns:32px 1fr;align-items:center;column-gap:3px}
+  .crew-portrait{height:30px;grid-row:span 2}
+  #savePrep{grid-column:1/-1}
 }
+#catalogItems .character-card[data-state="locked"] .card-art img{filter:brightness(0);opacity:.76}
+.guest .avatar img{width:clamp(26px,8.5vw,34px);height:clamp(26px,8.5vw,34px);object-fit:contain;image-rendering:pixelated;display:block}
 .dialog:has(#infoPanel:not([hidden])),.dialog:has(#packPanel:not([hidden])){width:min(100%,520px);padding:18px clamp(10px,4vw,22px)}
 #infoNav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:14px}
 #infoNav[hidden]{display:none}
@@ -787,12 +801,12 @@ main.home-screen{
     <div id="prepPanel" hidden>
       <div class="crew-list" id="crewList" role="group" aria-label="직원 선택"></div>
       <section class="crew-detail" id="crewDetail" aria-labelledby="crewDetailName" tabindex="0">
-        <h3 id="crewDetailName"></h3>
+        <div class="crew-detail-head"><h3 id="crewDetailName"></h3><button type="button" class="quiet crew-role" id="assignChef">주방장 지정</button></div>
+        <div id="crewSkins" aria-label="스킨 선택"></div>
         <div class="crew-ability" id="prepChefAbility"><strong>주방장 스킬</strong><p id="prepChefText"></p></div>
-        <div class="crew-ability" id="prepHelperAbility"><strong>보조 능력</strong><p id="prepHelperText"></p></div>
-        <button type="button" class="quiet crew-role" id="assignChef">주방장으로 지정</button>
-        <h3 class="crew-skin-heading">스킨 선택</h3>
-        <div id="crewSkins"></div>
+        <div class="crew-ability" id="prepHelperAbility"><strong>Lv.1 보조</strong><p id="prepHelperText"></p></div>
+        <div class="crew-ability" id="prepLevel2"><strong>Lv.2 보조</strong><p id="prepLevel2Text"></p></div>
+        <div class="crew-ability" id="prepLevel3"><strong>Lv.3 보조</strong><p id="prepLevel3Text"></p></div>
       </section>
       <button type="button" class="action" id="savePrep">저장하고 돌아가기</button>
     </div>
@@ -846,7 +860,7 @@ main.home-screen{
 const RULES = {
   count:3000, lives:5, stock:20,
   arrival:5000, patience:50000, orders:[1,2,1,2,2,1,1,2],
-  helperFrontMultiplier:.92, helperBackWindow:.1, helperStrongSpeed:.08, chefBatch:3, pickServings:3, gasFloor:85, gasHold:15000, frontReady:2500, frontBurn:4900, backReady:2000, backBurn:4400, warn:650,
+  gasFloor:85, gasHold:15000, frontReady:2500, frontBurn:4900, backReady:2000, backBurn:4400, warn:650,
   goldChance:.25, goldStart:2750, goldEnd:3450,
   initialGas:35, gasPerTap:4.5, gasCharge:27/1000, gasRise:18/1000, gasDrain:9/1000*.85,
   minHeat:.28, gasHeatRange:.70, heatStages:8, strongHeatBonus:.16, cookRate:.384,
@@ -861,32 +875,33 @@ const CREW = [
   {id:'hachiware',name:'하치와레'},
   {id:'usagi',name:'우사기'}
 ];
+const SKIN_EXPERIENCE=[0,150,450];
 const SKIN_LEVELS={파자마:5,요정:7,비옷:9,너구리:11,매지컬:13,문어옷:15};
 const SKIN_PRICES={파자마:3000,요정:5000,비옷:5000,너구리:8000,매지컬:8000,문어옷:10000};
 const SKINS = {
   chiikawa:{
-    pajama:{name:'파자마',skill:'가게 평판 회복',chef:'가게 평판 1칸을 회복해요. 가게 평판이 1칸이면 2칸 회복해요.',helper:'가게 평판 · 한 판 첫 서빙 실패로 인한 가게 평판 손실을 막아요.'},
-    octopus:{name:'문어옷',skill:'즉석 조리',chef:'반죽 최대 3칸을 바로 뒤집을 수 있고, 뒤집는 즉시 완성돼요.',helper:'속도 · 뒤집기 적정 상태까지의 시간이 8% 줄어요.'},
-    tanukiChii:{name:'너구리',skill:'진열대 정리',chef:'진열대 앞 6칸에서 불량품을 최대 4알 없애요.',helper:'보정 · 타기 시작한 직후 꺼내면 정상 품질로 살릴 수 있어요.'},
-    fairyChii:{name:'요정',skill:'대기 멈춤',chef:'현재 손님의 대기 시간을 12초 동안 멈춰요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
-    magicalChii:{name:'매지컬',skill:'황금 재고',chef:'진열대의 정상 타코야키 최대 3알을 즉시 황금으로 바꿔요.',helper:'콤보 · 덤 콤보 성공 시 스킬 게이지를 0.8%p 더 채워요.'},
-    rainChii:{name:'비옷',skill:'불판 보호',chef:'12초간 적정 상태인 칸이 타지 않아요. 덜 익은 칸은 계속 익어요.',helper:'여유 · 앞면을 뒤집을 수 있는 시간이 8% 늘어요.'}
+    pajama:{name:'파자마',skill:'평판 회복',chef:'가게 평판 1칸을 회복해요. 가게 평판이 1칸이면 2칸 회복해요.',helper:'가게 평판 · 한 판 첫 서빙 실패로 인한 가게 평판 손실을 막아요.',levels:['경영 · 매출 +10%.','평판 · 처음 평판이 1칸이 되면 1칸을 회복하고 불판의 탄 반죽을 모두 제거해요.']},
+    octopus:{name:'문어옷',skill:'즉석 조리',chef:'불판의 덜 익은 반죽을 모두 익혀 진열대로 보내요. 진열대가 차면 남은 알은 불판에 남아요.',helper:'속도 · 앞면이 뒤집기 적정 상태에 도달하는 시간 −10%.',levels:['콤보 · 성공한 주문에 제공한 황금알 1알당 현재 콤보 +1.','정리 · 주문 성공 시 2% 확률로 불판의 탄 반죽을 제거해요.']},
+    tanukiChii:{name:'너구리',skill:'진열대 정리',chef:'진열대 앞 10칸에서 불량품 최대 5알을 없애요.',helper:'보정 · 타기 시작한 직후 꺼내면 정상 품질로 살릴 수 있어요.',levels:['콤보 · 콤보 유지 시간 +1.5초.','보정 · 주문 성공 시 2% 확률로 진열대의 덜 익은 알 1알을 정상으로 되돌려요.']},
+    fairyChii:{name:'요정',skill:'대기 멈춤',chef:'현재 손님의 대기 시간을 12초 동안 멈춰요.',helper:'인내 · 새 손님의 기본 대기 시간 +10%.',levels:['여유 · 뒤집은 반죽이 타기까지 +8%.','제한 · 특수 손님의 등장 가중치 −1.']},
+    magicalChii:{name:'매지컬',skill:'황금 재고',chef:'진열대의 정상 타코야키 최대 3알을 즉시 황금으로 바꿔요.',helper:'콤보 · 덤 콤보 성공 시 스킬 게이지 +1.2%p.',levels:['인내 · 주문 성공 시 대기 중인 손님에게 +2초.','보호 · 주방장 스킬을 발동하면 5초간 평판이 깎이지 않아요.']},
+    rainChii:{name:'비옷',skill:'불판 보호',chef:'12초간 적정 상태인 칸이 타지 않아요. 덜 익은 칸은 계속 익어요.',helper:'여유 · 앞면 뒤집기 여유 +12%.',levels:['경영 · 매 10콤보마다 매출 +500원.','보호 · 반죽이 탈 때 2% 확률로 2초간 정상으로 건질 수 있어요.']}
   },
   hachiware:{
-    pajamaHachi:{name:'파자마',skill:'실수 대비',chef:'다음 주문 실패나 손님 이탈의 가게 평판 손실을 최대 2회 막아요.',helper:'가게 평판 · 한 판 첫 손님 이탈의 가게 평판 손실을 막아요.'},
-    octopusHachi:{name:'문어옷',skill:'마무리 조리',chef:'뒤집었지만 아직 덜 익은 정상 타코야키 최대 5알을 즉시 꺼낼 수 있게 해요.',helper:'속도 · 뒤집고 나서 꺼내기 적정 상태까지의 시간이 8% 줄어요.'},
-    tanukiHachi:{name:'너구리',skill:'품질 보정',chef:'진열대 앞 4칸의 불량품 최대 2알을 정상으로 바꿔요.',helper:'보정 · 한 판에 처음 꺼낸 탄 타코야키 1알을 정상으로 바꿔요.'},
-    fairy:{name:'요정',skill:'급한 주문 구제',chef:'급한 손님 최대 2명의 대기 시간을 20초씩 늘려요.',helper:'인내 · 새 손님의 기본 대기 시간이 5% 늘어요.'},
-    magicalHachi:{name:'매지컬',skill:'특별 영업',chef:'다음 유료 주문 5건의 매출을 50% 늘려요.',helper:'콤보 · 덤 콤보를 세 번 이어갈 때마다 스킬 게이지를 2%p 더 채워요.'},
-    rainHachi:{name:'비옷',skill:'불판 일시 정지',chef:'12초 동안 조리만 멈춰요. 이미 익은 것은 꺼낼 수 있어요.',helper:'보정 · 한 판에 강불에서 처음 꺼낸 탄 것이나 덜 익은 것 1알을 정상으로 바꿔요.'}
+    pajamaHachi:{name:'파자마',skill:'실수 대비',chef:'다음 주문 실패나 손님 이탈의 가게 평판 손실을 최대 2회 막아요.',helper:'가게 평판 · 한 판 첫 손님 이탈의 가게 평판 손실을 막아요.',levels:['콤보 · 주문 실패로 콤보가 끊기는 것을 최대 2회 막아요.','화력 · 가스 게이지 증가 속도 +30%.']},
+    octopusHachi:{name:'문어옷',skill:'마무리 조리',chef:'덜 익은 타코야키 최대 5알을 바로 꺼낼 수 있게 완성해요.',helper:'속도 · 뒤집은 뒤 꺼내기 적정 상태에 도달하는 시간 −12%.',levels:['여유 · 가스 게이지 감소 속도 −10%.','콤보 · 콤보 유지 시간 +3초.']},
+    tanukiHachi:{name:'너구리',skill:'품질 보정',chef:'진열대 앞 5칸에서 불량품 최대 3알을 정상으로 바꿔요.',helper:'보정 · 한 판에서 처음 꺼낸 탄 타코야키부터 최대 3알을 정상으로 바꿔요.',levels:['경영 · 황금알에 해당하는 판매 수익 +25%.','보정 · 정상 타코야키를 진열대로 옮길 때 2% 확률로 황금알로 바꿔요.']},
+    fairy:{name:'요정',skill:'주문 구제',chef:'급한 손님 최대 2명의 대기 시간을 20초씩 늘려요.',helper:'인내 · 새 손님의 기본 대기 시간 +10%.',levels:['속도 · 전체 굽기 속도 +8%.','유지 · 주문 실패 시 50% 확률로 콤보가 끊기지 않아요.']},
+    magicalHachi:{name:'매지컬',skill:'특별 영업',chef:'다음 유료 주문 5건의 매출 +100%.',helper:'콤보 · 덤 콤보를 세 번 이어갈 때마다 스킬 게이지를 2%p 더 채워요.',levels:['보정 · 타기 시작한 직후 꺼내면 정상으로 보정해요.','경영 · 매출 +20%.']},
+    rainHachi:{name:'비옷',skill:'일시 정지',chef:'12초 동안 조리를 멈추고 탄 반죽을 모두 제거해요. 이미 익은 것은 꺼낼 수 있어요.',helper:'보정 · 한 판에서 강불에 타는 타코야키를 최대 3회 정상으로 되돌려요.',levels:['여유 · 뒤집은 반죽이 타기까지 +8%.','협상 · 주방장 스킬 발동 시 대기 중인 손님 각각의 주문을 33% 확률로 1알로 바꿔요.']}
   },
   usagi:{
-    pajamaUsagi:{name:'파자마',skill:'불판 구제',chef:'탔거나 너무 일찍 뒤집은 타코야키 최대 3알을 정상으로 살려요.',helper:'보정 · 뒷면이 거의 익었을 때 조금 일찍 꺼내도 정상 품질이 돼요.'},
-    octopusUsagi:{name:'문어옷',skill:'자동 조리',chef:'불판의 반죽 최대 6칸을 제때 뒤집고 다 익으면 진열대로 옮겨요.',helper:'여유 · 앞면을 뒤집을 수 있는 시간이 12% 늘어요.'},
-    tanuki:{name:'너구리',skill:'골라 담기',chef:'다음 3번의 서빙에서 잘 익은 것부터 담아요.',helper:'여유 · 뒤집은 타코야키를 적정 상태에서 꺼낼 수 있는 시간이 10% 늘어요.'},
-    fairyUsagi:{name:'요정',skill:'입장 조율',chef:'카운터가 가득 찼을 때 15초간 손님 입장을 멈추고 기존 손님의 대기 시간을 절반 속도로 줄여요.',helper:'인내 · 주문 실패나 손님 이탈 후, 다음 손님에게 10초를 더 줘요.'},
-    magicalUsagi:{name:'매지컬',skill:'콤보 연장',chef:'현재 콤보에 15초를 더해요. 남은 시간은 최대 30초예요.',helper:'콤보 · 한 판 첫 덤 콤보에 스킬 게이지를 5%p 더 채워요.'},
-    raincoat:{name:'비옷',skill:'화력 유지',chef:'15초 동안 가스가 85% 아래로 내려가지 않아요.',helper:'속도 · 강불에서 앞면이 8% 더 빨리 익어요.'}
+    pajamaUsagi:{name:'파자마',skill:'불판 구제',chef:'8초 동안 탄 반죽이나 너무 일찍 뒤집은 반죽을 최대 5회 정상으로 복구해요.',helper:'보정 · 뒷면이 거의 익었을 때 조금 일찍 꺼내도 정상 품질이 돼요.',levels:['경영 · 초과지급 시 판매 수익 +10%.','제한 · 특수 손님의 등장 가중치 −1.']},
+    octopusUsagi:{name:'문어옷',skill:'자동 조리',chef:'10초 동안 반죽을 제때 뒤집고 다 익으면 진열대로 옮겨요.',helper:'여유 · 앞면을 뒤집을 수 있는 시간이 12% 늘어요.',levels:['보정 · 불판에서 황금 상태가 이어지는 시간 +30%.','콤보 · 덤 콤보 성공 시 2% 확률로 진열대의 탄 알 중 무작위 1알을 정상으로 바꿔요.']},
+    tanuki:{name:'너구리',skill:'골라 담기',chef:'12초 동안 서빙 시 잘 익은 타코야키부터 담아요.',helper:'여유 · 뒤집은 타코야키를 적정 상태에서 꺼낼 수 있는 시간 +12%.',levels:['인내 · 새 손님의 기본 대기 시간 +10%.','협상 · 콤보 중 새 손님은 20% 확률로 3알 이상 주문하지 않아요.']},
+    fairyUsagi:{name:'요정',skill:'입장 조율',chef:'카운터가 가득 찼을 때 15초간 손님 입장을 멈추고 기존 손님의 대기 시간을 절반 속도로 줄여요.',helper:'인내 · 주문 실패나 손님 이탈 후, 다음 손님에게 10초를 더 줘요.',levels:['여유 · 앞면 뒤집기 여유 +12%.','속도 · 모서리 4개 불판의 굽기 속도 +12%.']},
+    magicalUsagi:{name:'매지컬',skill:'콤보 연장',chef:'현재 콤보 +10, 남은 시간 +15초. 연장 후 남은 시간은 최대 30초예요.',helper:'콤보 · 덤 콤보를 5회 성공할 때마다 스킬 게이지 +5%p.',levels:['평판 · 100콤보를 달성하면 평판 1칸을 회복해요.','속도 · 콤보를 유지하는 동안 전체 불판 속도 +10%.']},
+    raincoat:{name:'비옷',skill:'화력 유지',chef:'15초 동안 가스가 85% 아래로 내려가지 않아요.',helper:'속도 · 강불에서 앞면이 익는 속도 +12%.',levels:['평판 · 덜 익은 타코야키를 제공해서 생기는 평판 손실을 최대 3회 막아요.','여유 · 가스 게이지 감소 속도 −15%.']}
   }
 };
 const REGULAR_GUESTS = {
@@ -1228,6 +1243,7 @@ function loadProfile(){
   return {
     coins:positiveInt(saved?.coins),bestLevel:positiveInt(saved?.bestLevel),
     packProgress:positiveInt(saved?.packProgress),skins,
+    skinExperience:Object.fromEntries(skins.map(id=>[id,Math.min(SKIN_EXPERIENCE[2],positiveInt(saved?.skinExperience?.[id]))])),
     seen:valid(saved?.seen,Object.keys(VISITORS)),
     cards:valid(saved?.cards,CARDS)
   };
@@ -1240,6 +1256,27 @@ function saveProfile(){
 
 function ownsSkin(person,id){
   return id==='regular'||(Object.hasOwn(SKINS[person],id)&&profile.skins.includes(id));
+}
+
+function skinGrowth(id){
+  const experience=profile.skinExperience[id]??0;
+  const level=experience>=SKIN_EXPERIENCE[2]?3:experience>=SKIN_EXPERIENCE[1]?2:1;
+  const current=experience-SKIN_EXPERIENCE[level-1];
+  const goal=level===3?0:SKIN_EXPERIENCE[level]-SKIN_EXPERIENCE[level-1];
+  return {level,current,goal};
+}
+
+function earnSkinExperience(){
+  let changed=false;
+  for(const {id} of CREW){
+    const skinId=state.roundLineup[id+'Skin'];
+    if(skinId==='regular') continue;
+    const experience=profile.skinExperience[skinId]??0;
+    if(experience>=SKIN_EXPERIENCE[2]) continue;
+    profile.skinExperience[skinId]=experience+1;
+    changed=true;
+  }
+  if(changed) saveProfile();
 }
 
 function skinCondition(skin){
@@ -1306,7 +1343,6 @@ function buildCrew(){
     member.addEventListener('click',()=>{
       prepPerson=id;
       renderCrew();
-      $('crewDetail').scrollTop=0;
     });
     $('crewList').append(member);
 
@@ -1334,7 +1370,10 @@ function buildCrew(){
       lock.className='crew-skin-lock';
       lock.id='lock-'+id+'-'+skinId;
       if(skinId!=='regular') lock.textContent=skinCondition(skin).replace(' 상점 구매','\n상점 구매');
-      choice.append(preview,title,lock);
+      const growth=document.createElement('span');
+      growth.className='crew-growth';
+      growth.id='growth-'+id+'-'+skinId;
+      choice.append(preview,title,lock,growth);
       choice.addEventListener('click',()=>{
         if(ownsSkin(id,skinId)){
           draft[id+'Skin']=skinId;
@@ -1381,13 +1420,23 @@ function renderCrew(){
     if(prepPerson!==id) continue;
     const active=draft.chef===id;
     $('crewDetail').dataset.person=id;
-    $('crewDetailName').textContent=name;
+    $('crewDetailName').textContent=name+' · '+(skin?.name??'기본');
     $('prepChefAbility').setAttribute('aria-current',active);
     $('prepHelperAbility').setAttribute('aria-current',!active);
     const [helperName,...helperText]=(skin?.helper??'').split(' · ');
     renderCrewAbility('prepChefText',skin?.skill,skin?.chef??'스킬 없음');
     renderCrewAbility('prepHelperText',helperName,helperText.join(' · ')||'추가 효과 없음');
-    $('assignChef').hidden=active;
+    $('assignChef').disabled=active;
+    $('assignChef').textContent=active?'현재 주방장':'주방장 지정';
+    const {level}=skinGrowth(equipped);
+    for(const tier of [2,3]){
+      const row=$('prepLevel'+tier);
+      row.hidden=!skin;
+      row.toggleAttribute('data-locked',level<tier);
+      row.setAttribute('aria-current',!active&&level>=tier);
+      const [category,description]=skin?.levels[tier-2].split(' · ')??[];
+      renderCrewAbility('prepLevel'+tier+'Text',category,description??'');
+    }
 
     for(const skinId of ['regular',...Object.keys(SKINS[id])]){
       const option=SKINS[id][skinId];
@@ -1396,7 +1445,25 @@ function renderCrew(){
       choice.disabled=!owned;
       $('lock-'+id+'-'+skinId).hidden=owned;
       choice.setAttribute('aria-pressed',equipped===skinId);
-      choice.setAttribute('aria-label',(option?.name??'기본')+(owned?'':' · 미보유 · '+skinCondition(option)));
+      const growth=$('growth-'+id+'-'+skinId);
+      growth.hidden=!owned||!option;
+      let progressLabel='';
+      if(!growth.hidden){
+        const {level,current,goal}=skinGrowth(skinId);
+        progressLabel=' · 별 '+level+'개 · '+(level===3?'최대 레벨':'경험치 '+current+'/'+goal+'건');
+        const stars=document.createElement('span');
+        stars.className='skin-stars';
+        const earned=document.createElement('span');
+        earned.textContent='★'.repeat(level);
+        stars.append(earned,'☆'.repeat(3-level));
+        const meter=document.createElement('progress');
+        meter.max=goal||1;
+        meter.value=goal?current:1;
+        const count=document.createElement('small');
+        count.textContent=goal?current+'/'+goal:'MAX';
+        growth.replaceChildren(stars,meter,count);
+      }
+      choice.setAttribute('aria-label',(option?.name??'기본')+(owned?progressLabel:' · 미보유 · '+skinCondition(option)));
     }
   }
 }
@@ -1410,7 +1477,6 @@ function showPrep(){
   $('prepPanel').hidden=false;
   $('infoCloseBar').hidden=false;
   $('overlay').scrollTop=0;
-  $('crewDetail').scrollTop=0;
   $('dialogTitle').focus({preventScroll:true});
 }
 
@@ -1508,6 +1574,13 @@ function renderSkinCards(store){
         tone:person.id,state:owned?'owned':store&&meetsLevel?'sale':'locked',
         sprite:SPRITES[id],mark:SKIN_MARKS[series]
       });
+      if(!store&&owned){
+        const {level,current,goal}=skinGrowth(id);
+        const rank=document.createElement('small');
+        rank.className='card-status';
+        rank.textContent='★'.repeat(level)+'☆'.repeat(3-level)+' · '+(goal?current+'/'+goal+'건':'MAX');
+        entry.append(rank);
+      }
       if(store){
         shopButton(entry,!meetsLevel?'Lv. '+SKIN_LEVELS[series]+' 필요':profile.coins<price?'보유금 부족':'구매',
           'buy-'+id,!meetsLevel||profile.coins<price,()=>buySkin(person,id));
@@ -1877,27 +1950,34 @@ function buildControls(){
   }
 }
 
+function hasHelper(id,level=1){
+  return (state.helperLevels?.[id]??0)>=level;
+}
+
+function comboDuration(){
+  return RULES.comboDuration+1500*Number(hasHelper('tanukiChii',2))+3000*Number(hasHelper('octopusHachi',3));
+}
+
 function resetRound(){
   sound.unlock();
-  const helpers=new Set(CREW.filter(person=>person.id!==lineup.chef).map(person=>lineup[person.id+'Skin']));
+  const helperLevels=Object.fromEntries(CREW.filter(person=>person.id!==lineup.chef)
+    .map(({id})=>lineup[id+'Skin']).filter(id=>id!=='regular').map(id=>[id,skinGrowth(id).level]));
   Object.assign(state,{
-    roundLineup:{...lineup},helpers,guestShields:0,firstOrderShield:helpers.has('pajama'),firstEscapeShield:helpers.has('pajamaHachi'),firstBurnRepair:helpers.has('tanukiHachi'),
-    strongCookRepair:helpers.has('rainHachi'),nextGuestBonus:0,bonusSales:0,
-    freezeCookUntil:0,protectCookUntil:0,delayGuestsUntil:0,
+    roundLineup:{...lineup},helperLevels,guestShields:0,firstOrderShield:'pajama' in helperLevels,
+    firstEscapeShield:'pajamaHachi' in helperLevels,firstBurnRepair:3,strongCookRepair:3,
+    rawShields:3,comboShields:2,lowReputationUsed:false,nextGuestBonus:0,bonusSales:0,
+    freezeCookUntil:0,protectCookUntil:0,delayGuestsUntil:0,reputationGuardUntil:0,
     mode:'countdown',elapsed:0,last:performance.now(),count:RULES.count,gas:RULES.initialGas,gasPending:0,heatTime:0,
     chefSkin:lineup[lineup.chef+'Skin']||'regular',
     chefSkillName:SKINS[lineup.chef][lineup[lineup.chef+'Skin']]?.skill,
-    helperSpeed:lineup.chef!=='chiikawa'&&lineup.chiikawaSkin==='octopus',
-    helperBack:lineup.chef!=='usagi'&&lineup.usagiSkin==='tanuki',
-    helperFlame:lineup.chef!=='usagi'&&lineup.usagiSkin==='raincoat',
-    helperPatience:lineup.chef!=='hachiware'&&lineup.hachiwareSkin==='fairy',settled:false,
-    heatHoldUntil:0,picksLeft:0,frontBonusHeat:0,
-    cells:GRILL_RATES.map((_,index)=>newGrillCell(index,'empty',{since:0})),
+    settled:false,heatHoldUntil:0,pickUntil:0,rescueUntil:0,rescuesLeft:0,autoCookUntil:0,frontBonusHeat:0,
+    bonusOrders:0,bonusStreak:0,
     guests:[null,null,null],closingLine:"",nextGuest:0,nextArrival:RULES.arrival,selected:null,
     blockedUntil:Array(12).fill(0),dustUntil:0,
     stock:[],lives:RULES.lives,sales:0,score:0,served:0,
     level:1,levelStartOrders:0,combo:0,comboDeadline:0,maxCombo:0,charge:0,message:'손님을 고르고 서빙 수량을 누르세요.',tone:''
   });
+  state.cells=GRILL_RATES.map((_,index)=>newGrillCell(index));
   render();
   showCountdown();
   schedule();
@@ -2008,11 +2088,12 @@ function integrateHeat(duration,startGas,endGas){
   const strongFraction=low>=STRONG_GAS?1:high<=STRONG_GAS?0:(high-STRONG_GAS)/(high-low);
   const heatRate=RULES.minHeat+averageGas*RULES.gasHeatRange/100+strongFraction*RULES.strongHeatBonus;
   if(state.elapsed<state.freezeCookUntil) return;
-  state.heatTime+=duration*heatRate*RULES.cookRate;
-  if(state.helperFlame&&strongFraction>0){
+  const cookRate=RULES.cookRate*(1+.08*Number(hasHelper('fairy',2))+(state.combo>0&&hasHelper('magicalUsagi',3)?.1:0));
+  state.heatTime+=duration*heatRate*cookRate;
+  if(hasHelper('raincoat')&&strongFraction>0){
     const strongAverage=(Math.max(low,STRONG_GAS)+high)/2;
     const strongRate=RULES.minHeat+strongAverage*RULES.gasHeatRange/100+RULES.strongHeatBonus;
-    state.frontBonusHeat+=duration*strongFraction*strongRate*RULES.cookRate*RULES.helperStrongSpeed;
+    state.frontBonusHeat+=duration*strongFraction*strongRate*cookRate*.12;
   }
 }
 
@@ -2021,35 +2102,52 @@ function advanceHeat(target){
   for(const guest of state.guests.filter(isWaitingGuest)){
     guest.deadline+=duration*(1-guestTimerSpeed(guest));
   }
-  const protectedCells=state.elapsed<state.protectCookUntil
-    ?state.cells.filter(cell=>cell.phase!=='empty'&&cellStatus(cell)!=='burn'):[];
+  const protect=state.elapsed<state.protectCookUntil;
+  const rescue=state.elapsed<state.rescueUntil&&state.rescuesLeft>0;
+  const automatic=state.elapsed<state.autoCookUntil;
+  const canRecover=protect||hasHelper('rainChii',3)||hasHelper('rainHachi')&&state.strongCookRepair>0;
+  const watched=canRecover?state.cells.filter(cell=>cell.phase!=='empty'&&cellStatus(cell)!=='burn'):[];
   const holdEnd=state.heatHoldUntil;
-  if(state.elapsed<holdEnd){
-    advanceHeatSegment(Math.min(target,holdEnd),RULES.gasFloor);
-  }
+  if(state.elapsed<holdEnd) advanceHeatSegment(Math.min(target,holdEnd),RULES.gasFloor);
   if(state.elapsed<target) advanceHeatSegment(target,0);
-  for(const cell of protectedCells){
-    if(cellStatus(cell)!=='burn') continue;
-    setCellAge(cell,(cell.phase==='front'?frontBurnTime():backBurnTime())-500);
+  for(const cell of watched){
+    if(cellStatus(cell)!=='burn'||cell.salvagedUntil) continue;
+    if(protect){
+      setCellAge(cell,Math.max(cell.phase==='front'?frontReadyTime():backReadyTime(),
+        (cell.phase==='front'?frontBurnTime():backBurnTime())-500));
+    } else if(hasHelper('rainHachi')&&state.strongCookRepair>0&&state.gas>=STRONG_GAS){
+      state.strongCookRepair--;
+      finishCell(cell);
+    } else if(hasHelper('rainChii',3)&&Math.random()<.02){
+      finishCell(cell);
+      cell.salvagedUntil=target+2000;
+    }
   }
-  finishAutomaticCooking();
-  if(state.combo>0 && target>=state.comboDeadline) state.combo=0;
+  if(rescue) repairGrill();
+  if(automatic) finishAutomaticCooking();
+  if(state.combo>0&&target>=state.comboDeadline){
+    state.combo=0;
+    state.bonusStreak=0;
+  }
 }
 
 function advanceHeatSegment(target,gasFloor){
   let duration=target-state.elapsed;
-  const riseRate=RULES.gasRise;
-  const rising=Math.min(duration,state.gasPending/RULES.gasCharge,(100-state.gas)/riseRate);
+  const increase=hasHelper('pajamaHachi',3)?1.3:1;
+  const riseRate=RULES.gasRise*increase;
+  const chargeRate=RULES.gasCharge*increase;
+  const drainRate=RULES.gasDrain*(1-.1*Number(hasHelper('octopusHachi',2))-.15*Number(hasHelper('raincoat',3)));
+  const rising=Math.min(duration,state.gasPending/chargeRate,(100-state.gas)/riseRate);
   if(rising>0){
     const nextGas=Math.min(100,state.gas+rising*riseRate);
     integrateHeat(rising,state.gas,nextGas);
     state.gas=nextGas;
-    state.gasPending=Math.max(0,state.gasPending-rising*RULES.gasCharge);
+    state.gasPending=Math.max(0,state.gasPending-rising*chargeRate);
     duration-=rising;
   }
   if(state.gas>=100) state.gasPending=0;
-  const falling=Math.min(duration,(state.gas-gasFloor)/RULES.gasDrain);
-  const gasAfter=Math.max(gasFloor,state.gas-falling*RULES.gasDrain);
+  const falling=Math.min(duration,Math.max(0,state.gas-gasFloor)/drainRate);
+  const gasAfter=Math.max(gasFloor,state.gas-falling*drainRate);
   integrateHeat(falling,state.gas,gasAfter);
   integrateHeat(duration-falling,gasFloor,gasFloor);
   state.gas=gasAfter;
@@ -2091,7 +2189,7 @@ function processEvents(target){
       return speed ? state.elapsed+Math.max(0,guestRemaining(guest))/speed : Infinity;
     }));
     const change=Math.min(...guestsPresent.map(guest=>guest.changeAt??Infinity));
-    const end=Math.min(...[state.freezeCookUntil,state.protectCookUntil,state.delayGuestsUntil,
+    const end=Math.min(...[state.freezeCookUntil,state.protectCookUntil,state.delayGuestsUntil,state.comboDeadline,state.rescueUntil,state.autoCookUntil,
       ...guestsPresent.map(guest=>guest.pauseUntil)].filter(time=>time>state.elapsed));
     const departure=Math.min(...state.guests.map(guest=>guest?.leavesAt??Infinity));
     const next=Math.min(expiration,change,state.nextArrival,end,departure);
@@ -2119,20 +2217,21 @@ function processEvents(target){
   }
 }
 
-function chooseGuest(){
+function chooseGuest(maxOrder=Infinity){
   const restrictedPresent=state.guests.some(guest=>guest&&RESTRICTED_VISITORS.has(guest.kind));
   if(!restrictedPresent&&state.level>=VISITORS.ode.level&&!profile.seen.includes('ode')) return 'ode';
 
   let eligible=Object.entries(VISITORS).filter(([kind,visitor])=>
-    visitor.level<=state.level&&!(restrictedPresent&&RESTRICTED_VISITORS.has(kind))
+    visitor.level<=state.level&&!(restrictedPresent&&RESTRICTED_VISITORS.has(kind))&&!(kind==='goblin'&&maxOrder<3)
   );
   if(state.level>=7){
     const regularVisit=Math.random()<.4;
     eligible=eligible.filter(([kind])=>Object.hasOwn(REGULAR_GUESTS,kind)===regularVisit);
   }
-  const totalWeight=eligible.reduce((total,[,visitor])=>total+visitor.weight,0);
-  let roll=Math.random()*totalWeight;
-  const [kind]=eligible.find(([,visitor])=>(roll-=visitor.weight)<0);
+  const reduction=Number(hasHelper('fairyChii',3))+Number(hasHelper('pajamaUsagi',3));
+  const weights=eligible.map(([kind,visitor])=>Math.max(1,visitor.weight-(Object.hasOwn(REGULAR_GUESTS,kind)?0:reduction)));
+  let roll=Math.random()*weights.reduce((total,weight)=>total+weight,0);
+  const [kind]=eligible[weights.findIndex(weight=>(roll-=weight)<0)];
   return kind;
 }
 
@@ -2140,15 +2239,17 @@ function addGuest(now){
   const slot=state.guests.indexOf(null);
   if(slot<0) return;
   const id=state.nextGuest++;
-  const kind=chooseGuest();
-  const patience=RULES.patience*(1+.05*Number(state.helperPatience)+.05*Number(state.helpers.has('fairyChii')))+state.nextGuestBonus;
+  const maxOrder=state.combo>0&&hasHelper('tanuki',3)&&Math.random()<.2?2:Infinity;
+  const kind=chooseGuest(maxOrder);
+  const patience=RULES.patience*(1+.1*(Number(hasHelper('fairy'))+Number(hasHelper('fairyChii'))+Number(hasHelper('tanuki',2))))+state.nextGuestBonus;
   state.nextGuestBonus=0;
-  const guest={id,kind,order:RULES.orders[id%RULES.orders.length],deadline:now+patience,patience};
-  if(kind==='dekatsuyo') guest.changeAt=now+12000;
-  if(kind==='kurimanju') guest.askAgain=Math.random()<.35;
+  const order=Math.min(maxOrder,RULES.orders[id%RULES.orders.length]);
+  const guest={id,kind,order,deadline:now+patience,patience};
+  if(guest.kind==='dekatsuyo') guest.changeAt=now+12000;
+  if(guest.kind==='kurimanju') guest.askAgain=Math.random()<.35;
   state.guests[slot]=guest;
-  if(!profile.seen.includes(kind)){
-    profile.seen.push(kind);
+  if(!profile.seen.includes(guest.kind)){
+    profile.seen.push(guest.kind);
     saveProfile();
   }
 }
@@ -2165,13 +2266,18 @@ function removeDepartedGuests(){
   });
 }
 
-function failGuest(slot,message,cause='order'){
+function failGuest(slot,message,cause='order',serving){
   const guest=state.guests[slot];
   const kind=guest.kind;
   const event=cause==='order'?'failure':'timeout';
   setGuestReaction(slot,guest,event);
-  state.combo=0;
-  state.comboDeadline=0;
+  if(state.combo>0&&cause==='order'&&hasHelper('pajamaHachi',2)&&state.comboShields>0){
+    state.comboShields--;
+  } else if(!(state.combo>0&&cause==='order'&&hasHelper('fairy',3)&&Math.random()<.5)){
+    state.combo=0;
+    state.comboDeadline=0;
+    state.bonusStreak=0;
+  }
   sound.cue('failure');
   if(kind==='ode'){
     state.guests.forEach((visitor,i)=>{if(isWaitingGuest(visitor)) removeGuest(i);});
@@ -2184,11 +2290,19 @@ function failGuest(slot,message,cause='order'){
     state.dustUntil=state.elapsed+8000;
     message+=' 불판에 먼지가 날렸어요.';
   }
-  if(state.helpers.has('fairyUsagi')) state.nextGuestBonus=10000;
+  if(hasHelper('fairyUsagi')) state.nextGuestBonus=10000;
   const firstShield=cause==='order'?'firstOrderShield':'firstEscapeShield';
-  if(state[firstShield]||state.guestShields){
+  const rawCausedFailure=serving?.portions.some(({kind})=>kind==='raw')&&
+    !orderIssue(guest,{...serving,good:serving.good+serving.portions.filter(({kind})=>kind==='raw').length,
+      portions:serving.portions.map(portion=>portion.kind==='raw'?{...portion,kind:'good'}:portion)});
+  if(state.elapsed<state.reputationGuardUntil){
+    notify(message+' · 가게 평판 보호','good');
+  } else if(state[firstShield]||state.guestShields){
     if(state[firstShield]) state[firstShield]=false;
     else state.guestShields--;
+    notify(message+' · 가게 평판 보호','good');
+  } else if(hasHelper('raincoat',2)&&state.rawShields>0&&rawCausedFailure){
+    state.rawShields--;
     notify(message+' · 가게 평판 보호','good');
   } else loseLife(message,VISITORS[kind].name+' · “'+GUEST_SPEECH[kind][event]+'”');
 }
@@ -2210,17 +2324,42 @@ function inputReady(){
 }
 
 function frontReadyTime(){
-  return RULES.frontReady*(state.helperSpeed?RULES.helperFrontMultiplier:1);
+  return RULES.frontReady*(hasHelper('octopus')?.9:1);
 }
 
 function frontBurnTime(){
-  const extra=(state.helpers.has('rainChii') ? .08 : 0)+(state.helpers.has('octopusUsagi') ? .12 : 0);
+  const extra=.12*(Number(hasHelper('rainChii'))+Number(hasHelper('octopusUsagi'))+Number(hasHelper('fairyUsagi',2)));
   return frontReadyTime()+(RULES.frontBurn-RULES.frontReady)*(1+extra);
 }
 
-function availableSkillTargets(){
-  return state.cells.filter(cell=>cell.phase==='front'&&!cell.quickCook&&cellStatus(cell)!=='burn')
-    .sort((a,b)=>a.since-b.since).slice(0,RULES.chefBatch);
+function unfinishedCells(){
+  return state.cells.filter(cell=>['front','flip','back'].includes(cellStatus(cell))||cell.phase==='back'&&cell.early&&cellStatus(cell)==='take');
+}
+
+function clearBurntGrill(){
+  state.cells.forEach((cell,index)=>{
+    if(cellStatus(cell)==='burn') state.cells[index]=newGrillCell(index);
+  });
+}
+
+function finishCell(cell){
+  Object.assign(cell,{phase:'back',early:false,goldEligible:false,salvagedUntil:0});
+  setCellAge(cell,backReadyTime());
+}
+
+function repairGrill(){
+  for(const cell of state.cells){
+    if(!state.rescuesLeft) break;
+    if(cellStatus(cell)!=='burn'&&!(cell.phase==='back'&&cell.early)) continue;
+    finishCell(cell);
+    state.rescuesLeft--;
+  }
+}
+
+function stockCooked(quality){
+  if(quality==='good'&&hasHelper('tanukiHachi',3)&&Math.random()<.02) quality='gold';
+  state.stock.push(quality);
+  return quality;
 }
 
 function stockTargets(limit,count,match){
@@ -2232,7 +2371,8 @@ function stockTargets(limit,count,match){
 }
 
 function newGrillCell(index,phase='empty',details={}){
-  return {phase,since:state.heatTime,early:false,rate:GRILL_RATES[index],...details};
+  const corner=GRILL_RATES[index]===.85&&hasHelper('fairyUsagi',3);
+  return {phase,since:state.heatTime,early:false,rate:GRILL_RATES[index]*(corner?1.12:1),...details};
 }
 
 function setCellAge(cell,age){
@@ -2243,24 +2383,24 @@ function setCellAge(cell,age){
 function skillPlan(){
   const visitors=state.guests.filter(isWaitingGuest);
   switch(state.chefSkin){
-    case 'octopus': return availableSkillTargets();
-    case 'tanuki': return state.picksLeft===0;
+    case 'octopus': return unfinishedCells();
+    case 'tanuki': return state.elapsed>=state.pickUntil;
     case 'pajama': return state.lives<RULES.lives;
     case 'fairy': return visitors.sort((a,b)=>guestRemaining(a)-guestRemaining(b)).slice(0,2);
     case 'raincoat': return state.elapsed>=state.heatHoldUntil;
-    case 'tanukiChii': return stockTargets(6,4,kind=>!edible(kind));
+    case 'tanukiChii': return stockTargets(10,5,kind=>!edible(kind));
     case 'fairyChii': return visitors.filter(guest=>!(guest.pauseUntil>state.elapsed));
     case 'magicalChii': return stockTargets(state.stock.length,3,kind=>kind==='good');
     case 'rainChii': return state.elapsed>=state.protectCookUntil&&state.cells.some(cell=>['front','flip','back','take'].includes(cellStatus(cell)));
     case 'pajamaHachi': return state.guestShields===0;
-    case 'octopusHachi': return state.cells.filter(cell=>!cell.early&&cellStatus(cell)==='back').slice(0,5);
-    case 'tanukiHachi': return stockTargets(4,2,kind=>!edible(kind));
+    case 'octopusHachi': return unfinishedCells().slice(0,5);
+    case 'tanukiHachi': return stockTargets(5,3,kind=>!edible(kind));
     case 'magicalHachi': return state.bonusSales===0;
-    case 'rainHachi': return state.elapsed>=state.freezeCookUntil&&state.cells.some(cell=>['front','flip','back','take'].includes(cellStatus(cell)));
-    case 'pajamaUsagi': return state.cells.filter(cell=>cellStatus(cell)==='burn'||cell.phase==='back'&&cell.early).slice(0,3);
-    case 'octopusUsagi': return state.cells.filter(cell=>cell.phase==='front'&&!cell.autoCook&&cellStatus(cell)!=='burn').slice(0,6);
+    case 'rainHachi': return state.elapsed>=state.freezeCookUntil&&state.cells.some(cell=>cell.phase!=='empty');
+    case 'pajamaUsagi': return state.elapsed>=state.rescueUntil||state.rescuesLeft===0;
+    case 'octopusUsagi': return state.elapsed>=state.autoCookUntil;
     case 'fairyUsagi': return visitors.length===3&&state.elapsed>=state.delayGuestsUntil;
-    case 'magicalUsagi': return state.combo>0&&state.comboDeadline-state.elapsed<30000;
+    case 'magicalUsagi': return state.combo>0&&(state.combo<RULES.comboMax||state.comboDeadline-state.elapsed<30000);
     default: return false;
   }
 }
@@ -2280,9 +2420,16 @@ function useChefSkill(){
   let detail='';
   switch(state.chefSkin){
     case 'octopus':
-      for(const cell of plan){setCellAge(cell,frontReadyTime());cell.quickCook=true;}
-      detail=plan.length+'칸을 뒤집으면 바로 완성돼요.';break;
-    case 'tanuki': state.picksLeft=RULES.pickServings;detail='다음 3회 서빙';break;
+      for(const cell of plan){
+        finishCell(cell);
+        if(state.stock.length<RULES.stock){
+          stockCooked('good');
+          const index=state.cells.indexOf(cell);
+          state.cells[index]=newGrillCell(index);
+        }
+      }
+      detail=plan.length+'알을 완성했어요.';break;
+    case 'tanuki': state.pickUntil=state.elapsed+12000;detail='12초 동안 잘 익은 것부터 서빙';break;
     case 'pajama': {
       const heal=state.lives===1?2:1;
       state.lives+=heal;detail='가게 평판 +'+heal+'칸';break;
@@ -2305,26 +2452,37 @@ function useChefSkill(){
     case 'rainChii': state.protectCookUntil=state.elapsed+12000;detail='12초 불판 보호';break;
     case 'pajamaHachi': state.guestShields=2;detail='다음 가게 평판 손실 최대 2회 보호';break;
     case 'octopusHachi':
-      for(const cell of plan) setCellAge(cell,backReadyTime());
+      for(const cell of plan) finishCell(cell);
       detail=plan.length+'알 완성';break;
     case 'tanukiHachi':
       for(const index of plan) state.stock[index]='good';
       detail=plan.length+'알 품질 보정';break;
-    case 'magicalHachi': state.bonusSales=5;detail='다음 유료 주문 5건 매출 +50%';break;
-    case 'rainHachi': state.freezeCookUntil=state.elapsed+12000;detail='12초간 조리 정지';break;
+    case 'magicalHachi': state.bonusSales=5;detail='다음 유료 주문 5건 매출 +100%';break;
+    case 'rainHachi':
+      clearBurntGrill();
+      state.freezeCookUntil=state.elapsed+12000;detail='12초간 조리 정지 · 탄 반죽 제거';break;
     case 'pajamaUsagi':
-      for(const cell of plan){
-        Object.assign(cell,{phase:'back',early:false,autoCook:false,goldEligible:false});
-        setCellAge(cell,backReadyTime());
-      }
-      detail=plan.length+'알을 정상으로 살렸어요.';break;
+      state.rescueUntil=state.elapsed+8000;
+      state.rescuesLeft=5;
+      repairGrill();
+      detail='8초간 최대 5회 복구';break;
     case 'octopusUsagi':
-      for(const cell of plan) cell.autoCook=true;
-      finishAutomaticCooking();detail=plan.length+'칸 자동 조리';break;
+      state.autoCookUntil=state.elapsed+10000;
+      finishAutomaticCooking();detail='10초간 자동 조리';break;
     case 'fairyUsagi': state.delayGuestsUntil=state.elapsed+15000;detail='15초간 입장 정지 · 대기 속도 절반';break;
     case 'magicalUsagi':
-      state.comboDeadline=Math.min(state.elapsed+30000,state.comboDeadline+15000);
-      detail='현재 콤보 유지 시간 연장';break;
+      state.sales+=increaseCombo(10,Math.min(state.elapsed+30000,state.comboDeadline+15000));
+      detail='콤보 +10 · 유지 시간 연장';break;
+  }
+  if(hasHelper('magicalChii',3)) state.reputationGuardUntil=state.elapsed+5000;
+  if(hasHelper('rainHachi',3)){
+    for(const guest of state.guests.filter(isWaitingGuest)){
+      if(Math.random()<.33){
+        guest.order=1;
+        guest.negotiated=true;
+        delete guest.changeAt;
+      }
+    }
   }
   state.charge=0;
   sound.cue('skill');
@@ -2334,15 +2492,14 @@ function useChefSkill(){
 
 function finishAutomaticCooking(){
   for(const [index,cell] of state.cells.entries()){
-    if(!cell.autoCook) continue;
-    if(cell.phase==='front'&&cellAge(cell)>=frontReadyTime()){
+    if(cellStatus(cell)==='flip'){
       const leftoverHeat=cellAge(cell)-frontReadyTime();
       Object.assign(cell,{phase:'back',since:state.heatTime-leftoverHeat/cell.rate,early:false,goldEligible:false});
     }
-    if(cell.phase==='back'&&cellAge(cell)>=backReadyTime()&&state.stock.length<RULES.stock){
-      state.stock.push(cellStatus(cell)==='burn'&&cell.autoWaiting?'burnt':'good');
+    if(cellStatus(cell)==='take'&&!cell.early&&state.stock.length<RULES.stock){
+      stockCooked(goldenWindow(cell,cellAge(cell))?'gold':'good');
       state.cells[index]=newGrillCell(index);
-    } else if(cell.phase==='back'&&cellAge(cell)>=backReadyTime()) cell.autoWaiting=true;
+    }
   }
 }
 
@@ -2352,15 +2509,17 @@ function cellAge(cell){
 }
 
 function backReadyTime(){
-  return RULES.backReady*(state.helpers.has('octopusHachi') ? .92 : 1);
+  return RULES.backReady*(hasHelper('octopusHachi')?.88:1);
 }
 
 function backBurnTime(){
   const window=RULES.backBurn-RULES.backReady;
-  return backReadyTime()+window*(state.helperBack?1+RULES.helperBackWindow:1);
+  const burnTime=backReadyTime()+window*(hasHelper('tanuki')?1.12:1);
+  return burnTime*(1+.08*(Number(hasHelper('fairyChii',2))+Number(hasHelper('rainHachi',2))));
 }
 
 function cellStatus(cell){
+  if(cell.salvagedUntil) return state.elapsed<cell.salvagedUntil?'take':'burn';
   const age=cellAge(cell);
   if(cell.phase==='front'){
     if(age>=frontBurnTime()) return 'burn';
@@ -2374,7 +2533,8 @@ function cellStatus(cell){
 }
 
 function goldenWindow(cell,age){
-  return cell.phase==='back' && cell.goldEligible && age>=RULES.goldStart && age<RULES.goldEnd;
+  const end=RULES.goldStart+(RULES.goldEnd-RULES.goldStart)*(hasHelper('octopusUsagi',2)?1.3:1);
+  return cell.phase==='back'&&cell.goldEligible&&age>=RULES.goldStart&&age<end;
 }
 
 function cook(index){
@@ -2387,37 +2547,31 @@ function cook(index){
   } else if(status==='front'||status==='flip'){
     sound.cue('flip');
     const early=status==='front';
-    const cookedHeat=cell.quickCook&&!early?backReadyTime()+1e-6:0;
-    state.cells[index]=newGrillCell(index,'back',{
-      since:state.heatTime-cookedHeat/cell.rate,early,
-      autoCook:cell.autoCook&&!early,goldEligible:!early&&Math.random()<RULES.goldChance
-    });
-    if(early) notify('너무 일찍 뒤집었어요.','bad');
+    state.cells[index]=newGrillCell(index,'back',{early,goldEligible:!early&&Math.random()<RULES.goldChance});
+    if(early){
+      if(state.elapsed<state.rescueUntil&&state.rescuesLeft) repairGrill();
+      else notify('너무 일찍 뒤집었어요.','bad');
+    }
   } else {
     let quality='raw';
     if(status==='burn') quality='burnt';
     if(status==='take'&&!cell.early){
       quality=goldenWindow(cell,cellAge(cell))?'gold':'good';
     }
-    if(quality==='burnt'&&state.helpers.has('tanukiChii')){
+    if(quality==='burnt'&&!cell.salvagedUntil&&(hasHelper('tanukiChii')||hasHelper('magicalHachi',2))){
       const burntAt=cell.phase==='front'?frontBurnTime():backBurnTime();
       if(cellAge(cell)-burntAt<200) quality='good';
-    } else if(quality==='raw'&&!cell.early&&state.helpers.has('pajamaUsagi')&&backReadyTime()-cellAge(cell)<=160) quality='good';
+    } else if(quality==='raw'&&!cell.early&&hasHelper('pajamaUsagi')&&backReadyTime()-cellAge(cell)<=160) quality='good';
     const full=state.stock.length>=RULES.stock;
     let repaired=false;
-    if(!full&&!edible(quality)){
-      if(state.strongCookRepair&&state.gas>=STRONG_GAS){
-        state.strongCookRepair=false;
-        repaired=true;
-      } else if(quality==='burnt'&&state.firstBurnRepair){
-        state.firstBurnRepair=false;
-        repaired=true;
-      }
-      if(repaired) quality='good';
+    if(!full&&quality==='burnt'&&hasHelper('tanukiHachi')&&state.firstBurnRepair>0){
+      state.firstBurnRepair--;
+      repaired=true;
+      quality='good';
     }
     state.cells[index]=newGrillCell(index);
     if(!full){
-      state.stock.push(quality);
+      quality=stockCooked(quality);
       sound.cue(quality==='gold'?'gold':'plate');
     }
     if(edible(quality)){
@@ -2438,7 +2592,7 @@ function previewServing(amount){
   let total=0;
   let burnt=0;
   const queue=state.stock.map((kind,index)=>({kind,index}));
-  if(state.picksLeft) queue.sort((a,b)=>Number(edible(b.kind))-Number(edible(a.kind)));
+  if(state.elapsed<state.pickUntil) queue.sort((a,b)=>Number(edible(b.kind))-Number(edible(a.kind)));
   const portions=queue.slice(0,amount);
   for(const {kind} of portions){
     const count=units(kind);
@@ -2460,8 +2614,9 @@ function qualifyingServingUnits(guest,serving){
 function orderIssue(guest,serving){
   if(guest.kind==='rakko'&&serving.burnt) return '랏코는 탄 타코야키를 받지 않아요.';
   if(guest.kind==='goblin'){
-    return serving.portions.length===3&&serving.portions.every(({kind})=>edible(kind))
-      ? '' : '고블린은 잘 익은 타코야키 3알을 원해요.';
+    const required=guest.negotiated?1:3;
+    return serving.portions.length===required&&serving.portions.every(({kind})=>edible(kind))
+      ? '' : '고블린은 잘 익은 타코야키 '+required+'알을 원해요.';
   }
   const accepted=guest.kind==='kurimanju'?serving.amount:qualifyingServingUnits(guest,serving);
   if(accepted>=requiredOrderUnits(guest)) return '';
@@ -2524,10 +2679,9 @@ function serve(amount){
   for(const {index} of serving.portions.sort((a,b)=>b.index-a.index)){
     state.stock.splice(index,1);
   }
-  if(state.picksLeft) state.picksLeft--;
   const issue=orderIssue(guest,serving);
   if(issue){
-    failGuest(slot,issue);
+    failGuest(slot,issue,'order',serving);
     if(guest.kind!=='kani') checkGuestPriority();
     render();
     return;
@@ -2543,6 +2697,7 @@ function serve(amount){
     return;
   }
   const comboHit=isBonusServing(guest,serving);
+  const goldServed=serving.portions.filter(({kind})=>kind==='gold').length;
   setGuestReaction(slot,guest,comboHit?'bonus':'success');
   let bonus='';
   if(comboHit&&['shootingStar','blackStar'].includes(guest.kind)){
@@ -2552,21 +2707,32 @@ function serve(amount){
       bonus=' · 황금으로 변환!';
     }
   }
-  if(comboHit){
-    state.combo=Math.min(RULES.comboMax,state.combo+1);
-    state.comboDeadline=state.elapsed+RULES.comboDuration;
-    state.maxCombo=Math.max(state.maxCombo,state.combo);
-    state.score+=state.combo*RULES.comboPoints;
-  }
-
+  const comboGain=Number(comboHit)+(hasHelper('octopus',2)?goldServed:0);
+  const milestoneSales=comboGain?increaseCombo(comboGain,state.elapsed+comboDuration()):0;
   let charge=comboHit?RULES.comboCharge:RULES.orderCharge;
   if(comboHit){
-    if(state.helpers.has('magicalChii')) charge+=.8;
-    if(state.helpers.has('magicalHachi')&&state.combo%3===0) charge+=2;
-    if(state.helpers.delete('magicalUsagi')) charge+=5;
+    state.bonusOrders++;
+    state.bonusStreak++;
+    state.score+=state.combo*RULES.comboPoints;
+    if(hasHelper('magicalChii')) charge+=1.2;
+    if(hasHelper('magicalHachi')&&state.bonusStreak%3===0) charge+=2;
+    if(hasHelper('magicalUsagi')&&state.bonusOrders%5===0) charge+=5;
+    if(hasHelper('octopusUsagi',3)&&Math.random()<.02){
+      const burnt=stockTargets(state.stock.length,state.stock.length,kind=>kind==='burnt');
+      if(burnt.length) state.stock[randomCard(burnt)]='good';
+    }
   }
+  if(hasHelper('magicalChii',2)){
+    for(const waiting of state.guests.filter(isWaitingGuest)) waiting.deadline+=2000;
+  }
+  if(hasHelper('tanukiChii',3)&&Math.random()<.02){
+    const raw=state.stock.indexOf('raw');
+    if(raw>=0) state.stock[raw]='good';
+  }
+  if(hasHelper('octopus',3)&&Math.random()<.02) clearBurntGrill();
   state.charge=Math.min(100,Math.round((state.charge+charge)*10)/10);
   state.served++;
+  earnSkinExperience();
   const leveled=state.served-state.levelStartOrders>=ordersToNextLevel(state.level);
   const restoredHeart=leveled&&state.lives<RULES.lives;
   sound.cue(leveled?'level':'success',95);
@@ -2575,10 +2741,14 @@ function serve(amount){
     state.levelStartOrders=state.served;
     if(restoredHeart) state.lives++;
   }
-  const paid=guest.kind==='anoko'?0:guest.kind==='goblin'?3:guest.order+(guest.paidOrder??0);
+  const paid=guest.kind==='anoko'?0:guest.kind==='goblin'&&!guest.negotiated?3:guest.order+(guest.paidOrder??0);
   const specialSale=paid>0&&state.bonusSales>0;
   if(specialSale) state.bonusSales--;
-  const sale=Math.round(paid*RULES.price*(100+state.combo)/100*(specialSale?1.5:1));
+  const goldPaid=hasHelper('tanukiHachi',2)?Math.min(paid,goldServed*2):0;
+  const salesMultiplier=1+.1*Number(hasHelper('pajama',2))+.2*Number(hasHelper('magicalHachi',3));
+  const bonusMultiplier=comboHit&&hasHelper('pajamaUsagi',2)?1.1:1;
+  const sale=Math.round((paid+.25*goldPaid)*RULES.price*(100+state.combo)/100*
+    (specialSale?2:1)*salesMultiplier*bonusMultiplier)+milestoneSales;
   state.sales+=sale;
   state.score+=guest.order*RULES.points;
   const earned=' · +'+number.format(sale)+'원'+(leveled?' · Lv. '+state.level+' 달성!':'')+(restoredHeart?' · 가게 평판 +1':'');
@@ -2588,12 +2758,30 @@ function serve(amount){
   render();
 }
 
+function increaseCombo(count,deadline){
+  const previous=state.combo;
+  state.combo=Math.min(RULES.comboMax,previous+count);
+  state.comboDeadline=deadline;
+  state.maxCombo=Math.max(state.maxCombo,state.combo);
+  if(previous<100&&state.combo>=100&&hasHelper('magicalUsagi',2)){
+    state.lives=Math.min(RULES.lives,state.lives+1);
+  }
+  return hasHelper('rainChii',2)?500*(Math.floor(state.combo/10)-Math.floor(previous/10)):0;
+}
+
 function notify(message,tone=''){
   state.message=message; state.tone=tone;
 }
 
 function loseLife(message,guestLine=''){
   state.lives--;
+  if(state.lives===1&&hasHelper('pajama',3)&&!state.lowReputationUsed){
+    state.lowReputationUsed=true;
+    state.lives++;
+    clearBurntGrill();
+    notify(message+' · 가게 평판 회복 · 탄 반죽 제거','good');
+    return;
+  }
   notify(message+' · 가게 평판 −1','bad');
   if(state.lives!==0) return;
   if(state.guests.some(guest=>guest?.leavesAt)){
@@ -2681,7 +2869,7 @@ function renderComboBurst(){
     burst.setAttribute('aria-label',title);
     $('comboCount').textContent=state.combo;
   }
-  const remaining=Math.min(1,Math.max(0,(state.comboDeadline-state.elapsed)/RULES.comboDuration));
+  const remaining=Math.min(1,Math.max(0,(state.comboDeadline-state.elapsed)/comboDuration()));
   burst.style.transform='scale('+(0.32+0.68*remaining)+')';
   burst.style.opacity=Math.min(1,remaining*4);
 }
@@ -2726,9 +2914,10 @@ function render(){
   skill.disabled=!ready||!canUseChefSkill();
   if(skillName){
     const hold=Math.ceil((state.heatHoldUntil-state.elapsed)/1000);
-    const timed=Math.ceil((Math.max(state.freezeCookUntil,state.protectCookUntil,state.delayGuestsUntil)-state.elapsed)/1000);
-    const count=state.picksLeft||state.guestShields||state.bonusSales;
+    const timed=Math.ceil((Math.max(state.freezeCookUntil,state.protectCookUntil,state.delayGuestsUntil,state.pickUntil,state.rescueUntil,state.autoCookUntil)-state.elapsed)/1000);
+    const count=state.guestShields||state.bonusSales;
     const label=count?count+'회 남음'
+      :state.rescueUntil>state.elapsed&&state.rescuesLeft?timed+'초 · '+state.rescuesLeft+'회'
       :hold>0?hold+'초 유지':timed>0?timed+'초 유지':'';
     if($('skillName').textContent!==skillName) $('skillName').textContent=skillName;
     if($('skillStatus').textContent!==label) $('skillStatus').textContent=label;
@@ -2782,9 +2971,9 @@ function render(){
     const blocked=state.blockedUntil[i]>state.elapsed;
     const dust=state.dustUntil>state.elapsed&&i<3;
     const golden=!dust&&goldenWindow(cell,age);
-    const label=blocked?'불판 막힘':dust?'먼지':cell.autoCook?'자동 조리':golden?'✦ 황금 꺼내기'
+    const label=blocked?'불판 막힘':dust?'먼지':golden?'✦ 황금 꺼내기'
       :cell.early&&status==='take'?'! 덜 익음 꺼내기'
-      :cell.quickCook&&status==='flip'?'⚡ 뒤집으면 완성':labels[status];
+      :state.elapsed<state.autoCookUntil&&['front','flip','back'].includes(status)?'자동 조리':labels[status];
     button.disabled=!ready||blocked;
     button.classList.toggle('dusty',dust);
     button.classList.toggle('golden-window',golden);
