@@ -357,7 +357,7 @@ main.home-screen{
 .dialog:has(#infoPanel:not([hidden])),.dialog:has(#packPanel:not([hidden])){width:min(100%,520px);padding:18px clamp(10px,4vw,22px)}
 #infoNav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:14px}
 #infoNav[hidden]{display:none}
-#infoNav button{min-width:0;padding:5px 2px;font-size:12px}
+#infoNav button{min-width:0;padding:5px 2px;font-size:13px}
 #infoNav button[aria-pressed="true"]{color:#392319;background:var(--gold);border-color:var(--gold)}
 #catalogItems{display:grid;gap:13px;margin-bottom:15px;text-align:left}
 .card-section h3{font-size:14px;color:var(--gold);margin:0 0 7px}
@@ -413,12 +413,12 @@ main.home-screen{
 .character-card[data-rarity="LR"] .card-art::after{content:"✧" / "";font-size:16px;color:#41598d;text-shadow:0 0 5px #fff}
 .pack-odds{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 8px;font-size:11px;font-weight:750;font-variant-numeric:tabular-nums}
 .pack-odds span{white-space:nowrap}
-.pack-odds [data-rarity="C"]{color:#ded4c8}
-.pack-odds [data-rarity="UC"]{color:#a9d5af}
-.pack-odds [data-rarity="R"]{color:#f3b98f}
-.pack-odds [data-rarity="SR"]{color:#a9d9ff}
-.pack-odds [data-rarity="UR"]{color:#ffe084}
-.pack-odds [data-rarity="LR"]{color:#e2b5ff}
+.pack-odds [data-rarity="C"],.card-section h3.collection-rarity[data-rarity="C"]{color:#ded4c8}
+.pack-odds [data-rarity="UC"],.card-section h3.collection-rarity[data-rarity="UC"]{color:#a9d5af}
+.pack-odds [data-rarity="R"],.card-section h3.collection-rarity[data-rarity="R"]{color:#f3b98f}
+.pack-odds [data-rarity="SR"],.card-section h3.collection-rarity[data-rarity="SR"]{color:#a9d9ff}
+.pack-odds [data-rarity="UR"],.card-section h3.collection-rarity[data-rarity="UR"]{color:#ffe084}
+.pack-odds [data-rarity="LR"],.card-section h3.collection-rarity[data-rarity="LR"]{color:#e2b5ff}
 .card-copy{display:grid;align-content:start;gap:3px;min-width:0;padding:6px 3px 3px}
 .card-name{font-size:13px;color:var(--cream);line-height:1.25;overflow-wrap:anywhere}
 .card-status{width:max-content;max-width:100%;font-size:10px;line-height:1.15;padding:3px 5px;border-radius:4px;background:#4b352a;color:#ffdbaa}
@@ -505,6 +505,12 @@ main.home-screen{
   animation-name:pack-aurora;animation-duration:.75s;animation-fill-mode:both
 }
 .pack-grid .character-card[data-duplicate]::after{display:none}
+.duplicate-stamp{
+  position:absolute;z-index:4;top:24px;right:4px;transform:rotate(-10deg);pointer-events:none;
+  padding:2px 6px;border:2px solid var(--rarity-frame);border-radius:5px;
+  background:#42243d;color:#fff1d3;box-shadow:0 2px 6px #20132180;
+  font-size:clamp(11px,3.6vw,15px);font-weight:950;line-height:1.2;white-space:nowrap
+}
 @property --lr-sweep-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
 @keyframes pack-aurora{0%{--lr-sweep-angle:0deg;opacity:0}18%{opacity:1}70%{opacity:1}100%{--lr-sweep-angle:360deg;opacity:0}}
 @keyframes pack-corner{0%{opacity:0}32%{opacity:.9}100%{opacity:0}}
@@ -1290,13 +1296,17 @@ function characterCard(grid,{label,detail,status,price,tone,state:cardState,spri
 }
 
 function renderSkinCards(store){
-  const basic=cardSection('기본');
-  for(const person of CREW){
-    characterCard(basic,{label:person.name+' · 기본',status:'보유 중',tone:person.id,state:'owned',sprite:SPRITES[person.id],mark:CREW_MARKS[person.id]});
+  if(!store){
+    const basic=cardSection('기본');
+    for(const person of CREW){
+      characterCard(basic,{label:person.name+' · 기본',status:'보유 중',tone:person.id,state:'owned',sprite:SPRITES[person.id],mark:CREW_MARKS[person.id]});
+    }
   }
   for(const {series,options} of SKIN_GROUPS){
+    const visibleOptions=store?options.filter(({person,id})=>!ownsSkin(person.id,id)):options;
+    if(!visibleOptions.length) continue;
     const grid=cardSection(series);
-    for(const {person,id,skin} of options){
+    for(const {person,id,skin} of visibleOptions){
       const owned=ownsSkin(person.id,id);
       const meetsLevel=profile.bestLevel>=SKIN_LEVELS[series];
       const price=SKIN_PRICES[series];
@@ -1309,8 +1319,8 @@ function renderSkinCards(store){
         sprite:SPRITES[id],mark:SKIN_MARKS[series]
       });
       if(store){
-        shopButton(entry,owned?'보유 중':!meetsLevel?'Lv. '+SKIN_LEVELS[series]+' 필요':profile.coins<price?'보유금 부족':'구매',
-          'buy-'+id,owned||!meetsLevel||profile.coins<price,()=>buySkin(person,id));
+        shopButton(entry,!meetsLevel?'Lv. '+SKIN_LEVELS[series]+' 필요':profile.coins<price?'보유금 부족':'구매',
+          'buy-'+id,!meetsLevel||profile.coins<price,()=>buySkin(person,id));
       }
     }
   }
@@ -1347,7 +1357,10 @@ function renderCatalog(){
     grid.classList.add('collection-grid');
     const count=document.createElement('small');
     count.textContent=cards.filter(card=>owned.has(card)).length+'/'+cards.length;
-    grid.previousElementSibling.append(count);
+    const heading=grid.previousElementSibling;
+    heading.classList.add('collection-rarity');
+    heading.dataset.rarity=rarity;
+    heading.append(count);
     for(const card of cards){
       if(owned.has(card)){
         characterCard(grid,{label:card,status:'수집 완료',tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity});
@@ -1451,15 +1464,32 @@ function showPackOpening(draws,{chest=false,tone='reward'}={}){
       const reveal=()=>{
         if(!back.isConnected||state.mode!=='pack') return;
         const copy=characterCard(cards,{
-          label:card,status:refund?'중복 · '+number.format(refund)+'원 환급':'새 카드',
+          label:card,status:refund?'':'새 카드',
           tone:'reward',state:'owned',sprite:CARD_SPRITES[card],rarity
         });
         const front=copy.parentElement;
-        if(refund) front.dataset.duplicate='';
+        if(refund){
+          front.dataset.duplicate='';
+          const stamp=document.createElement('span');
+          stamp.className='duplicate-stamp';
+          stamp.textContent='중복';
+          stamp.hidden=true;
+          const refundNote=document.createElement('span');
+          refundNote.className='card-status';
+          refundNote.dataset.duplicateNote='';
+          refundNote.textContent=number.format(refund)+'원 환급';
+          refundNote.hidden=true;
+          front.append(stamp);
+          copy.append(refundNote);
+        }
         back.replaceWith(front);
-        remaining--;
-        if(!remaining) finishPackReveal(draws,saved);
-        else cards.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+        cards.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+        const animations=front.getAnimations?.({subtree:true})??[];
+        Promise.allSettled(animations.map(animation=>animation.finished)).then(()=>{
+          if(!front.isConnected||state.mode!=='pack') return;
+          remaining--;
+          if(!remaining) finishPackReveal(draws,saved);
+        });
       };
       if(refund||matchMedia('(prefers-reduced-motion: reduce)').matches) reveal();
       else {
@@ -1474,6 +1504,7 @@ function showPackOpening(draws,{chest=false,tone='reward'}={}){
 }
 
 function finishPackReveal(draws,saved){
+  $('packCards').querySelectorAll('.duplicate-stamp,[data-duplicate-note]').forEach(label=>label.hidden=false);
   const fresh=draws.filter(draw=>!draw.refund).length;
   const refund=draws.reduce((total,draw)=>total+draw.refund,0);
   $('dialogBody').textContent='새 카드 '+fresh+'장'+(refund?' · 중복 환급 '+number.format(refund)+'원':'')+
