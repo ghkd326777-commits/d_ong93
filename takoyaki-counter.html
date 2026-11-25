@@ -361,7 +361,12 @@ main.home-screen{
 #infoNav button[aria-pressed="true"]{color:#392319;background:var(--gold);border-color:var(--gold)}
 #catalogItems{display:grid;gap:13px;margin-bottom:15px;text-align:left}
 .card-section h3{font-size:14px;color:var(--gold);margin:0 0 7px}
-.card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(4px,2vw,8px)}
+.card-grid{--card-gap:clamp(4px,2vw,8px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--card-gap)}
+.collection-grid{container-type:inline-size}
+.collection-grid>:is(.character-card,.card-back){
+  min-height:132px;
+  min-height:calc((100cqi - 2 * var(--card-gap)) / 4.14 + 64px);
+}
 .character-card{--card-accent:#ffd29a;display:grid;align-content:start;min-width:0;padding:5px;border:1px solid #805e47;border-radius:11px;background:#241a16}
 .character-card[data-tone="chiikawa"]{--card-accent:#ffc5ca}
 .character-card[data-tone="hachiware"]{--card-accent:#a8d9f9}
@@ -1324,6 +1329,7 @@ function renderCatalog(){
     return;
   }
   const grid=cardSection('카드 '+CARDS.filter(card=>profile.cards.includes(card)).length+'/'+CARDS.length);
+  grid.classList.add('collection-grid');
   for(const card of CATALOG_CARDS){
     const owned=profile.cards.includes(card);
     if(owned){
