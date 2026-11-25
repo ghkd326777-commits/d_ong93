@@ -91,6 +91,19 @@ main{width:min(100%,470px);margin:auto;padding:14px 14px max(10px,env(safe-area-
 .avatar{font-size:22px;line-height:1}
 .guestName{display:block;font-size:clamp(11px,calc(5px + 1.7vw),12px);font-weight:700;color:var(--muted);white-space:normal;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
 .order{display:block;font-size:clamp(17.5px,calc(8px + 2.6vw),19px);font-weight:800;line-height:1.1;white-space:nowrap}
+.order-stamp{
+  display:inline-grid;place-items:center;width:1.55em;height:1.08em;vertical-align:top;
+  border:1px solid #ffb8bc;border-radius:6px;background:#6c293a;color:#ffc6ca;
+  box-shadow:inset 0 0 0 1px #962f47,0 1px 2px #23131870;
+  transform:rotate(-12deg);animation:order-stamp-in .3s ease-out both;
+}
+.order-stamp::before{content:"♥";font-size:.87em;line-height:1;text-shadow:0 1px #4b1829}
+@keyframes order-stamp-in{
+  0%{opacity:0;transform:rotate(-20deg) scale(1.55)}
+  68%{opacity:1;transform:rotate(-10deg) scale(.9)}
+  100%{opacity:1;transform:rotate(-12deg) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){.order-stamp{animation:none}}
 .patience{grid-column:1/-1;height:4px;border-radius:5px;background:#211612;overflow:hidden}
 .patience i{display:block;height:100%;width:100%;background:#ecc275;transform-origin:left}
 .patience i.urgent{background:#ff846f}
@@ -764,7 +777,7 @@ main.home-screen{
           <p>빈 불판을 눌러 반죽을 넣고, 뒤집기 표시가 뜨면 뒤집으세요. 다 익으면 눌러 진열대에 올릴 수 있어요. 가스를 올리면 더 빨리 익어요.</p></li>
         <li><strong>손님에게 서빙하기</strong>
           <div class="guide-flow"><span class="guide-step">손님 선택</span><span aria-hidden="true">→</span><span class="guide-step guide-serve">수량 선택</span></div>
-          <p>손님을 고르고 수량을 누르세요. 진열대에 먼저 올린 것부터 나가고, 황금 타코야키 1알은 2개로 계산돼요. 손님마다 주문 조건이 달라요.</p></li>
+          <p>손님을 고르고 진열대에서 꺼낼 수량을 누르세요. 먼저 올린 알부터 나가고, 황금 타코야키는 한 알을 내도 주문에서 2개로 계산돼요. 손님마다 주문 조건이 달라요.</p></li>
         <li><strong>콤보와 스킬</strong><p>주문보다 더 많이, 모두 잘 익은 타코야키로 서빙하면 덤 콤보가 이어져요. 스킬 게이지가 가득 차면 주방장 스킬을 쓸 수 있어요.</p></li>
         <li><strong>레벨과 영업 마감</strong><p>주문에 성공하면 경험치가 차요. 레벨이 오르면 가게 평판이 1칸 회복되고 새로운 손님이 찾아와요. 영업을 마치면 매출이 보유금에 적립돼요.</p></li>
       </ol>
@@ -2368,26 +2381,20 @@ function cook(index){
   render();
 }
 
-function stockUnits(items){
-  return items.reduce((total,kind)=>total+units(kind),0);
-}
-
 function previewServing(amount){
-  let remaining=amount;
   let good=0;
+  let total=0;
   let burnt=false;
-  const portions=[];
   const queue=state.stock.map((kind,index)=>({kind,index}));
   if(state.picksLeft) queue.sort((a,b)=>Number(edible(b.kind))-Number(edible(a.kind)));
-  for(const {kind,index} of queue){
-    if(!remaining) break;
-    const count=Math.min(remaining,units(kind));
+  const portions=queue.slice(0,amount);
+  for(const {kind} of portions){
+    const count=units(kind);
+    total+=count;
     if(edible(kind)) good+=count;
     if(kind==='burnt') burnt=true;
-    portions.push({index,leftover:count<units(kind)});
-    remaining-=count;
   }
-  return {good,burnt,portions,amount:amount-remaining};
+  return {good,burnt,portions,amount:total};
 }
 
 function orderIssue(guest,serving){
@@ -2443,11 +2450,11 @@ function serve(amount){
   if(!inputReady()) return;
   const slot=state.selected;
   const guest=state.guests[slot];
-  if(!isWaitingGuest(guest)||stockUnits(state.stock)<amount){render();return;}
+  if(!isWaitingGuest(guest)||state.stock.length<amount){render();return;}
   const serving=previewServing(amount);
   sound.cue('serve');
-  for(const {index,leftover} of serving.portions.sort((a,b)=>b.index-a.index)){
-    state.stock.splice(index,1,...(leftover?['good']:[]));
+  for(const {index} of serving.portions.sort((a,b)=>b.index-a.index)){
+    state.stock.splice(index,1);
   }
   if(state.picksLeft) state.picksLeft--;
   const issue=orderIssue(guest,serving);
@@ -2468,7 +2475,7 @@ function serve(amount){
     return;
   }
   setGuestReaction(slot,guest,'success');
-  const comboHit=guest.kind!=='goblin'&&amount>guest.order&&serving.good===amount;
+  const comboHit=guest.kind!=='goblin'&&serving.good>guest.order&&serving.good===serving.amount;
   let bonus='';
   if(comboHit&&['shootingStar','blackStar'].includes(guest.kind)){
     const index=state.stock.findIndex(kind=>guest.kind==='blackStar'?kind==='burnt':kind!=='gold');
@@ -2624,7 +2631,7 @@ function renderGuestSpeech(slot,guest){
 
 function render(){
   const ready=state.mode==='play';
-  const stock=stockUnits(state.stock);
+  const stock=state.stock.length;
   $('hearts').textContent='♥'.repeat(state.lives)+'♡'.repeat(RULES.lives-state.lives);
   $('hearts').setAttribute('aria-label','가게 평판 '+state.lives+'칸');
   $('sales').textContent=number.format(state.sales)+'원';
@@ -2673,8 +2680,10 @@ function render(){
       const guestName=visitor?.name;
       const sprite=guest&&SPRITES[guest.kind];
       const icon=sprite?'<img alt="" src="'+sprite+'">':visitor?.icon;
+      const order=waiting?guest.order+'알':guest?.reaction==='success'
+        ? '<span class="order-stamp" aria-hidden="true"></span>' : '실패';
       button.innerHTML=guest
-        ? '<span class="avatar" aria-hidden="true">'+icon+'</span><span><span class="guestName">'+guestName+'</span><span class="order">'+(waiting?guest.order+'알':guest.reaction==='success'?'성공':'실패')+'</span></span><span class="patience" aria-hidden="true"><i></i></span>'
+        ? '<span class="avatar" aria-hidden="true">'+icon+'</span><span><span class="guestName">'+guestName+'</span><span class="order">'+order+'</span></span><span class="patience" aria-hidden="true"><i></i></span>'
         : '<span aria-hidden="true">·</span><span>빈자리</span>';
       button.setAttribute('aria-label',guest?guestName+', '+(waiting?guest.order+'알 주문':guest.reaction==='success'?'주문 성공':'주문 실패'):'빈자리 '+(i+1));
     }
