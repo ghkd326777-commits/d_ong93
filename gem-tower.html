@@ -5406,8 +5406,10 @@
                 x: tx,
                 y: ty,
                 target: candidates[s],
-                speed: 16.5 * T,
+                speed: (tower.type === 'special' && tower.specialId === 'the_chaos_of_bryvx') ? 22.0 * T : ((tower.type === 'special' && tower.specialId === 'the_end_of_bryvx') ? 19.5 * T : 16.5 * T),
                 tower,
+                specialId: tower.type === 'special' ? tower.specialId : null,
+                gemId: tower.type === 'gem' ? tower.gemId : null,
                 damage: stats.effDmg,
                 color: projColor,
               });
@@ -5671,8 +5673,16 @@
 
         if (tSpec.flameStrikeChance && Math.random() < tSpec.flameStrikeChance) {
           const frPx = tSpec.flameStrikeRadius * T;
-          state.effects.push({ type: 'flame', x: target.x, y: target.y, radius: frPx, color: '#f97316', life: 0.45, maxLife: 0.45 });
-          state.floatingTexts.push({ x: target.x, y: target.y - 18, text: '🔥 화염기둥!', color: '#fb923c', life: 0.85, maxLife: 0.85 });
+          if (tower.specialId === 'the_chaos_of_bryvx') {
+            state.effects.push({ type: 'chaos_rift', x: target.x, y: target.y, radius: frPx, color: '#f43f5e', accent: '#38bdf8', life: 0.56, maxLife: 0.56 });
+            state.floatingTexts.push({ x: target.x, y: target.y - 18, text: '🌀 카오스 균열폭발!', color: '#fda4af', life: 0.9, maxLife: 0.9 });
+          } else if (tower.specialId === 'the_end_of_bryvx') {
+            state.effects.push({ type: 'divinity_judgment', x: target.x, y: target.y, radius: frPx, color: '#e879f9', accent: '#fde047', life: 0.52, maxLife: 0.52 });
+            state.floatingTexts.push({ x: target.x, y: target.y - 18, text: '✦ 신격 심판폭발!', color: '#f5d0fe', life: 0.9, maxLife: 0.9 });
+          } else {
+            state.effects.push({ type: 'flame', x: target.x, y: target.y, radius: frPx, color: '#f97316', life: 0.45, maxLife: 0.45 });
+            state.floatingTexts.push({ x: target.x, y: target.y - 18, text: '🔥 화염기둥!', color: '#fb923c', life: 0.85, maxLife: 0.85 });
+          }
           for (const m of state.monsters) {
             if (m.alive && Math.hypot(m.x - target.x, m.y - target.y) <= frPx) {
               damageMonster(m, tSpec.flameStrikeDmg * getTowerEffectiveStats(tower).dmgMult, tower, true);
@@ -5682,7 +5692,13 @@
 
         if (tSpec.splashRadius) {
           const rPx = tSpec.splashRadius * T;
-          state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: rPx, color: def.color, life: 0.25, maxLife: 0.25 });
+          if (tower.specialId === 'the_chaos_of_bryvx') {
+            state.effects.push({ type: 'chaos_burst', x: target.x, y: target.y, radius: rPx, color: '#f43f5e', accent: '#ffffff', life: 0.36, maxLife: 0.36 });
+          } else if (tower.specialId === 'the_end_of_bryvx') {
+            state.effects.push({ type: 'divinity_burst', x: target.x, y: target.y, radius: rPx, color: '#e879f9', accent: '#fde047', life: 0.34, maxLife: 0.34 });
+          } else {
+            state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: rPx, color: def.color, life: 0.25, maxLife: 0.25 });
+          }
           for (const m of state.monsters) {
             if (!m.alive) continue;
             if (Math.hypot(m.x - target.x, m.y - target.y) <= rPx) {
@@ -5700,6 +5716,11 @@
           return;
         }
 
+        if (tower.type === 'special' && tower.specialId === 'the_end_of_bryvx') {
+          state.effects.push({ type: 'divinity_spark', x: target.x, y: target.y, radius: 22, color: '#e879f9', accent: '#fde047', life: 0.22, maxLife: 0.22 });
+        } else if (tower.type === 'special' && tower.specialId === 'the_chaos_of_bryvx') {
+          state.effects.push({ type: 'chaos_spark', x: target.x, y: target.y, radius: 24, color: '#f43f5e', accent: '#38bdf8', life: 0.24, maxLife: 0.24 });
+        }
         damageMonster(target, dmg, tower, false);
 
         if (tSpec.poisonDps) {
@@ -8501,21 +8522,224 @@
           }
         }
 
-        // 9) 투사체
+        // 9) 투사체 (스톤 오브 브릭스 / 신격 / 카오스 각 컨셉 및 상위 등급 차별화)
         for (const p of state.projectiles) {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 3.8, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.1;
-          ctx.stroke();
+          const pAngle = p.target && p.target.alive ? Math.atan2(p.target.y - p.y, p.target.x - p.x) : 0;
+          if (p.specialId === 'the_chaos_of_bryvx') {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            const riftR = 11.5 + Math.sin(now * 0.03) * 1.5;
+            const cGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, riftR);
+            cGrad.addColorStop(0, '#ffffff');
+            cGrad.addColorStop(0.38, '#f43f5e');
+            cGrad.addColorStop(0.75, '#581c87');
+            cGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            ctx.fillStyle = cGrad;
+            ctx.beginPath();
+            ctx.arc(0, 0, riftR, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.rotate(now * 0.018);
+            drawGemShape(ctx, 'star4', 0, 0, 7.2);
+            ctx.fillStyle = '#090d16';
+            ctx.fill();
+            ctx.strokeStyle = '#fb7185';
+            ctx.lineWidth = 1.6;
+            ctx.stroke();
+
+            ctx.rotate(-now * 0.032);
+            drawGemShape(ctx, 'diamond', 0, 0, 4.5);
+            ctx.fillStyle = '#fde047';
+            ctx.fill();
+            ctx.restore();
+          } else if (p.specialId === 'the_end_of_bryvx') {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(pAngle);
+            const gGrad = ctx.createLinearGradient(-12, 0, 11, 0);
+            gGrad.addColorStop(0, 'rgba(232, 121, 249, 0.15)');
+            gGrad.addColorStop(0.55, '#e879f9');
+            gGrad.addColorStop(1, '#fef08a');
+            ctx.fillStyle = gGrad;
+            ctx.beginPath();
+            ctx.moveTo(12, 0);
+            ctx.lineTo(-2, -5.2);
+            ctx.lineTo(-10, 0);
+            ctx.lineTo(-2, 5.2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            ctx.rotate(now * 0.012 - pAngle);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.arc(0, 0, 7.6, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          } else if (p.gemId === 'bryvx') {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.beginPath();
+            ctx.arc(0, 0, 5.8, 0, Math.PI * 2);
+            ctx.fillStyle = '#34d399';
+            ctx.fill();
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 3.8, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.1;
+            ctx.stroke();
+          }
         }
 
-        // 10) 이펙트 & 플로팅 텍스트
+        // 10) 이펙트 & 플로팅 텍스트 (스톤 오브 브릭스 / 신격 / 카오스 공격 이펙트 차별화)
         for (const fx of state.effects) {
           const alpha = Math.max(0, fx.life / fx.maxLife);
-          if (fx.type === 'flame') {
+          const prog = 1 - alpha;
+          if (fx.type === 'chaos_rift') {
+            const rCurr = fx.radius * (0.35 + prog * 0.72);
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, alpha * 1.15);
+            const rGrad = ctx.createRadialGradient(fx.x, fx.y, rCurr * 0.08, fx.x, fx.y, rCurr);
+            rGrad.addColorStop(0, 'rgba(255, 255, 255, 0.92)');
+            rGrad.addColorStop(0.35, 'rgba(244, 63, 94, 0.52)');
+            rGrad.addColorStop(0.75, 'rgba(88, 28, 135, 0.36)');
+            rGrad.addColorStop(1, 'rgba(9, 13, 22, 0)');
+            ctx.fillStyle = rGrad;
+            ctx.beginPath();
+            ctx.arc(fx.x, fx.y, rCurr, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.translate(fx.x, fx.y);
+            ctx.rotate(prog * Math.PI * 2.2);
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 2.8;
+            ctx.setLineDash([10, 6]);
+            ctx.beginPath();
+            ctx.arc(0, 0, rCurr * 0.88, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.rotate(-prog * Math.PI * 3.5);
+            for (let k = 0; k < 6; k++) {
+              const a = (Math.PI / 3) * k;
+              ctx.strokeStyle = k % 2 === 0 ? '#ffffff' : '#38bdf8';
+              ctx.lineWidth = 2.0;
+              ctx.beginPath();
+              ctx.moveTo(Math.cos(a) * rCurr * 0.2, Math.sin(a) * rCurr * 0.2);
+              ctx.lineTo(Math.cos(a) * rCurr * 1.04, Math.sin(a) * rCurr * 1.04);
+              ctx.stroke();
+            }
+            ctx.restore();
+          } else if (fx.type === 'chaos_burst') {
+            const rCurr = fx.radius * (0.3 + prog * 0.75);
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, alpha * 1.1);
+            ctx.translate(fx.x, fx.y);
+            ctx.rotate(-prog * Math.PI * 1.8);
+            const segs = 8;
+            const arcStep = (Math.PI * 2) / segs;
+            for (let sIdx = 0; sIdx < segs; sIdx++) {
+              const sA = sIdx * arcStep;
+              ctx.strokeStyle = sIdx % 2 === 0 ? '#f43f5e' : '#c084fc';
+              ctx.lineWidth = 3.0;
+              ctx.beginPath();
+              ctx.arc(0, 0, rCurr, sA, sA + arcStep * 0.72);
+              ctx.stroke();
+            }
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.32})`;
+            ctx.beginPath();
+            ctx.arc(0, 0, rCurr * 0.55, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          } else if (fx.type === 'chaos_spark') {
+            const rCurr = fx.radius * (0.4 + prog * 0.75);
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.translate(fx.x, fx.y);
+            ctx.rotate(prog * Math.PI * 1.5);
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            ctx.moveTo(-rCurr, 0); ctx.lineTo(rCurr, 0);
+            ctx.moveTo(0, -rCurr); ctx.lineTo(0, rCurr);
+            ctx.stroke();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.arc(0, 0, rCurr * 0.65, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          } else if (fx.type === 'divinity_judgment') {
+            const rCurr = fx.radius * (0.3 + prog * 0.75);
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, alpha * 1.15);
+            const dGrad = ctx.createRadialGradient(fx.x, fx.y, 2, fx.x, fx.y, rCurr);
+            dGrad.addColorStop(0, 'rgba(255, 255, 255, 0.92)');
+            dGrad.addColorStop(0.45, 'rgba(232, 121, 249, 0.45)');
+            dGrad.addColorStop(0.8, 'rgba(253, 224, 71, 0.22)');
+            dGrad.addColorStop(1, 'rgba(232, 121, 249, 0)');
+            ctx.fillStyle = dGrad;
+            ctx.beginPath();
+            ctx.arc(fx.x, fx.y, rCurr, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.translate(fx.x, fx.y);
+            ctx.rotate(prog * Math.PI * 1.2);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.4;
+            ctx.beginPath();
+            ctx.arc(0, 0, rCurr, 0, Math.PI * 2);
+            ctx.stroke();
+
+            for (let k = 0; k < 8; k++) {
+              const a = (Math.PI / 4) * k;
+              ctx.strokeStyle = k % 2 === 0 ? '#fde047' : '#e879f9';
+              ctx.lineWidth = 1.8;
+              ctx.beginPath();
+              ctx.moveTo(Math.cos(a) * rCurr * 0.22, Math.sin(a) * rCurr * 0.22);
+              ctx.lineTo(Math.cos(a) * rCurr * 1.08, Math.sin(a) * rCurr * 1.08);
+              ctx.stroke();
+            }
+            ctx.restore();
+          } else if (fx.type === 'divinity_burst') {
+            const rCurr = fx.radius * (0.28 + prog * 0.75);
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, alpha * 1.1);
+            ctx.translate(fx.x, fx.y);
+            ctx.strokeStyle = '#e879f9';
+            ctx.lineWidth = 2.8;
+            ctx.beginPath();
+            ctx.arc(0, 0, rCurr, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.rotate(prog * Math.PI);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 1.6;
+            drawGemShape(ctx, 'star4', 0, 0, rCurr * 0.72);
+            ctx.stroke();
+            ctx.restore();
+          } else if (fx.type === 'divinity_spark') {
+            const rCurr = fx.radius * (0.35 + prog * 0.7);
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.translate(fx.x, fx.y);
+            ctx.rotate(prog * Math.PI * 0.9);
+            drawGemShape(ctx, 'star4', 0, 0, rCurr);
+            ctx.strokeStyle = '#fde047';
+            ctx.lineWidth = 2.0;
+            ctx.stroke();
+            ctx.restore();
+          } else if (fx.type === 'flame') {
             ctx.beginPath();
             ctx.arc(fx.x, fx.y, fx.radius * (1 - alpha * 0.2), 0, Math.PI * 2);
             ctx.fillStyle = `rgba(249, 115, 22, ${alpha * 0.35})`;
