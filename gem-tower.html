@@ -879,8 +879,8 @@
         </div>
 
         <div>
-          <div class="text-[11px] font-extrabold text-teal-800 mb-1.5">3️⃣ 기본 슬레이트 선택 (6종)</div>
-          <div id="rcSlateGrid" class="grid grid-cols-3 gap-1.5"></div>
+          <div class="text-[11px] font-extrabold text-teal-800 mb-1.5">3️⃣ 기본 슬레이트 선택 (12종)</div>
+          <div id="rcSlateGrid" class="grid grid-cols-4 gap-1.5"></div>
         </div>
 
         <div id="rcPreviewBox" class="rounded-xl bg-white border border-indigo-200 p-2.5 flex items-center gap-2.5">
@@ -7782,7 +7782,7 @@
       const rcSelectedName = document.getElementById('rcSelectedName');
       const rcSelectedDesc = document.getElementById('rcSelectedDesc');
       const rcTargetInfo = document.getElementById('rcTargetInfo');
-      const ROCK_CHEAT_BASIC_SLATES = ['air_slate', 'hold_slate', 'slow_slate', 'opal_vein_slate', 'spell_slate', 'poison_slate'];
+      const ROCK_CHEAT_BASIC_SLATES = SLATE_KEYS.slice();
 
       function openRockCheatModal(targetRock) {
         if (!rockCheatModal || !targetRock || !state.rocks.includes(targetRock)) return;
@@ -9250,7 +9250,9 @@
               inspectorStats.textContent = `공 ${stats.effDmg} · 사 ${stats.range} · 공속 ${stats.atkPerSec.toFixed(2)}/s`;
               inspectorStats.classList.remove('hidden');
               inspectorSub.textContent = '유지하지 않으면 다른 임시 보석들과 함께 바위(Rock)로 변합니다.';
-              btnInspectorRecipe.classList.remove('hidden');
+              if (!isHiddenEntity(cell)) {
+                btnInspectorRecipe.classList.remove('hidden');
+              }
               dynamicActionsWrap.classList.remove('hidden');
               addActionBtn('🪨 이 슬레이트 유지', 'bg-gradient-to-b from-teal-500 to-emerald-600 text-white', () => finalizeSelection('keep'));
               return;
@@ -9310,7 +9312,9 @@
               : 'h-full rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 transition-all duration-200';
             inspectorGrowthWrap.classList.remove('hidden');
 
-            btnInspectorRecipe.classList.remove('hidden');
+            if (!isHiddenEntity(cell)) {
+              btnInspectorRecipe.classList.remove('hidden');
+            }
 
             // 슬레이트 이동 / 조합 액션 버튼 (합성/생성 후 1회 이동 제한)
             const comboOpts = getComboSlateOptionsForSlate(cell);
@@ -9500,7 +9504,7 @@
               inspectorGrowthWrap.classList.remove('hidden');
             }
 
-            if (cell.gemId !== 'bryvx') {
+            if (cell.gemId !== 'bryvx' && !isHiddenEntity(cell)) {
               btnInspectorRecipe.classList.remove('hidden');
             }
 
@@ -9940,18 +9944,54 @@
         helpModal.classList.remove('flex');
       }
 
+      function isHiddenEntity(cell) {
+        if (!cell) return false;
+        if (cell.type === 'gem') {
+          return cell.gemId === 'bryvx';
+        }
+        if (cell.type === 'special') {
+          const def = SPECIALS_DB[cell.specialId];
+          return !!(def && (def.isHidden || def.isChaos || def.isDivinity || def.isPrism || def.excludeFromCodex));
+        }
+        if (cell.type === 'slate') {
+          const def = getSlateDef(cell.slateId);
+          return !!(def && (def.isHidden || def.isMix || def.isTrinityDoom || def.isLuminous || def.excludeFromCodex));
+        }
+        return false;
+      }
+
+      function isHiddenRecipeDef(def) {
+        if (!def) return false;
+        return !!(
+          def.isHidden ||
+          def.isGreatCombo ||
+          def.isPrism ||
+          def.isTranscendentPrism ||
+          def.isDivinity ||
+          def.isChaos ||
+          def.isMix ||
+          def.isTrinityDoom ||
+          def.isLuminous ||
+          def.excludeFromCodex
+        );
+      }
+
       function getRecipesForEntity(cell) {
-        if (!cell) return { specials: [], slates: [], combos: [] };
+        if (!cell || isHiddenEntity(cell)) return { specials: [], slates: [], combos: [] };
         if (cell.type === 'gem' && cell.gemId !== 'bryvx') {
           const specials = SPECIAL_KEYS
             .map((k) => SPECIALS_DB[k])
-            .filter((def) => def.recipe.some((r) => r.gemId === cell.gemId && r.grade === cell.grade));
+            .filter((def) =>
+              !isHiddenRecipeDef(def) &&
+              def.recipe.some((r) => r.gemId === cell.gemId && r.grade === cell.grade)
+            );
 
           const slates = SLATE_KEYS
             .map((k) => SLATES_DB[k])
             .filter((def) =>
-              (def.main.gemId === cell.gemId && def.main.grade === cell.grade) ||
-              (cell.grade === def.subGrade && def.subs.includes(cell.gemId))
+              !isHiddenRecipeDef(def) &&
+              ((def.main.gemId === cell.gemId && def.main.grade === cell.grade) ||
+               (cell.grade === def.subGrade && def.subs.includes(cell.gemId)))
             );
 
           return { specials, slates, combos: [] };
@@ -9960,7 +10000,10 @@
         if (cell.type === 'slate') {
           const combos = COMBINED_SLATE_KEYS
             .map((k) => COMBINED_SLATES_DB[k])
-            .filter((def) => def.recipe.includes(cell.slateId));
+            .filter((def) =>
+              !isHiddenRecipeDef(def) &&
+              def.recipe.includes(cell.slateId)
+            );
           return { specials: [], slates: [], combos };
         }
 
@@ -9969,7 +10012,7 @@
 
       function openTowerRecipeModal() {
         const cell = state.selectedEntity;
-        if (!cell) return;
+        if (!cell || isHiddenEntity(cell)) return;
         closeQualityPopover();
         closeHeartPopover();
         closeCowardPopover();
