@@ -2367,20 +2367,35 @@
         if (!gem || gem.type !== 'gem' || gem.gemId === 'bryvx') return [];
         const results = [];
         const permBasicGems = state.keptGems.filter((g) => g.type === 'gem' && g.gemId !== 'bryvx');
+        const allBasicGems = [...permBasicGems, ...state.tempGems.filter((g) => g && g.type === 'gem' && g.gemId !== 'bryvx')];
 
         for (const key of SPECIAL_KEYS) {
           const def = SPECIALS_DB[key];
           if (def.specialRecipe) continue;
           if (gem.temp && state.phase === 'SELECT') {
-            // 5개 선택 단계에서는 이번 라운드에 뽑은 tempGems 내부 조합(원힛)만 허용
             const oneHit = matchRecipeWithAnchor(def, gem, state.tempGems);
             if (oneHit) {
               results.push({ ...oneHit, isOneHit: true });
+              continue;
             }
-          } else if (!gem.temp && state.phase !== 'SELECT') {
-            // 확정 유지된 기존 필드 보석들끼리만 조합 가능
+            if (def.isGreatCombo) {
+              const mixedPool = matchRecipeWithAnchor(def, gem, allBasicGems);
+              if (mixedPool) {
+                results.push({ ...mixedPool, isOneHit: false });
+              }
+            }
+          } else if (!gem.temp) {
             const fieldOnly = matchRecipeWithAnchor(def, gem, permBasicGems);
-            if (fieldOnly) results.push({ ...fieldOnly, isOneHit: false });
+            if (fieldOnly) {
+              results.push({ ...fieldOnly, isOneHit: false });
+              continue;
+            }
+            if (def.isGreatCombo && state.phase === 'SELECT') {
+              const mixedPool = matchRecipeWithAnchor(def, gem, allBasicGems);
+              if (mixedPool) {
+                results.push({ ...mixedPool, isOneHit: false });
+              }
+            }
           }
         }
         return results;
