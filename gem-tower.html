@@ -617,7 +617,6 @@
         <button data-tab="craftable" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">조합가능</button>
         <button data-tab="all" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">스페셜(28)</button>
         <button data-tab="slates" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">🪨 슬레이트(22)</button>
-        <button data-tab="owned" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">보유 중</button>
         <button data-tab="early" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">초반</button>
         <button data-tab="mid" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">중반</button>
         <button data-tab="late" type="button" class="codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition">후반</button>
@@ -8454,89 +8453,8 @@
           renderMonster(m);
         }
 
-        // 8.5) 신격(디 엔드 오브 브릭스) 반경 3칸 내부 회색조 흑백화 (디 엔드 오브 브릭스 본체는 제외)
-        // 테두리 안쪽 부분은 회색조 흑백화, 테두리 바깥은 기본색 유지; 걸친 타워·적도 안쪽만 흑백화
         const divinityTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_end_of_bryvx');
-        if (divinityTowers.length > 0) {
-          const r3Px = 3 * T;
-          for (const dtower of divinityTowers) {
-            const dcx = (dtower.sx + 1) * S;
-            const dcy = (dtower.sy + 1) * S;
-            const dLeft = dtower.sx * S;
-            const dTop = dtower.sy * S;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(dcx, dcy, r3Px, 0, Math.PI * 2);
-            ctx.rect(dLeft + T, dTop, -T, T);
-            ctx.clip('evenodd');
-
-            ctx.fillStyle = 'rgba(120, 128, 138, 0.36)';
-            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
-
-            ctx.globalCompositeOperation = 'saturation';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
-            ctx.restore();
-          }
-        }
-
-        // 8.6) 카오스(더 카오스 오브 브릭스) 반경 4칸 내부 CRT 스캔라인·RGB 서브픽셀·비네트 그래픽 (카오스 본체는 제외)
         const chaosTowers = state.keptGems.filter((g) => g.type === 'special' && g.specialId === 'the_chaos_of_bryvx');
-        if (chaosTowers.length > 0) {
-          const r4Px = 4 * T;
-          const chaosWave = 0.5 + 0.5 * Math.sin(now * 0.0036);
-          const scanRollY = ((now * 0.045) % 8);
-          for (const ctower of chaosTowers) {
-            const ccx = (ctower.sx + 1) * S;
-            const ccy = (ctower.sy + 1) * S;
-            const cLeft = ctower.sx * S;
-            const cTop = ctower.sy * S;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(ccx, ccy, r4Px, 0, Math.PI * 2);
-            // 더 카오스 오브 브릭스 본체는 CRT 그래픽에서 제외
-            ctx.rect(cLeft + T, cTop, -T, T);
-            ctx.clip('evenodd');
-
-            // 1) CRT 수평 스캔라인(주사선) 스트라이프 + 롤링 주사 밴드
-            const yStart = Math.floor((ccy - r4Px - 4) / 4) * 4;
-            const yEnd = Math.ceil((ccy + r4Px + 4) / 4) * 4;
-            ctx.fillStyle = 'rgba(9, 13, 22, 0.16)';
-            for (let syLine = yStart; syLine <= yEnd; syLine += 4) {
-              ctx.fillRect(ccx - r4Px - 4, syLine + (scanRollY % 2), r4Px * 2 + 8, 1.35);
-            }
-
-            // 2) 브라운관 RGB 포스퍼 수직 스트라이프 패턴
-            const xStart = Math.floor((ccx - r4Px - 4) / 6) * 6;
-            const xEnd = Math.ceil((ccx + r4Px + 4) / 6) * 6;
-            const rgbStripeAlpha = 0.045 + chaosWave * 0.035;
-            for (let sxCol = xStart; sxCol <= xEnd; sxCol += 6) {
-              ctx.fillStyle = `rgba(244, 63, 94, ${rgbStripeAlpha})`;
-              ctx.fillRect(sxCol, ccy - r4Px - 4, 2, r4Px * 2 + 8);
-              ctx.fillStyle = `rgba(74, 222, 128, ${rgbStripeAlpha * 0.72})`;
-              ctx.fillRect(sxCol + 2, ccy - r4Px - 4, 2, r4Px * 2 + 8);
-              ctx.fillStyle = `rgba(56, 189, 248, ${rgbStripeAlpha * 0.72})`;
-              ctx.fillRect(sxCol + 4, ccy - r4Px - 4, 2, r4Px * 2 + 8);
-            }
-
-            // 3) CRT 화면 곡률 비네트 & 붉은빛/어둠 잔광
-            const crtGrad = ctx.createRadialGradient(ccx, ccy, r4Px * 0.25, ccx, ccy, r4Px);
-            crtGrad.addColorStop(0, `rgba(255, 255, 255, ${0.05 + chaosWave * 0.05})`);
-            crtGrad.addColorStop(0.68, `rgba(225, 29, 72, ${0.06 + (1 - chaosWave) * 0.05})`);
-            crtGrad.addColorStop(1, 'rgba(9, 13, 22, 0.28)');
-            ctx.fillStyle = crtGrad;
-            ctx.fillRect(ccx - r4Px - 4, ccy - r4Px - 4, r4Px * 2 + 8, r4Px * 2 + 8);
-
-            // 4) 수평 리트레이스(귀선) 글로우 라인
-            const retraceY = ccy - r4Px + ((now * 0.09) % (r4Px * 2));
-            ctx.fillStyle = 'rgba(255, 228, 230, 0.16)';
-            ctx.fillRect(ccx - r4Px - 4, retraceY, r4Px * 2 + 8, 2.2);
-
-            ctx.restore();
-          }
-        }
 
         // 9) 투사체 (스톤 오브 브릭스 / 신격 / 카오스 각 컨셉 및 상위 등급 차별화)
         for (const p of state.projectiles) {
@@ -8771,6 +8689,86 @@
             ctx.lineWidth = 2.2;
             ctx.stroke();
             ctx.globalAlpha = 1;
+          }
+        }
+
+        // 10.5) 신격(디 엔드 오브 브릭스) 반경 3칸 내부 회색조 흑백화 (투사체·공격 이펙트까지 경계 안쪽만 흑백화, 본체는 제외)
+        if (divinityTowers.length > 0) {
+          const r3Px = 3 * T;
+          for (const dtower of divinityTowers) {
+            const dcx = (dtower.sx + 1) * S;
+            const dcy = (dtower.sy + 1) * S;
+            const dLeft = dtower.sx * S;
+            const dTop = dtower.sy * S;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(dcx, dcy, r3Px, 0, Math.PI * 2);
+            ctx.rect(dLeft + T, dTop, -T, T);
+            ctx.clip('evenodd');
+
+            ctx.fillStyle = 'rgba(120, 128, 138, 0.36)';
+            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
+
+            ctx.globalCompositeOperation = 'saturation';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(dcx - r3Px - 4, dcy - r3Px - 4, r3Px * 2 + 8, r3Px * 2 + 8);
+            ctx.restore();
+          }
+        }
+
+        // 10.6) 카오스(더 카오스 오브 브릭스) 반경 4칸 내부 CRT 스캔라인·RGB 서브픽셀·비네트 그래픽 (투사체·공격 이펙트까지 경계 안쪽만 적용, 본체는 제외)
+        if (chaosTowers.length > 0) {
+          const r4Px = 4 * T;
+          const chaosWave = 0.5 + 0.5 * Math.sin(now * 0.0036);
+          const scanRollY = ((now * 0.045) % 8);
+          for (const ctower of chaosTowers) {
+            const ccx = (ctower.sx + 1) * S;
+            const ccy = (ctower.sy + 1) * S;
+            const cLeft = ctower.sx * S;
+            const cTop = ctower.sy * S;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, r4Px, 0, Math.PI * 2);
+            ctx.rect(cLeft + T, cTop, -T, T);
+            ctx.clip('evenodd');
+
+            // 1) CRT 수평 스캔라인(주사선) 스트라이프 + 롤링 주사 밴드
+            const yStart = Math.floor((ccy - r4Px - 4) / 4) * 4;
+            const yEnd = Math.ceil((ccy + r4Px + 4) / 4) * 4;
+            ctx.fillStyle = 'rgba(9, 13, 22, 0.16)';
+            for (let syLine = yStart; syLine <= yEnd; syLine += 4) {
+              ctx.fillRect(ccx - r4Px - 4, syLine + (scanRollY % 2), r4Px * 2 + 8, 1.35);
+            }
+
+            // 2) 브라운관 RGB 포스퍼 수직 스트라이프 패턴
+            const xStart = Math.floor((ccx - r4Px - 4) / 6) * 6;
+            const xEnd = Math.ceil((ccx + r4Px + 4) / 6) * 6;
+            const rgbStripeAlpha = 0.045 + chaosWave * 0.035;
+            for (let sxCol = xStart; sxCol <= xEnd; sxCol += 6) {
+              ctx.fillStyle = `rgba(244, 63, 94, ${rgbStripeAlpha})`;
+              ctx.fillRect(sxCol, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+              ctx.fillStyle = `rgba(74, 222, 128, ${rgbStripeAlpha * 0.72})`;
+              ctx.fillRect(sxCol + 2, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+              ctx.fillStyle = `rgba(56, 189, 248, ${rgbStripeAlpha * 0.72})`;
+              ctx.fillRect(sxCol + 4, ccy - r4Px - 4, 2, r4Px * 2 + 8);
+            }
+
+            // 3) CRT 화면 곡률 비네트 & 붉은빛/어둠 잔광
+            const crtGrad = ctx.createRadialGradient(ccx, ccy, r4Px * 0.25, ccx, ccy, r4Px);
+            crtGrad.addColorStop(0, `rgba(255, 255, 255, ${0.05 + chaosWave * 0.05})`);
+            crtGrad.addColorStop(0.68, `rgba(225, 29, 72, ${0.06 + (1 - chaosWave) * 0.05})`);
+            crtGrad.addColorStop(1, 'rgba(9, 13, 22, 0.28)');
+            ctx.fillStyle = crtGrad;
+            ctx.fillRect(ccx - r4Px - 4, ccy - r4Px - 4, r4Px * 2 + 8, r4Px * 2 + 8);
+
+            // 4) 수평 리트레이스(귀선) 글로우 라인
+            const retraceY = ccy - r4Px + ((now * 0.09) % (r4Px * 2));
+            ctx.fillStyle = 'rgba(255, 228, 230, 0.16)';
+            ctx.fillRect(ccx - r4Px - 4, retraceY, r4Px * 2 + 8, 2.2);
+
+            ctx.restore();
           }
         }
 
@@ -10600,21 +10598,17 @@
         if (craftCount === 0 && state.codexFilter === 'craftable') {
           state.codexFilter = 'all';
         }
-        const ownedCount = state.keptGems.length + state.slates.length;
-
         const tabButtons = codexTabs.querySelectorAll('.codex-tab');
         tabButtons.forEach((btn) => {
           const t = btn.dataset.tab;
           if (t === 'craftable') {
             btn.classList.toggle('hidden', craftCount === 0);
             btn.textContent = `조합가능 (${craftCount})`;
-          } else if (t === 'owned') {
-            btn.textContent = `보유 중 (${ownedCount})`;
           }
           const active = t === state.codexFilter;
           const activeStyle = t === 'slates'
             ? 'bg-teal-600 text-white shadow'
-            : (t === 'owned' ? 'bg-emerald-600 text-white shadow' : 'bg-violet-600 text-white shadow');
+            : 'bg-violet-600 text-white shadow';
           btn.className = `codex-tab shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-extrabold transition ${
             btn.dataset.tab === 'craftable' && craftCount === 0 ? 'hidden ' : ''
           }${
@@ -10627,13 +10621,6 @@
         // === 슬레이트 전용 탭 렌더링 ===
         if (state.codexFilter === 'slates') {
           renderCodexSlatesList(false);
-          renderCodexArtworkCanvases();
-          return;
-        }
-
-        // === 보유 중 탭 렌더링 ===
-        if (state.codexFilter === 'owned') {
-          renderOwnedCodexList();
           renderCodexArtworkCanvases();
           return;
         }
@@ -10772,9 +10759,18 @@
             continue;
           }
 
+          const ownedSpecialMatches = state.keptGems.filter((g) => g.type === 'special' && g.specialId === key);
+          const isOwnedSpecial = ownedSpecialMatches.length > 0;
+          const topOwnedSpecial = isOwnedSpecial ? ownedSpecialMatches[ownedSpecialMatches.length - 1] : null;
+          const ownedSpecialBadgeHtml = isOwnedSpecial
+            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400 shadow-2xs">✓ 보유 중${ownedSpecialMatches.length > 1 ? ` ×${ownedSpecialMatches.length}` : ` (${'★'.repeat((topOwnedSpecial.tier || 0) + 1)})`}</span>`
+            : '';
+
           const card = document.createElement('div');
           card.className = `rounded-xl p-3 border ${
-            craftInfo ? 'bg-amber-50/80 border-amber-400 shadow-md' : 'bg-white border-slate-200 shadow-sm'
+            craftInfo
+              ? 'bg-amber-50/80 border-amber-400 shadow-md'
+              : (isOwnedSpecial ? 'bg-emerald-50/45 border-emerald-400/90 shadow-sm ring-1 ring-emerald-300/60' : 'bg-white border-slate-200 shadow-sm')
           }`;
 
           card.innerHTML = `
@@ -10784,6 +10780,7 @@
                   <span class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-400" style="background:${def.color}"></span>
                   <span class="text-sm font-extrabold text-slate-900 truncate">${def.name}</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">${catLabelMap[def.category]}</span>
+                  ${ownedSpecialBadgeHtml}
                   ${craftInfo ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold ${craftInfo.isOneHit ? 'bg-amber-400 text-slate-950' : 'bg-violet-600 text-white'}">${craftInfo.isOneHit ? '🔥 원힛!' : '✨ 조합 가능!'}</span>` : ''}
                 </div>
                 <div class="flex flex-wrap gap-1">${ingHtml}</div>
@@ -10987,9 +10984,17 @@
             const hasA = state.slates.some((s) => s.slateId === reqA);
             const hasB = state.slates.some((s) => s.slateId === reqB);
 
+            const ownedComboCount = state.slates.filter((s) => s.slateId === key).length;
+            const isOwnedCombo = ownedComboCount > 0;
+            const ownedComboBadge = isOwnedCombo
+              ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400">✓ 보유 중${ownedComboCount > 1 ? ` ×${ownedComboCount}` : ''}</span>`
+              : '';
+
             const card = document.createElement('div');
             card.className = `rounded-xl p-3 border ${
-              craftInfo ? 'bg-amber-50/90 border-amber-400 shadow-md' : 'bg-white border-amber-200 shadow-sm'
+              craftInfo
+                ? 'bg-amber-50/90 border-amber-400 shadow-md'
+                : (isOwnedCombo ? 'bg-emerald-50/45 border-emerald-400/90 shadow-sm ring-1 ring-emerald-300/60' : 'bg-white border-amber-200 shadow-sm')
             }`;
 
             card.innerHTML = `
@@ -11000,6 +11005,7 @@
                     <span class="text-sm font-extrabold text-slate-900">${def.name}</span>
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">조합 슬레이트</span>
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}">${tLabel.text}</span>
+                    ${ownedComboBadge}
                     ${craftInfo ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">🌟 승격 가능!</span>' : ''}
                   </div>
                   <div class="flex flex-wrap items-center gap-1.5">
@@ -11066,9 +11072,17 @@
           const mainSpec = GEMS_DB[def.main.gemId];
           const subNames = def.subs.map((id) => GEMS_DB[id].name).join(' / ');
 
+          const ownedBasicCount = state.slates.filter((s) => s.slateId === key).length;
+          const isOwnedBasic = ownedBasicCount > 0;
+          const ownedBasicBadge = isOwnedBasic
+            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400">✓ 보유 중${ownedBasicCount > 1 ? ` ×${ownedBasicCount}` : ''}</span>`
+            : '';
+
           const card = document.createElement('div');
           card.className = `rounded-xl p-3 border ${
-            craftInfo ? 'bg-teal-50/90 border-teal-400 shadow-md' : 'bg-white border-slate-200 shadow-sm'
+            craftInfo
+              ? 'bg-teal-50/90 border-teal-400 shadow-md'
+              : (isOwnedBasic ? 'bg-emerald-50/45 border-emerald-400/90 shadow-sm ring-1 ring-emerald-300/60' : 'bg-white border-slate-200 shadow-sm')
           }`;
 
           card.innerHTML = `
@@ -11079,6 +11093,7 @@
                   <span class="text-sm font-extrabold text-slate-900">${def.name}</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-800 border border-teal-300">바닥 통과</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${tLabel.cls}">${tLabel.text}</span>
+                  ${ownedBasicBadge}
                   ${craftInfo ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-teal-500 text-white">🪨 원힛 가능!</span>' : ''}
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
@@ -11145,6 +11160,7 @@
                     <span class="w-5 h-5 rounded flex items-center justify-center text-xs font-extrabold border" style="background:${mDef.slabColor};border-color:${mDef.borderColor};color:${mDef.runeColor}">${mDef.rune}</span>
                     <span class="text-sm font-extrabold text-slate-900 truncate">${mDef.name}</span>
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-fuchsia-600 via-amber-500 to-sky-600 text-white shadow-sm">✦ 믹스</span>
+                    ${state.slates.some((s) => s.slateId === mKey) ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400">✓ 보유 중</span>' : ''}
                     ${mCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950">✦ 조합 가능!</span>' : ''}
                   </div>
                   <div class="text-[11px] font-bold text-slate-800">🔒 재료: 비공개 (???)</div>
@@ -11190,6 +11206,7 @@
                   <span class="w-5 h-5 rounded flex items-center justify-center text-xs font-extrabold border border-sky-300 text-slate-900" style="background:linear-gradient(135deg,#ffe4e6 0%,#ffffff 50%,#e0f2fe 100%)">${tDef.rune}</span>
                   <span class="text-sm font-extrabold text-slate-900 truncate">${tDef.name}</span>
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-rose-500 via-emerald-500 to-sky-500 text-white shadow-sm border border-white">✺ 루미너스</span>
+                  ${state.slates.some((s) => s.slateId === tKey) ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400">✓ 보유 중</span>' : ''}
                   ${tCraft ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-300 text-slate-950 border border-amber-400">✺ 조합 가능!</span>' : ''}
                 </div>
                 <div class="text-[11px] font-bold text-slate-800">🔒 재료: 비공개 (???)</div>
