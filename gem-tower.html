@@ -4663,7 +4663,8 @@
           speedBonusTotal: 0,
         };
 
-        const wasTempSelect = (anchor.temp && state.phase === 'SELECT');
+        const usedAnyTemp = ingredients.some((ing) => ing && ing.temp);
+        const shouldFinalizeTempPhase = (state.phase === 'SELECT' && usedAnyTemp);
 
         for (const ing of ingredients) {
           if (ing === anchor) continue;
@@ -4678,10 +4679,18 @@
               setEntityOccupancy(rock, true);
               state.rocks.push(rock);
             }
+          } else if (!shouldFinalizeTempPhase) {
+            const tIdx = state.tempGems.indexOf(ing);
+            if (tIdx !== -1) {
+              state.tempGems.splice(tIdx, 1);
+              const rock = { type: 'rock', sx: ing.sx, sy: ing.sy };
+              setEntityOccupancy(rock, true);
+              state.rocks.push(rock);
+            }
           }
         }
 
-        if (wasTempSelect) {
+        if (shouldFinalizeTempPhase) {
           for (const tg of state.tempGems) {
             if (tg === anchor) continue;
             const rock = { type: 'rock', sx: tg.sx, sy: tg.sy };
@@ -4689,6 +4698,13 @@
             state.rocks.push(rock);
           }
           state.tempGems = [];
+        }
+
+        if (anchor.temp) {
+          if (!shouldFinalizeTempPhase) {
+            const aTempIdx = state.tempGems.indexOf(anchor);
+            if (aTempIdx !== -1) state.tempGems.splice(aTempIdx, 1);
+          }
           setEntityOccupancy(specialTower, true);
           state.keptGems.push(specialTower);
         } else {
@@ -4722,7 +4738,7 @@
           : `✨ 스페셜 조합 완료! [${def.name}] 완성!`
         );
 
-        if (wasTempSelect) startWave();
+        if (shouldFinalizeTempPhase) startWave();
         else updateAllUI();
         saveGame(false);
       }
