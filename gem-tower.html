@@ -1413,6 +1413,7 @@
               slowPct: 0.80,
               slowDuration: 6.5,
               rootDuration: 2.5,
+              rootCooldown: 5.5,
               poisonDps: 2600,
               poisonDuration: 7.5,
               burnDps: 2400,
@@ -1432,7 +1433,7 @@
               dmgAuraBonus: 1.50,
               pearlAuraRange: 13.0,
               pearlSpeedAura: 1.50,
-              desc: '카오스 등급 · 빛과 어둠의 최종 수렴 · 사거리 16.0칸 · 0.15s 16타겟 폭격 · 4.5칸 광역 · 70% 8.5배 치명타(방어 무시 85%) · 2.5초 속박 & 80% 둔화 · 방깎 -45 · 중독(2600/s)/화상(2400/s) · 52% 카오스 폭발(5600) · 5% 골드(+20~35G) · 반경 13칸 아군 공 +150% & 공속 +150% 오라'
+              desc: '카오스 등급 · 빛과 어둠의 최종 수렴 · 사거리 16.0칸 · 0.15s 16타겟 폭격 · 4.5칸 광역 · 70% 8.5배 치명타(방어 무시 85%) · 2.5초 속박(쿨 5.5초) & 80% 둔화 · 방깎 -45 · 중독(2600/s)/화상(2400/s) · 52% 카오스 폭발(5600) · 5% 골드(+20~35G) · 반경 13칸 아군 공 +150% & 공속 +150% 오라'
             }
           ]
         }
@@ -1670,10 +1671,11 @@
           damage: 265, range: 10.5, cooldown: 0.92,
           attackAllInRange: true,
           rootDuration: 2.5,
+          rootCooldown: 5.5,
           armorShred: 30, shredDuration: 6.0,
           aggroDuration: 2.5,
           auraRange: 5.5, viperDmgAura: 0.35,
-          desc: '믹스 등급 · 전범위 동시 타격 + 2.5초 속박/어그로 + 방어력 -30 감소 + 반경 7.5칸 아군 공격력 +35% 오라'
+          desc: '믹스 등급 · 전범위 동시 타격 + 2.5초 속박(쿨 5.5초)/어그로 + 방어력 -30 감소 + 반경 7.5칸 아군 공격력 +35% 오라'
         },
         soul_pest_slate: {
           id: 'soul_pest_slate', name: '소울 페스트 슬레이트', rune: '❂',
@@ -1721,6 +1723,7 @@
           damage: 420, range: 11.0, cooldown: 0.38,
           attackAllInRange: true,
           rootDuration: 2.5,
+          rootCooldown: 5.5,
           armorShred: 34, shredDuration: 6.5,
           aggroDuration: 2.5,
           auraRange: 6.0, viperDmgAura: 0.42, wraithSpeedAura: 0.48,
@@ -1735,7 +1738,7 @@
           splashRadius: 3.0,
           burnDps: 175, burnDuration: 5.5, magmaBurstChance: 0.38, magmaBurstDmg: 720, magmaBurstRadius: 3.4,
           codexDesc: '루미너스 등급 · 🔒 비공개 (???)',
-          desc: '루미너스 등급 · 사거리 내 전적 동시 공격(0.38s) · 2.5초 속박/어그로 · 50% 방깎(-34) · 4% 골드(+15~25G) · 반경 6칸 아군 공 +42% & 공속 +48% 오라 · 30% 둔화 오라 · 75% 중독(190/s) · 인시너레이트 연쇄폭발(타격 65/처치 380+12%HP) · 50% 4.2배 치명타 · 3.0칸 용암(화상 175/s · 38% 용암폭발 720)'
+          desc: '루미너스 등급 · 사거리 내 전적 동시 공격(0.38s) · 2.5초 속박(쿨 5.5초)/어그로 · 50% 방깎(-34) · 4% 골드(+15~25G) · 반경 6칸 아군 공 +42% & 공속 +48% 오라 · 30% 둔화 오라 · 75% 중독(190/s) · 인시너레이트 연쇄폭발(타격 65/처치 380+12%HP) · 50% 4.2배 치명타 · 3.0칸 용암(화상 175/s · 38% 용암폭발 720)'
         }
       };
 
@@ -4910,6 +4913,7 @@
           bleedDps: 0,
           bleedSource: null,
           stunTimer: 0,
+          rootImmuneTimer: 0,
           armorShredTimer: 0,
           armorShredAmt: 0,
           aggroTimer: 0,
@@ -5170,6 +5174,9 @@
             }
             m.hp -= blDmg;
             if (m.hp <= 0) { killMonster(m, m.bleedSource || null); state.monsters.splice(i, 1); continue; }
+          }
+          if (m.rootImmuneTimer > 0) {
+            m.rootImmuneTimer = Math.max(0, m.rootImmuneTimer - simDt);
           }
           if (m.isBoss || m.isTester) {
             m.stunTimer = 0;
@@ -5457,11 +5464,17 @@
             }
           }
 
-          // 정지 / 고대 슬레이트: 속박 + (고대의 덫: 방어력 -25 + 어그로 집중) — 보스/테스터는 스턴 무효
+          // 정지 / 고대 / 아스트랄 / 트리니티 둠 슬레이트: 속박(쿨타임 지원) + 방깎/어그로 집중
           if (def.rootDuration && target.alive) {
             const stunImmune = !!(target.isBoss || target.isTester);
-            if (!stunImmune) {
+            const onRootCd = !!(def.rootCooldown && (target.rootImmuneTimer || 0) > 0);
+            let didRoot = false;
+            if (!stunImmune && !onRootCd) {
               target.stunTimer = Math.max(target.stunTimer, def.rootDuration);
+              if (def.rootCooldown) {
+                target.rootImmuneTimer = def.rootDuration + def.rootCooldown;
+              }
+              didRoot = true;
             }
             if (def.aggroDuration) {
               const effShred = def.armorShred;
@@ -5469,8 +5482,11 @@
               target.armorShredAmt = Math.max(target.armorShredAmt, effShred);
               target.armorShredTimer = Math.max(target.armorShredTimer, def.shredDuration);
               state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: 26, color: '#f59e0b', life: 0.4, maxLife: 0.4 });
-              state.floatingTexts.push({ x: target.x, y: target.y - 16, text: stunImmune ? `🎯 스턴무효/방-${effShred}!` : `🎯 속박/방-${effShred}!`, color: '#fbbf24', life: 0.95, maxLife: 0.95 });
-            } else {
+              const rootLabel = stunImmune
+                ? `🎯 스턴무효/방-${effShred}!`
+                : (didRoot ? `🎯 속박/방-${effShred}!` : `🎯 방-${effShred}!`);
+              state.floatingTexts.push({ x: target.x, y: target.y - 16, text: rootLabel, color: '#fbbf24', life: 0.95, maxLife: 0.95 });
+            } else if (didRoot || stunImmune) {
               state.effects.push({ type: 'ring', x: target.x, y: target.y, radius: 18, color: '#fbbf24', life: 0.3, maxLife: 0.3 });
               state.floatingTexts.push({ x: target.x, y: target.y - 14, text: stunImmune ? '스턴 무효' : 'HOLD!', color: stunImmune ? '#cbd5e1' : '#fde047', life: 0.75, maxLife: 0.75 });
             }
@@ -5692,8 +5708,12 @@
         }
         if (tSpec.rootDuration && target.alive) {
           const stunImmune = !!(target.isBoss || target.isTester);
-          if (!stunImmune) {
+          const onRootCd = !!(tSpec.rootCooldown && (target.rootImmuneTimer || 0) > 0);
+          if (!stunImmune && !onRootCd) {
             target.stunTimer = Math.max(target.stunTimer, tSpec.rootDuration);
+            if (tSpec.rootCooldown) {
+              target.rootImmuneTimer = tSpec.rootDuration + tSpec.rootCooldown;
+            }
           }
         }
         if (tSpec.armorShred) {
