@@ -1,307 +1,432 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 제작 웹게임 모음</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>AI 제작 웹게임 모음 — @d_ong93</title>
+<style>
+  :root {
+    --bg-mint: #e3f4e8;
+    --bg-card: #ffffff;
+    --bg-card-disabled: #f4f7f5;
+    --bg-icon: #f7faf8;
+    --border-card: rgba(22, 101, 52, 0.08);
+    --border-disabled: rgba(100, 116, 139, 0.16);
+    --shadow-card: 0 3px 10px rgba(15, 23, 42, 0.05);
+    --text-main: #111827;
+    --text-sub: #6b7280;
+    --text-muted: #9ca3af;
+    --btn-green: #16a34a;
+    --btn-green-hover: #15803d;
+    --btn-disabled: #e2e8f0;
+  }
 
-    html, body {
-      height: 100%;
-    }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background-color: #dcf3e6;
-      color: #0b2419;
-      min-height: 100dvh;
-      padding: 8px 11px 10px;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-    }
+  html, body {
+    min-height: 100dvh;
+    background-color: var(--bg-mint);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    .hub-wrap {
-      width: 100%;
-      max-width: 452px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 7px;
-    }
+  .wrap {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
 
-    .header-card {
-      background-color: #ffffff;
-      border-radius: 15px;
-      padding: 11px 14px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-    }
+  /* Compact Top Header Card so all 5 rows fit on one screen */
+  .header-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 8px 12px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-card);
+    flex-shrink: 0;
+  }
 
-    .hub-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background-color: #eef0f4;
-      color: #374151;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      padding: 2.5px 9px;
-      border-radius: 999px;
-      margin-bottom: 6px;
-    }
+  .hub-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #4b5563;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 1.5px 8px;
+    margin-bottom: 3px;
+  }
 
-    .header-card h1 {
-      font-size: 18px;
-      font-weight: 800;
-      color: #0b261a;
-      letter-spacing: -0.02em;
-      margin-bottom: 2px;
-    }
+  .hub-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #111827;
+    line-height: 1.2;
+  }
 
-    .header-handle {
-      font-size: 11.5px;
-      font-weight: 500;
-      color: #6b7280;
-    }
+  .hub-handle {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-top: 1px;
+  }
 
-    .cards-list {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
+  /* 2 columns x 5 rows = 10 cards with no extra bottom space inside each box */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 7px;
+  }
 
-    .game-card {
-      background-color: #ffffff;
-      border-radius: 15px;
-      padding: 11px 13px;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+  .game-card {
+    background: var(--bg-card);
+    border-radius: 13px;
+    padding: 7px 9px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-self: start;
+    gap: 6px;
+  }
 
-    .game-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
 
-    .game-thumb {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      border: 1px solid rgba(15, 23, 42, 0.08);
-    }
+  .icon-box {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--bg-icon);
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+  }
 
-    .thumb-duel {
-      background-color: #f3f4f6;
-    }
+  .card-meta {
+    min-width: 0;
+    flex: 1;
+  }
 
-    .thumb-takoyaki {
-      background-color: #fff3d6;
-    }
+  /* Show full game title cleanly without ellipsis or awkward character breaks */
+  .game-title {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
 
-    .thumb-parallel {
-      background-color: #f8e8f0;
-    }
+  .genre-badge {
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 8.5px;
+    font-weight: 700;
+    line-height: 1.15;
+    padding: 1.5px 5px;
+    border-radius: 5px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .thumb-star {
-      background-color: #e9ecf8;
-    }
+  .genre-red {
+    color: #dc2626;
+    background: #fee2e2;
+  }
 
-    .thumb-gem {
-      background-color: #e0f4ff;
-    }
+  .genre-amber {
+    color: #d97706;
+    background: #fef3c7;
+  }
 
-    .game-info {
-      flex: 1;
-      min-width: 0;
-    }
+  .genre-purple {
+    color: #7c3aed;
+    background: #ede9fe;
+  }
 
-    .game-heading {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 3px;
-    }
+  .genre-blue {
+    color: #2563eb;
+    background: #dbeafe;
+  }
 
-    .game-title {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #0b261a;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-    }
+  .genre-teal {
+    color: #0d9488;
+    background: #ccfbf1;
+  }
 
-    .genre-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6.5px;
-      border-radius: 5px;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
+  .genre-muted {
+    color: #9ca3af;
+    background: #e5e7eb;
+  }
 
-    .badge-duel {
-      background-color: #fde8e8;
-      color: #c81e1e;
-    }
+  .go-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px 6px;
+    border-radius: 8px;
+    background: var(--btn-green);
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: background 0.12s ease, transform 0.08s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
 
-    .badge-takoyaki {
-      background-color: #fef3c7;
-      color: #b45309;
-    }
+  .go-btn:hover {
+    background: var(--btn-green-hover);
+  }
 
-    .badge-parallel {
-      background-color: #e0e7ff;
-      color: #3730a3;
-    }
+  .go-btn:active {
+    transform: scale(0.98);
+  }
 
-    .badge-star {
-      background-color: #ede9fe;
-      color: #6d28d9;
-    }
+  /* Disabled / Coming soon cards (7~10) */
+  .game-card.is-disabled {
+    background: var(--bg-card-disabled);
+    border-color: var(--border-disabled);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    opacity: 0.62;
+    pointer-events: none;
+    user-select: none;
+  }
 
-    .badge-gem {
-      background-color: #e0f2fe;
-      color: #0369a1;
-    }
+  .game-card.is-disabled .icon-box {
+    background: #e5ebe8;
+    border-color: rgba(100, 116, 139, 0.14);
+    filter: grayscale(1);
+    opacity: 0.7;
+  }
 
-    .game-desc {
-      font-size: 11.8px;
-      line-height: 1.38;
-      color: #4b5563;
-      word-break: keep-all;
-    }
+  .game-card.is-disabled .game-title {
+    color: #9ca3af;
+    font-weight: 700;
+  }
 
-    .play-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 8.5px 12px;
-      border-radius: 10px;
-      background-color: #10a365;
-      color: #ffffff;
-      font-size: 12.8px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: background-color 0.15s ease, transform 0.08s ease;
-    }
-
-    .play-btn:hover {
-      background-color: #0d8c56;
-    }
-
-    .play-btn:active {
-      transform: scale(0.99);
-    }
-
-    .footer-coming-soon {
-      text-align: center;
-      padding: 4px 0 2px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #6b7280;
-      letter-spacing: -0.01em;
-    }
-  </style>
+  .soon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px 6px;
+    border-radius: 8px;
+    background: var(--btn-disabled);
+    color: var(--text-muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+</style>
 </head>
 <body>
-  <div class="hub-wrap">
+  <div class="wrap">
     <header class="header-card">
-      <div class="hub-pill"><span>🎮</span><span>WEB GAME HUB</span></div>
-      <h1>AI 제작 웹게임 모음</h1>
-      <div class="header-handle">@d_ong93</div>
+      <div class="hub-pill">🎮 WEB GAME HUB</div>
+      <h1 class="hub-title">AI 제작 웹게임 모음</h1>
+      <div class="hub-handle">@d_ong93</div>
     </header>
 
-    <main class="cards-list">
+    <section class="game-grid" aria-label="게임 목록">
+      <!-- 1. 먼작귀 듀얼 -->
       <article class="game-card">
-        <div class="game-top">
-          <div class="game-thumb thumb-duel" aria-hidden="true">🎲</div>
-          <div class="game-info">
-            <div class="game-heading">
-              <span class="game-title">먼작귀 듀얼</span>
-              <span class="genre-badge badge-duel">1vs1 전략 대전 보드게임</span>
-            </div>
-            <p class="game-desc">상대와 수 싸움을 벌이며 승부를 가르는 1대1 전략 대전 보드게임입니다.</p>
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🎲</div>
+          <div class="card-meta">
+            <div class="game-title">먼작귀 듀얼</div>
+            <span class="genre-badge genre-red">1vs1 전략 대전 보드게임</span>
           </div>
         </div>
-        <a class="play-btn" href="https://chiikawa-duel-game.j-oo97.chatgpt.site/" target="_blank" rel="noopener noreferrer">먼작귀 듀얼 바로가기 →</a>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/chiikawa-duel/">바로가기-&gt;</a>
       </article>
 
+      <!-- 2. 치이카와 : 마다 사다코 -->
       <article class="game-card">
-        <div class="game-top">
-          <div class="game-thumb thumb-takoyaki" aria-hidden="true">🐙</div>
-          <div class="game-info">
-            <div class="game-heading">
-              <span class="game-title">치이카와 : 마다 사다코</span>
-              <span class="genre-badge badge-takoyaki">타코야키 타이쿤</span>
-            </div>
-            <p class="game-desc">타코야키 가게를 경영하고, 수익으로 카드를 수집하는 타이쿤 게임입니다.</p>
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🐙</div>
+          <div class="card-meta">
+            <div class="game-title">치이카와 : 마다 사다코</div>
+            <span class="genre-badge genre-amber">타코야키 타이쿤</span>
           </div>
         </div>
-        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/takoyaki-counter" target="_blank" rel="noopener noreferrer">치이카와 : 마다 사다코 바로가기 →</a>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/takoyaki-counter/">바로가기-&gt;</a>
       </article>
 
+      <!-- 3. 치이카와 : 잿빛 세상의 패러렐! -->
       <article class="game-card">
-        <div class="game-top">
-          <div class="game-thumb thumb-parallel" aria-hidden="true">🃏</div>
-          <div class="game-info">
-            <div class="game-heading">
-              <span class="game-title">치이카와 : 잿빛 세상의 패러렐!</span>
-              <span class="genre-badge badge-parallel">스와이프 루프 서바이벌</span>
-            </div>
-            <p class="game-desc">카드를 스와이프해 선택을 이어가며 반복되는 루프 속에서 살아남는 서바이벌 게임입니다.</p>
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🃏</div>
+          <div class="card-meta">
+            <div class="game-title">치이카와 : 잿빛 세상의 패러렐!</div>
+            <span class="genre-badge genre-purple">스와이프 루프 서바이벌</span>
           </div>
         </div>
-        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/chiikawa-p" target="_blank" rel="noopener noreferrer">치이카와 : 잿빛 세상의 패러렐! 바로가기 →</a>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/chiikawa-parallel/">바로가기-&gt;</a>
       </article>
 
+      <!-- 4. 스타크래프트 : 랜덤 도박 디펜스 -->
       <article class="game-card">
-        <div class="game-top">
-          <div class="game-thumb thumb-star" aria-hidden="true">🎰</div>
-          <div class="game-info">
-            <div class="game-heading">
-              <span class="game-title">스타크래프트 : 랜덤 도박 디펜스</span>
-              <span class="genre-badge badge-star">랜덤 도박 디펜스</span>
-            </div>
-            <p class="game-desc">무작위 뽑기와 조합의 운빨, 그리고 몰려오는 웨이브를 막아내는 디펜스 게임입니다.</p>
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🎰</div>
+          <div class="card-meta">
+            <div class="game-title">스타크래프트 : 랜덤 도박 디펜스</div>
+            <span class="genre-badge genre-purple">랜덤 도박 디펜스</span>
           </div>
         </div>
-        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/star-lucky" target="_blank" rel="noopener noreferrer">스타크래프트 : 랜덤 도박 디펜스 바로가기 →</a>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/starcraft-defense/">바로가기-&gt;</a>
       </article>
 
+      <!-- 5. 보석 타워 디펜스 -->
       <article class="game-card">
-        <div class="game-top">
-          <div class="game-thumb thumb-gem" aria-hidden="true">💎</div>
-          <div class="game-info">
-            <div class="game-heading">
-              <span class="game-title">보석 타워 디펜스</span>
-              <span class="genre-badge badge-gem">미로 &amp; 조합 타워 디펜스</span>
-            </div>
-            <p class="game-desc">보석을 배치해 길을 만들고, 등급 승급과 스페셜·슬레이트 조합으로 웨이브를 돌파하는 디펜스 게임입니다.</p>
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">💎</div>
+          <div class="card-meta">
+            <div class="game-title">보석 타워 디펜스</div>
+            <span class="genre-badge genre-blue">미로 &amp; 조합 타워 디펜스</span>
           </div>
         </div>
-        <a class="play-btn" href="https://ghkd326777-commits.github.io/d_ong93/gem-tower" target="_blank" rel="noopener noreferrer">보석 타워 디펜스 바로가기 →</a>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/gem-td/">바로가기-&gt;</a>
       </article>
-    </main>
 
-    <footer class="footer-coming-soon">coming soon</footer>
+      <!-- 6. 나니아 연대기 -->
+      <article class="game-card">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">📖</div>
+          <div class="card-meta">
+            <div class="game-title">나니아 연대기</div>
+            <span class="genre-badge genre-teal">인터랙티브 북 어드벤처</span>
+          </div>
+        </div>
+        <a class="go-btn" href="https://ghkd326777-commits.github.io/d_ong93/nania-c">바로가기-&gt;</a>
+      </article>
+
+      <!-- 7. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 8. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 9. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 10. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+      <!-- 11. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 12. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 13. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+
+      <!-- 14. Coming soon -->
+      <article class="game-card is-disabled" aria-disabled="true">
+        <div class="card-head">
+          <div class="icon-box" aria-hidden="true">🔒</div>
+          <div class="card-meta">
+            <div class="game-title">coming soon</div>
+            <span class="genre-badge genre-muted">coming soon</span>
+          </div>
+        </div>
+        <div class="soon-btn">coming soon</div>
+      </article>
+    </section>
   </div>
 </body>
 </html>
