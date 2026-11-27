@@ -6687,7 +6687,7 @@
       }, 580);
     }
 
-    const STORAGE_KEY = "narnia_book_v53_state";
+    const STORAGE_KEY = "narnia_book_v54_state";
 
     const RELICS_META = {
       magic_rings: {
@@ -7343,8 +7343,8 @@
         ],
         choices: [
           { label: "잿빛 안개와 붉은 기운이 감도는 연못", correct: false, failMsg: "멸망한 찬의 잔향만 스칠 뿐 런던으로 이어지지 않는다!" },
-          { label: "익숙한 정원의 풀내음과 맑은 수면이 비치는 연못", correct: true },
           { label: "거품이 부글거리며 끓어오르는 연못", correct: false, failMsg: "불안정한 수면이 흔들리며 방향을 잃었다!" },
+          { label: "익숙한 정원의 풀내음과 맑은 수면이 비치는 연못", correct: true },
           { label: "잎사귀가 하나도 없이 얼어붙은 연못", correct: false, failMsg: "얼어붙은 물길은 다른 세계로 통하지 않는다!" }
         ]
       },
@@ -7360,19 +7360,21 @@
           {
             prompt: "1단계: 정원 담장 아래에서 은빛 사과를 고를 때 가장 먼저 살필 것은?",
             options: [
+              "온전하고 맑은 은빛 광채를 띠는 열매를 조심스레 거둔다",
               "가장 크고 붉게 물든 열매만 골라 서둘러 꺾는다",
-              "온전하고 맑은 은빛 광채를 띠는 열매를 조심스레 거둔다"
+              "담장 너머 소리를 엿들으려 나무 위에서 발을 구른다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "성급한 손길에 나뭇가지가 크게 흔들렸다!"
           },
           {
             prompt: "2단계: 사과의 향기가 퍼지며 달콤한 유혹의 목소리가 귀를 스친다.",
             options: [
               "유혹의 말에 귀를 기울이며 그 자리에 멈춰 선다",
+              "사과를 한 입 베어 물며 향기의 진위를 시험한다",
               "아슬란의 명을 되새기며 정원의 출구 쪽으로 발걸음을 옮긴다"
             ],
-            correct: 1,
+            correct: 2,
             failMsg: "달콤한 유혹의 기운에 발걸음이 무거워졌다!"
           }
         ]
@@ -7390,18 +7392,20 @@
             prompt: "1단계: 마녀가 질문을 던지기 전, 에드먼드가 취해야 할 태도는?",
             options: [
               "거친 숨을 몰아쉬며 썰매 앞으로 불쑥 튀어나간다",
+              "썰매 뒤편 방울을 흔들어 소리를 낸다",
               "눈 쌓인 나무 그늘에서 마녀와 난쟁이의 모습을 살핀다"
             ],
-            correct: 1,
+            correct: 2,
             failMsg: "바스락거리는 눈 소리에 난쟁이의 시선이 꽂혔다!"
           },
           {
             prompt: "2단계: 마녀가 내미는 단 음식의 유혹 앞에서 가장 경계해야 할 점은?",
             options: [
+              "말투와 시선 속에 숨겨진 계산을 놓치지 않고 살핀다",
               "호기심에만 이끌려 상대의 의도를 묻지 않고 다가선다",
-              "말투와 시선 속에 숨겨진 계산을 놓치지 않고 살핀다"
+              "형제들의 이름을 먼저 꺼내며 환심을 사려 한다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "단맛에 시선을 빼앗겨 주변의 서늘한 기운을 놓쳤다!"
           }
         ]
@@ -7419,8 +7423,8 @@
           "단서 2: 동쪽 하늘이 밝아오며 돌탁 중앙에 거대한 균열이 번진다."
         ],
         choices: [
-          { label: "돌탁에서 완전히 등을 돌려 어둠 속 숲길로 멀리 떠난다", correct: false, failMsg: "돌탁이 갈라지는 역사적 순간을 놓치고 말았다!" },
           { label: "돌탁의 밧줄과 균열, 새벽빛을 지켜보며 끝까지 곁을 지킨다", correct: true },
+          { label: "돌탁에서 완전히 등을 돌려 어둠 속 숲길로 멀리 떠난다", correct: false, failMsg: "돌탁이 갈라지는 역사적 순간을 놓치고 말았다!" },
           { label: "마녀의 진영으로 다가가 돌탁의 흔적을 지우려 한다", correct: false, failMsg: "어둠의 세력 앞에서는 진실을 지켜낼 수 없다!" },
           { label: "아무런 흔적 없이 돌탁 위를 밟고 건너뛴다", correct: false, failMsg: "돌탁에 새겨진 깊은 울림을 느끼지 못했다!" }
         ]
@@ -7438,18 +7442,20 @@
             prompt: "1단계: 번화한 타슈반 거리에서 말하는 말들이 들키지 않으려면?",
             options: [
               "시장 한복판에서 큰 목소리로 서로 의견을 주고받는다",
+              "경비병 옆을 지나며 일부러 말을 걸어 시선을 끈다",
               "평범한 여행자·군마 행색을 유지하며 불필요한 말을 아낀다"
             ],
-            correct: 1,
+            correct: 2,
             failMsg: "주변 행인들의 시선이 일행에게 쏠리며 긴장이 높아졌다!"
           },
           {
             prompt: "2단계: 코린 왕자와 마주친 뒤 소란이 일 때 가장 현명한 움직임은?",
             options: [
+              "서둘러 합류 지점과 다음 행선지를 정리하며 시선을 분산시킨다",
               "분위기에 휩쓸려 정체를 밝히며 맞선다",
-              "서둘러 합류 지점과 다음 행선지를 정리하며 시선을 분산시킨다"
+              "성문 경비대에게 직접 길 안내를 청한다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "혼란 속에서 동선이 엇갈리며 추격의 빌미를 줄 뻔했다!"
           }
         ]
@@ -7466,17 +7472,19 @@
           {
             prompt: "1단계: 사자의 시선이 아라비스에게 향할 때 샤스타가 취할 행동은?",
             options: [
+              "앞으로 나서며 사자의 주의를 끌고 아라비스의 안전을 확보한다",
               "뒤로 물러나며 휜의 고삐만 쥐고 숨는다",
-              "앞으로 나서며 사자의 주의를 끌고 아라비스의 안전을 확보한다"
+              "모래 언덕 뒤로 혼자 먼저 내달린다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "사자의 압박에 아라비스가 위태로운 상황에 놓였다!"
           },
           {
             prompt: "2단계: 협곡을 빠져나온 뒤 은둔자의 집으로 향할 때 필요한 자세는?",
             options: [
               "지친 기색을 감추지 못한 채 방황한다",
-              "상처를 추스르고 은둔자의 안내에 따라 다음 목적지로 향한다"
+              "상처를 추스르고 은둔자의 안내에 따라 다음 목적지로 향한다",
+              "다시 사막 한가운데로 되돌아간다"
             ],
             correct: 1,
             failMsg: "협곡을 벗어난 뒤에도 피로가 쌓이며 발걸음이 더뎌졌다!"
@@ -7496,7 +7504,8 @@
             prompt: "1단계: 활쏘기와 검술 겨루기에서 트럼프킨의 경계를 허무는 핵심은?",
             options: [
               "상대를 위압하려 거칠게 몰아붙이기만 한다",
-              "정확한 자세와 절도 있는 움직임으로 실력을 보여 준다"
+              "정확한 자세와 절도 있는 움직임으로 실력을 보여 준다",
+              "무기를 내려놓고 말로만 설득하려 한다"
             ],
             correct: 1,
             failMsg: "트럼프킨이 헛점을 노리며 날카롭게 응수했다!"
@@ -7504,10 +7513,11 @@
           {
             prompt: "2단계: 겨루기 끝에 난쟁이가 옛 왕실임을 인정할 때 필요한 태도는?",
             options: [
+              "동료로서 손을 내밀며 캐스피언과 나니아의 상황을 함께 논한다",
               "오만하게 꾸짖으며 과거의 권위만 내세운다",
-              "동료로서 손을 내밀며 캐스피언과 나니아의 상황을 함께 논한다"
+              "즉시 텔마르 진영으로 혼자 정찰을 보낸다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "냉담한 태도로 인해 나니아인들과의 거리가 좁혀지지 않았다!"
           }
         ]
@@ -7526,9 +7536,9 @@
         ],
         choices: [
           { label: "성급하게 짧은 숨만 끊어 불며 주변 눈치만 본다", correct: false, failMsg: "짧게 끊긴 숨결로는 밤안개 너머까지 울리지 못했다!" },
-          { label: "깊은 숨을 들이마셔 맑고 길게 뿔나팔을 울리며 도움을 청한다", correct: true },
           { label: "나팔을 땅에 내려놓고 무기만 점검한다", correct: false, failMsg: "전설의 유물을 쓰지 않은 채 고립이 깊어졌다!" },
-          { label: "혼자만의 힘으로 성벽을 오르려 한다", correct: false, failMsg: "수적 열세 속에서 홀로 버티기에는 역부족이었다!" }
+          { label: "혼자만의 힘으로 성벽을 오르려 한다", correct: false, failMsg: "수적 열세 속에서 홀로 버티기에는 역부족이었다!" },
+          { label: "깊은 숨을 들이마셔 맑고 길게 뿔나팔을 울리며 도움을 청한다", correct: true }
         ]
       },
       b5_s6_lone_islands_split: {
@@ -7544,7 +7554,8 @@
             prompt: "1단계: 낯선 군도 해역에 진입할 때 가장 먼저 살필 항해 단서는?",
             options: [
               "바닷물의 색과 암초의 물결을 살피며 수심을 가늠한다",
-              "지도와 바람을 외면한 채 가장 빠른 직선으로만 내달린다"
+              "지도와 바람을 외면한 채 가장 빠른 직선으로만 내달린다",
+              "닻을 내린 채 폭풍이 지나가기를 마냥 기다린다"
             ],
             correct: 0,
             failMsg: "얕은 암초 부근에서 뱃머리가 출렁이며 속도가 줄었다!"
@@ -7553,9 +7564,10 @@
             prompt: "2단계: 펠리마스 상륙 후 섬의 상황을 파악할 때 필요한 행동은?",
             options: [
               "선원들을 흩어 놓은 채 무작정 내륙으로 돌진한다",
+              "항구 창고에 숨어 밤이 될 때까지 움직이지 않는다",
               "정찰과 대화를 통해 섬의 실정과 베른 경의 행방을 짚는다"
             ],
-            correct: 1,
+            correct: 2,
             failMsg: "섬의 정황을 파악하지 못한 채 불필요한 마찰을 겪었다!"
           }
         ]
@@ -7573,8 +7585,8 @@
           "단서 2: 두려움 대신 서원과 명예로 나아가는 자에게 새로운 길이 열린다."
         ],
         choices: [
-          { label: "어둠과 미지의 두려움에 멈춰 서서 뱃머리를 되돌린다", correct: false, failMsg: "세상의 끝 문턱에서 발걸음을 멈추고 말았다!" },
           { label: "은빛 물결과 빛의 길을 따라 조각배로 경계 너머로 나아간다", correct: true },
+          { label: "어둠과 미지의 두려움에 멈춰 서서 뱃머리를 되돌린다", correct: false, failMsg: "세상의 끝 문턱에서 발걸음을 멈추고 말았다!" },
           { label: "거친 폭풍을 찾아 먼 외해로 방향을 튼다", correct: false, failMsg: "잔잔한 경계의 질서를 벗어나 길을 잃었다!" },
           { label: "노를 내려놓은 채 물결에만 몸을 맡긴다", correct: false, failMsg: "목적 없이 떠도는 동안 항로의 기준을 놓쳤다!" }
         ]
@@ -7593,8 +7605,8 @@
         ],
         choices: [
           { label: "표징의 순서를 잊은 채 들리는 소문만 따라간다", correct: false, failMsg: "표징을 잊으면 북쪽의 길에서 쉽게 길을 잃게 된다!" },
-          { label: "표징의 흐름과 마지막 ‘아슬란의 이름’ 단서를 가슴에 새긴다", correct: true },
           { label: "거인의 성에 도착하면 표징은 필요 없다고 여긴다", correct: false, failMsg: "하팡 성의 유혹 앞에서 표징이 없으면 위험해진다!" },
+          { label: "표징의 흐름과 마지막 ‘아슬란의 이름’ 단서를 가슴에 새긴다", correct: true },
           { label: "첫 번째 표징만 기억하고 나머지는 흘려보낸다", correct: false, failMsg: "한 가지 표징만으로는 여정의 진실을 온전히 짚을 수 없다!" }
         ]
       },
@@ -7610,19 +7622,21 @@
           {
             prompt: "1단계: 거대한 뱀이 몸을 일으켜 덮쳐 올 때 가장 먼저 취할 움직임은?",
             options: [
+              "위치를 빠르게 옮기며 뱀의 머리와 공격 반경을 살핀다",
               "시선을 피한 채 한곳에 굳어 움직이지 않는다",
-              "위치를 빠르게 옮기며 뱀의 머리와 공격 반경을 살핀다"
+              "은 의자 조각 뒤로 숨어 공격을 포기한다"
             ],
-            correct: 1,
+            correct: 0,
             failMsg: "거대한 몸짓에 밀려나며 전열이 흔들렸다!"
           },
           {
             prompt: "2단계: 릴리언 왕자와 함께 반격할 기회를 잡았을 때의 결정적 행동은?",
             options: [
               "주저하며 한 걸음 물러난다",
+              "홀로 무모하게 뛰어들어 포위당한다",
               "동료들과 호흡을 맞춰 단호한 일격으로 위협을 끊어 낸다"
             ],
-            correct: 1,
+            correct: 2,
             failMsg: "망설이는 틈에 뱀의 반격이 거세졌다!"
           }
         ]
@@ -7640,8 +7654,8 @@
           "단서 2: 타쉬는 어둠과 잔혹함의 이름으로 불리는 존재로, 둘이 하나라는 말은 모순이다."
         ],
         choices: [
-          { label: "군중의 소란에 휩쓸려 두 존재가 하나라는 말을 그대로 받아들인다", correct: false, failMsg: "거짓 소문에 넘어가면 참된 아슬란의 길을 잃게 된다!" },
           { label: "선과 악, 진실과 기만의 본질을 대조해 거짓의 모순을 짚어 낸다", correct: true },
+          { label: "군중의 소란에 휩쓸려 두 존재가 하나라는 말을 그대로 받아들인다", correct: false, failMsg: "거짓 소문에 넘어가면 참된 아슬란의 길을 잃게 된다!" },
           { label: "사자 가죽을 쓴 존재의 말만 믿고 따른다", correct: false, failMsg: "가죽 뒤에 숨은 기만을 간파하지 못했다!" },
           { label: "소문의 진위를 따지지 않고 방관한다", correct: false, failMsg: "거짓이 퍼지는 동안 나니아의 혼란이 깊어진다!" }
         ]
@@ -7660,14 +7674,14 @@
         ],
         choices: [
           { label: "출신과 과거의 이름만으로 에메스를 배척한다", correct: false, failMsg: "마음 깊은 곳의 진실과 선의를 보지 못했다!" },
-          { label: "진실한 선의를 품은 자를 받아들이는 아슬란의 뜻을 확인한다", correct: true },
           { label: "오두막 밖의 좁은 시선으로만 판단한다", correct: false, failMsg: "더 넓고 깊은 진실의 기준을 놓쳤다!" },
-          { label: "과거의 다툼만을 떠올리며 경계한다", correct: false, failMsg: "새로운 세계의 질서와 화해를 읽지 못했다!" }
+          { label: "과거의 다툼만을 떠올리며 경계한다", correct: false, failMsg: "새로운 세계의 질서와 화해를 읽지 못했다!" },
+          { label: "진실한 선의를 품은 자를 받아들이는 아슬란의 뜻을 확인한다", correct: true }
         ]
       }
     };
 
-        const BOOK_REQUIREMENTS = {
+    const BOOK_REQUIREMENTS = {
       1: { trialId: "trial_b1_escape", reqRelic: "silver_apple", minStat: null, trialScene: "s11_london_escape_choice", desc: "1권 클라이맥스 대치 시련 통과 및 '서쪽 정원의 은빛 사과' 획득" },
       2: { trialId: "trial_b2_beruna", reqRelic: "lucy_cordial", minStat: null, trialScene: "b2_s18_beruna_battle", desc: "2권 베루나 여울 결전 통과 및 '불꽃 꽃의 치유 물약' 획득" },
       3: { trialId: "trial_b3_anvard", reqRelic: "archenland_seal", minStat: null, trialScene: "b3_s14_hermit_choice", desc: "3권 안바드 기습 저지 시련 통과 및 '아첸랜드 왕실의 쌍둥이 인장' 획득" },
@@ -8250,6 +8264,17 @@
       renderMinigameTrigger(scene);
     }
 
+    function shuffleWithIndex(arr) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+      }
+      return copy;
+    }
+
     function drawMinigameStep() {
       const sess = activeMgSession;
       if (!sess) return;
@@ -8270,7 +8295,8 @@
           <div class="mg-log">${lastFeedback}</div>
         `;
         const grid = bodyEl.querySelector("#mgChoicesGrid");
-        mg.choices.forEach(ch => {
+        const shuffledChoices = shuffleWithIndex(mg.choices);
+        shuffledChoices.forEach(ch => {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "mg-choice-btn";
@@ -8310,13 +8336,17 @@
       `;
 
       const optsBox = bodyEl.querySelector("#mgStepOpts");
-      curStep.options.forEach((optText, idx) => {
+      const indexedOpts = shuffleWithIndex(curStep.options.map((text, origIdx) => ({
+        text,
+        isCorrect: origIdx === curStep.correct
+      })));
+      indexedOpts.forEach((optObj, displayIdx) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "mg-choice-btn";
-        btn.textContent = `${idx + 1}. ${optText}`;
+        btn.textContent = `${displayIdx + 1}. ${optObj.text}`;
         btn.addEventListener("click", () => {
-          if (idx === curStep.correct) {
+          if (optObj.isCorrect) {
             sess.tension = Math.max(10, sess.tension - 10);
             if (stepIdx + 1 >= steps.length) {
               completeMinigameSuccess();
@@ -8864,6 +8894,11 @@
 
     function openJournal() {
       AudioEngine.play("soft");
+      ["glossaryModal", "relicModal", "minigameModal"].forEach(mid => {
+        const mEl = document.getElementById(mid);
+        if (mEl) mEl.classList.remove("open");
+      });
+      activeMgSession = null;
       const doneList = Array.isArray(state.completedBooks) ? state.completedBooks : [];
       const traitsList = Array.isArray(state.traits) ? state.traits : [];
       const evalInfo = getEndingEvaluation();
@@ -8909,7 +8944,7 @@
         <div class="style-banner">
           <div class="style-kicker">CURRENT RUN PLAYSTYLE · 이번 회차 플레이 스타일</div>
           <div class="style-name">${playStyleTitle}</div>
-          <p class="style-desc">${playStyleDesc} (장간 기믹 ${state.solvedInterludes.length}/7 완료)</p>
+          <p class="style-desc">${playStyleDesc}<br>• 장간 기믹 ${state.solvedInterludes.length}/7 완료 · 장면 미니게임 ${(state.solvedMinigames || []).length}/14 클리어</p>
         </div>
         <div class="ending-banner">
           <div class="ending-rank">${evalInfo.rank}</div>
