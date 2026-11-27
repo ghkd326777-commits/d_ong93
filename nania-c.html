@@ -6687,7 +6687,7 @@
       }, 580);
     }
 
-    const STORAGE_KEY = "narnia_book_v54_state";
+    const STORAGE_KEY = "narnia_book_v55_state";
 
     const RELICS_META = {
       magic_rings: {
@@ -8893,21 +8893,41 @@
     }
 
     function openJournal() {
-      AudioEngine.play("soft");
-      ["glossaryModal", "relicModal", "minigameModal"].forEach(mid => {
-        const mEl = document.getElementById(mid);
-        if (mEl) mEl.classList.remove("open");
-      });
-      activeMgSession = null;
-      const doneList = Array.isArray(state.completedBooks) ? state.completedBooks : [];
-      const traitsList = Array.isArray(state.traits) ? state.traits : [];
-      const evalInfo = getEndingEvaluation();
+      try {
+        if (typeof AudioEngine !== "undefined" && AudioEngine.play) {
+          AudioEngine.play("soft");
+        }
+      } catch {}
 
-      const booksHtml = Object.values(BOOKS_META).map(b => {
+      try {
+        ["glossaryModal", "relicModal", "minigameModal"].forEach(mid => {
+          const mEl = document.getElementById(mid);
+          if (mEl) mEl.classList.remove("open");
+        });
+      } catch {}
+
+      if (typeof activeMgSession !== "undefined") {
+        activeMgSession = null;
+      }
+
+      const safeState = (typeof state !== "undefined" && state) ? state : {};
+      const stats = safeState.stats || { courage: 1, wisdom: 1, faith: 1 };
+      const doneList = Array.isArray(safeState.completedBooks) ? safeState.completedBooks : [];
+      const traitsList = Array.isArray(safeState.traits) ? safeState.traits : [];
+      const solvedTrials = Array.isArray(safeState.solvedTrials) ? safeState.solvedTrials : [];
+      const solvedInterludes = Array.isArray(safeState.solvedInterludes) ? safeState.solvedInterludes : [];
+      const solvedMinigames = Array.isArray(safeState.solvedMinigames) ? safeState.solvedMinigames : [];
+
+      const evalInfo = (typeof getEndingEvaluation === "function")
+        ? getEndingEvaluation()
+        : { rank: "원정 진행 중", title: "나니아의 순례자", desc: "나니아 연대기의 여정을 기록하는 중입니다." };
+
+      const booksHtml = Object.values(BOOKS_META || {}).map(b => {
         const done = doneList.includes(b.num);
+        const unlocked = (typeof isBookUnlocked === "function") ? isBookUnlocked(b.num) : (b.num === 1);
         return `<div class="journal-book-chip ${done ? "done" : ""}">
           <span>${b.num}권</span>
-          <span>${done ? "★ 진엔딩" : (isBookUnlocked(b.num) ? "진행 가능" : "🔒 잠김")}</span>
+          <span>${done ? "★ 진엔딩" : (unlocked ? "진행 가능" : "🔒 잠김")}</span>
         </div>`;
       }).join("");
 
@@ -8915,7 +8935,7 @@
         ? `<ul class="trait-list">${traitsList.map(t => `<li>${t}</li>`).join("")}</ul>`
         : `<p style="color:var(--text-muted); font-size:13px;">아직 기록된 선택의 발자취가 없다. 각 권의 갈림길에서 선택지를 고르면 이곳에 발자취가 새겨진다.</p>`;
 
-      const { courage, wisdom, faith } = state.stats;
+      const { courage = 1, wisdom = 1, faith = 1 } = stats;
       let playStyleTitle = "균형 잡힌 연대기의 순례자";
       let playStyleDesc = "용기·지혜·신념을 고루 다지며 나니아의 여정을 밟아가는 회차 성향이다.";
       if (courage > wisdom + 1 && courage > faith + 1) {
@@ -8929,10 +8949,12 @@
         playStyleDesc = "표징과 믿음을 중심에 두고 어둠 속에서도 길을 잃지 않는 회차 플레이 스타일이다.";
       }
 
-      const medalsHtml = Object.entries(BOOK_MEDALS).map(([bNumStr, mInfo]) => {
+      const medalsMap = (typeof BOOK_MEDALS !== "undefined") ? BOOK_MEDALS : {};
+      const reqMap = (typeof BOOK_REQUIREMENTS !== "undefined") ? BOOK_REQUIREMENTS : {};
+      const medalsHtml = Object.entries(medalsMap).map(([bNumStr, mInfo]) => {
         const bNum = Number(bNumStr);
         const isDone = doneList.includes(bNum);
-        const hasTrial = state.solvedTrials.includes((BOOK_REQUIREMENTS[bNum] || {}).trialId);
+        const hasTrial = solvedTrials.includes((reqMap[bNum] || {}).trialId);
         const earned = isDone && hasTrial;
         return `<div class="vol-medal-chip ${earned ? "earned" : "unearned"}">
           <strong>${bNum}권 · ${mInfo.name}</strong>
@@ -8940,45 +8962,53 @@
         </div>`;
       }).join("");
 
-      document.getElementById("journalBody").innerHTML = `
-        <div class="style-banner">
-          <div class="style-kicker">CURRENT RUN PLAYSTYLE · 이번 회차 플레이 스타일</div>
-          <div class="style-name">${playStyleTitle}</div>
-          <p class="style-desc">${playStyleDesc}<br>• 장간 기믹 ${state.solvedInterludes.length}/7 완료 · 장면 미니게임 ${(state.solvedMinigames || []).length}/14 클리어</p>
-        </div>
-        <div class="ending-banner">
-          <div class="ending-rank">${evalInfo.rank}</div>
-          <div class="ending-title">${evalInfo.title}</div>
-          <p class="ending-desc">${evalInfo.desc}</p>
-        </div>
-        <div class="stat-summary-row">
-          <div class="stat-box"><span>⚔️ 용기</span><strong>${state.stats.courage}</strong></div>
-          <div class="stat-box"><span>✦ 지혜</span><strong>${state.stats.wisdom}</strong></div>
-          <div class="stat-box"><span>🦁 신념</span><strong>${state.stats.faith}</strong></div>
-        </div>
-        <p style="margin-bottom:6px; font-weight:600; color:var(--accent-gold);">권별 성취 배지 (1~7권)</p>
-        <div class="vol-medal-row">${medalsHtml}</div>
-        <p style="margin-bottom:6px; font-weight:600; color:var(--accent-gold);">권별 진엔딩 현황 (${doneList.length} / 7권 달성)</p>
-        <div class="journal-grid">${booksHtml}</div>
-        <p style="margin-bottom:4px; font-weight:600; color:var(--accent-gold);">선택으로 새긴 발자취 (${traitsList.length}개)</p>
-        ${traitsHtml}
-        <p style="margin:14px 0 6px; font-weight:600; color:var(--accent-gold);">덕목별 숨겨진 연대기 기록 (각 덕목 4 이상 시 해금)</p>
-        <ul class="secret-lore-list">
-          ${SECRET_LORE_RECORDS.map(lr => {
-            const cur = state.stats[lr.stat] || 1;
-            const ok = cur >= lr.min;
-            const statKo = lr.stat === "courage" ? "용기" : (lr.stat === "wisdom" ? "지혜" : "신념");
-            return `<li class="secret-lore-card ${ok ? "unlocked" : "locked"}">
-              <span class="secret-lore-title">${ok ? lr.title : `🔒 ${lr.title.split("·")[0].trim()} · ${statKo} ${lr.min} 필요 (현재 ${cur})`}</span>
-              <p class="secret-lore-body">${ok ? lr.body : `${statKo} 수치를 ${lr.min} 이상 쌓으면 나니아의 비화와 상징 기록이 열립니다.`}</p>
-            </li>`;
-          }).join("")}
-        </ul>
-      `;
-      document.getElementById("journalModal").classList.add("open");
+      const loreList = (typeof SECRET_LORE_RECORDS !== "undefined") ? SECRET_LORE_RECORDS : [];
+      const loreHtml = loreList.map(lr => {
+        const cur = stats[lr.stat] || 1;
+        const ok = cur >= lr.min;
+        const statKo = lr.stat === "courage" ? "용기" : (lr.stat === "wisdom" ? "지혜" : "신념");
+        return `<li class="secret-lore-card ${ok ? "unlocked" : "locked"}">
+          <span class="secret-lore-title">${ok ? lr.title : `🔒 ${lr.title.split("·")[0].trim()} · ${statKo} ${lr.min} 필요 (현재 ${cur})`}</span>
+          <p class="secret-lore-body">${ok ? lr.body : `${statKo} 수치를 ${lr.min} 이상 쌓으면 나니아의 비화와 상징 기록이 열립니다.`}</p>
+        </li>`;
+      }).join("");
+
+      const bodyEl = document.getElementById("journalBody");
+      if (bodyEl) {
+        bodyEl.innerHTML = `
+          <div class="style-banner">
+            <div class="style-kicker">CURRENT RUN PLAYSTYLE · 이번 회차 플레이 스타일</div>
+            <div class="style-name">${playStyleTitle}</div>
+            <p class="style-desc">${playStyleDesc}<br>• 장간 기믹 ${solvedInterludes.length}/7 완료 · 장면 미니게임 ${solvedMinigames.length}/14 클리어</p>
+          </div>
+          <div class="ending-banner">
+            <div class="ending-rank">${evalInfo.rank}</div>
+            <div class="ending-title">${evalInfo.title}</div>
+            <p class="ending-desc">${evalInfo.desc}</p>
+          </div>
+          <div class="stat-summary-row">
+            <div class="stat-box"><span>⚔️ 용기</span><strong>${courage}</strong></div>
+            <div class="stat-box"><span>✦ 지혜</span><strong>${wisdom}</strong></div>
+            <div class="stat-box"><span>🦁 신념</span><strong>${faith}</strong></div>
+          </div>
+          <p style="margin-bottom:6px; font-weight:600; color:var(--accent-gold);">권별 성취 배지 (1~7권)</p>
+          <div class="vol-medal-row">${medalsHtml}</div>
+          <p style="margin-bottom:6px; font-weight:600; color:var(--accent-gold);">권별 진엔딩 현황 (${doneList.length} / 7권 달성)</p>
+          <div class="journal-grid">${booksHtml}</div>
+          <p style="margin-bottom:4px; font-weight:600; color:var(--accent-gold);">선택으로 새긴 발자취 (${traitsList.length}개)</p>
+          ${traitsHtml}
+          <p style="margin:14px 0 6px; font-weight:600; color:var(--accent-gold);">덕목별 숨겨진 연대기 기록 (각 덕목 4 이상 시 해금)</p>
+          <ul class="secret-lore-list">${loreHtml}</ul>
+        `;
+      }
+
+      const modalEl = document.getElementById("journalModal");
+      if (modalEl) {
+        modalEl.classList.add("open");
+      }
     }
 
-    function focusInteractiveTarget(elId, msg) {
+        function focusInteractiveTarget(elId, msg) {
       const target = document.getElementById(elId);
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -9152,8 +9182,23 @@
       if (e.target === e.currentTarget) e.currentTarget.classList.remove("open");
     });
 
-    document.getElementById("openJournalBtn").addEventListener("click", openJournal);
-    document.getElementById("readerJournalBtn").addEventListener("click", openJournal);
+    ["openJournalBtn", "readerJournalBtn"].forEach(btnId => {
+      const bEl = document.getElementById(btnId);
+      if (!bEl) return;
+      let lastJTap = 0;
+      const fireJournal = e => {
+        if (e) {
+          e.stopPropagation();
+          if (e.type === "touchend") e.preventDefault();
+        }
+        const now = Date.now();
+        if (now - lastJTap < 250) return;
+        lastJTap = now;
+        openJournal();
+      };
+      bEl.addEventListener("click", fireJournal);
+      bEl.addEventListener("touchend", fireJournal, { passive: false });
+    });
 
     document.querySelectorAll(".cover-toc li").forEach((li, idx) => {
       li.addEventListener("click", () => {
